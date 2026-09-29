@@ -1,0 +1,15 @@
+FROM docker.io/library/python:3.12-slim
+
+WORKDIR /app
+COPY tools/requirements.txt /app/tools/requirements.txt
+RUN pip install --no-cache-dir -r /app/tools/requirements.txt
+
+COPY tools/*.py /app/tools/
+COPY scenarios/ /app/scenarios/
+
+# The compose `tools` service mounts ${RESULTS_DIR} here.
+ENV RESULTS_DIR=/app/results
+RUN mkdir -p /app/results
+
+ENTRYPOINT ["python"]
+CMD ["tools/smoke_test.py", "--help"]

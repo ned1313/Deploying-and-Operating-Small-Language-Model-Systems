@@ -1,0 +1,72 @@
+# Module 1 Podman Compose project: model server, gateway, and disposable evaluation tools.
+#
+#   source m1/env.sh                      # exports COMPOSE_FILE and all ${VARS} used below
+#   ./m1/serve.sh qwen                    # sets VLLM_ARGS for a candidate and (re)creates the vllm service
+#   podman compose up -d gateway
+#   podman compose run --rm tools tools/smoke_test.py ...
+#
+# GPU access uses CDI: `sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml` once on the host.
+# Always name the service you want (`up -d gateway`, `up -d vllm`); `vllm` requires VLLM_ARGS.
+
+name: taco-m1
+
+services:
+  vllm:
+    container_name: vllm
+    image: ${VLLM_IMAGE:?source m1/env.sh first}
+    # serve.sh builds this string per candidate; it is split shell-style into vLLM arguments.
+    command: ${VLLM_ARGS:?set VLLM_ARGS or use m1/serve.sh <qwen|llama|granite>}
+    ipc: host
+    devices:
+      - nvidia.com/gpu=all
+    ports:
+      - "127.0.0.1:${VLLM_PORT:-8000}:8000"   # loopback only; the LAN reaches vLLM through the gateway
+    volumes:
+      - hf-cache:/root/.cache/huggingface
+    environment:
+      - HF_TOKEN                               # passed through from the shell, never stored here
+      - VLLM_LOGGING_LEVEL=INFO
+    networks:
+      inference:
+        ipv4_address: ${VLLM_UPSTREAM_IP:-10.89.7.10}   # fixed so nginx's upstream survives model swaps
+        aliases: [vllm]
+    restart: "no"
+
+  gateway:
+    container_name: gateway
+    image: ${NGINX_IMAGE:-docker.io/library/nginx:stable}
+    ports:
+      - "${GATEWAY_PORT:-8080}:8080"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      inference:
+        aliases: [gateway]
+    restart: unless-stopped
+
+  tools:
+    # Disposable evaluation/load client. Use `podman compose run --rm tools <script> [args]`.
+    image: localhost/taco-m1-tools:latest
+    build:
+      context: .
+      dockerfile: tools/Containerfile
+    volumes:
+      - ${RESULTS_DIR:-./results}:/app/results
+    environment:
+      BASE_URL: ${BASE_URL:-http://gateway:8080/v1}
+      MODEL: ${MODEL:-}
+      EXTRA_BODY: ${EXTRA_BODY:-}
+    networks:
+      - inference
+    command: ["tools/smoke_test.py", "--help"]
+
+networks:
+  inference:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${INFERENCE_SUBNET:-10.89.7.0/24}
+
+volumes:
+  hf-cache:
+    name: ${MODEL_CACHE_VOLUME:-hf-cache}
