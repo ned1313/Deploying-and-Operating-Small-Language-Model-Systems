@@ -33,25 +33,25 @@ export GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-0.90}"
 export MAX_NUM_SEQS="${MAX_NUM_SEQS:-32}"
 
 # ----- candidate 1: Qwen3.5-9B -----------------------------------------------------------------
-export QWEN_REPO="${QWEN_REPO:-Qwen/Qwen3.5-9B-AWQ}"
+export QWEN_REPO="${QWEN_REPO:-RedHatAI/Qwen3.5-9B-quantized.w8a8}"
 export QWEN_REVISION="${QWEN_REVISION:-main}"
-export QWEN_SERVED_NAME="qwen3.5-9b-awq"
-export QWEN_QUANT_LABEL="awq-int4"
+export QWEN_SERVED_NAME="qwen3.5-9b"
+export QWEN_QUANT_LABEL="gptq-int8"
 export QWEN_REASONING_PARSER="${QWEN_REASONING_PARSER:-qwen3}"
 export QWEN_TOOL_PARSER="${QWEN_TOOL_PARSER:-hermes}"
 # Qwen thinking mode inflates tokens and latency for a structured task; disable it per request.
 export QWEN_EXTRA_BODY='{"chat_template_kwargs": {"enable_thinking": false}}'
 
 # ----- candidate 2: Llama-3.1-8B-Instruct -------------------------------------------------------
-export LLAMA_REPO="${LLAMA_REPO:-hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4}"
+export LLAMA_REPO="${LLAMA_REPO:-RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8}"
 export LLAMA_REVISION="${LLAMA_REVISION:-main}"
-export LLAMA_SERVED_NAME="llama-3.1-8b-awq"
-export LLAMA_QUANT_LABEL="awq-int4"
+export LLAMA_SERVED_NAME="llama-3.1-8b"
+export LLAMA_QUANT_LABEL="gptq-int8"
 export LLAMA_TOOL_PARSER="${LLAMA_TOOL_PARSER:-llama3_json}"
 export LLAMA_EXTRA_BODY='{}'
 
 # ----- candidate 3: Granite-4.2-8B ---------------------------------------------------------------
-export GRANITE_REPO="${GRANITE_REPO:-ibm-granite/granite-4.2-8b-instruct}"
+export GRANITE_REPO="${GRANITE_REPO:-ibm-granite/granite-4.2-8b-mxfp4}"
 export GRANITE_REVISION="${GRANITE_REVISION:-main}"
 export GRANITE_SERVED_NAME="granite-4.2-8b"
 export GRANITE_QUANT_LABEL="fp8-or-awq"   # replace with the format of the artifact you pin
