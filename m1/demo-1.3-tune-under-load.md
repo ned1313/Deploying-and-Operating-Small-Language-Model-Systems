@@ -185,12 +185,12 @@ podman compose run --rm tools tools/screen_models.py --model "$SERVED" --extra-b
 podman compose run --rm tools tools/compare_screening.py \
     "results/screening-${SERVED}-baseline-*.json" "results/screening-${SERVED}-tuned-baseline-*.json"
 
-# Refresh the deployment record with the final arguments, taken from the running container
+# Refresh the deployment record with the final arguments (serve.sh saved them)
 podman compose run --rm tools tools/smoke_test.py --model "$SERVED" --extra-body "$EXTRA" \
     --hf-repo "$QWEN_REPO" --revision "$QWEN_REVISION" --quantization "$QWEN_QUANT_LABEL" \
     --chat-template "tokenizer default" --reasoning-parser "$QWEN_REASONING_PARSER" \
     --tool-call-parser "$QWEN_TOOL_PARSER" --serving-image "$VLLM_IMAGE" \
-    --serving-args "$(podman inspect vllm --format '{{join .Config.Cmd " "}}')" \
+    --serving-args "$(cat "$RESULTS_DIR/last-serving-args.txt")" \
     --notes "module 1 tuned baseline"
 ```
 

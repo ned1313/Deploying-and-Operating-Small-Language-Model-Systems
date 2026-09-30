@@ -136,7 +136,7 @@ podman compose run --rm tools tools/smoke_test.py \
     --reasoning-parser "$QWEN_REASONING_PARSER" \
     --tool-call-parser "$QWEN_TOOL_PARSER" \
     --serving-image "$VLLM_IMAGE" \
-    --serving-args "$(podman inspect vllm --format '{{join .Config.Cmd " "}}')"
+    --serving-args "$(cat "$RESULTS_DIR/last-serving-args.txt")"
 ```
 
 What the script does, in order:

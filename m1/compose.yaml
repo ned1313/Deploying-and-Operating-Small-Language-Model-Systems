@@ -14,18 +14,21 @@ services:
   vllm:
     container_name: vllm
     image: ${VLLM_IMAGE:?source m1/env.sh first}
-    # serve.sh builds this string per candidate; it is split shell-style into vLLM arguments.
-    command: ${VLLM_ARGS:?set VLLM_ARGS or use m1/serve.sh <qwen|llama|granite>}
+    # podman-compose shell-splits string commands before interpolating, so the argument string is
+    # passed as an env var and split (with serve.sh's %q quoting honored) by bash in the container.
+    entrypoint: ["/bin/bash", "-c", "eval exec vllm serve \"$$VLLM_ARGS\""]
     ipc: host
     devices:
-      - nvidia.com/gpu=all
+      - nvidia.com/gpu=0
     ports:
       - "127.0.0.1:${VLLM_PORT:-8000}:8000"   # loopback only; the LAN reaches vLLM through the gateway
     volumes:
       - hf-cache:/root/.cache/huggingface
     environment:
-      - HF_TOKEN                               # passed through from the shell, never stored here
-      - VLLM_LOGGING_LEVEL=INFO
+      HF_TOKEN: ${HF_TOKEN:-}                  # from the shell, never stored here
+      VLLM_ARGS: ${VLLM_ARGS:?run m1/serve.sh or export VLLM_ARGS}
+      VLLM_LOGGING_LEVEL: DEBUG
+      VLLM_USE_RUST_FRONTEND: "1"
     networks:
       inference:
         ipv4_address: ${VLLM_UPSTREAM_IP:-10.89.7.10}   # fixed so nginx's upstream survives model swaps
