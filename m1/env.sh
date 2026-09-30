@@ -55,7 +55,7 @@ export GRANITE_REPO="${GRANITE_REPO:-ibm-granite/granite-4.2-8b-mxfp4}"
 export GRANITE_REVISION="${GRANITE_REVISION:-main}"
 export GRANITE_SERVED_NAME="granite-4.2-8b"
 export GRANITE_QUANT_LABEL="fp8-or-awq"   # replace with the format of the artifact you pin
-export GRANITE_TOOL_PARSER="${GRANITE_TOOL_PARSER:-granite}"
+export GRANITE_TOOL_PARSER="${GRANITE_TOOL_PARSER:-granite4}"
 export GRANITE_EXTRA_BODY='{}'
 
 # Hugging Face token for gated repositories (Llama). Set it in your shell, never in this file.

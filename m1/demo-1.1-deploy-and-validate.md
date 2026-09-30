@@ -191,15 +191,24 @@ podman compose logs -f vllm    # wait for "Application startup complete"
 ### 5b. Request that violates the serving configuration at runtime
 
 ```bash
-# Ask for more output than --max-model-len allows. The server rejects it before inference.
-curl -s "${BASE_URL_LOCAL}/chat/completions" -H 'Content-Type: application/json' \
-  -d '{"model":"'"$QWEN_SERVED_NAME"'","messages":[{"role":"user","content":"hi"}],
-       "max_tokens": 20000}' | python3 -m json.tool
+# Send a prompt roughly twice --max-model-len. The server rejects it before inference.
+python3 -c '
+import json, sys
+filler = "The customer reports that the guacamole was missing from the bag. " * (int(sys.argv[2]) // 6)
+print(json.dumps({"model": sys.argv[1], "max_tokens": 50,
+                  "messages": [{"role": "user", "content": filler + "Summarize the complaint."}],
+                  "chat_template_kwargs": {"enable_thinking": False}}))' "$QWEN_SERVED_NAME" "$MAX_MODEL_LEN" \
+| curl -s -w '\nHTTP %{http_code}\n' "${BASE_URL_LOCAL}/chat/completions" -H 'Content-Type: application/json' -d @-
 ```
 
-The 400 message states the configured context length and what was requested. The client and
-server disagree about limits; the model never ran. `smoke_test.py` labels 4xx responses
-`COMPATIBILITY ISSUE` for the same reason. Demo 1.3 revisits `--max-model-len` deliberately.
+The 400 message states the configured context length and how many input tokens were sent. The
+client and server disagree about limits; the model never ran, and nvtop shows no GPU spike.
+`smoke_test.py` labels 4xx responses `COMPATIBILITY ISSUE` for the same reason.
+
+Contrast worth mentioning: an oversized `max_tokens` (e.g. 20000 with a short prompt) is *not*
+rejected by current vLLM; it is capped to the remaining context. Limits the server silently adjusts
+are easy to miss, which is why the deployment record captures `max_model_len`. Demo 1.3 revisits
+`--max-model-len` deliberately.
 
 ---
 
