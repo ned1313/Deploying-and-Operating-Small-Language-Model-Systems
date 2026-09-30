@@ -9,13 +9,12 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import glob
 import json
 import sys
 from pathlib import Path
 from typing import Any
 
-from common import print_table
+from common import expand_globs, print_table
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -44,21 +43,9 @@ def pct(value: float | None) -> str | None:
     return None if value is None else f"{value * 100:.0f}%"
 
 
-def expand(paths: list[Path]) -> list[Path]:
-    """Expand glob patterns that the host shell did not (e.g. when quoted through `podman compose run`)."""
-    expanded: list[Path] = []
-    for path in paths:
-        text = str(path)
-        if any(ch in text for ch in "*?["):
-            expanded.extend(sorted(Path(p) for p in glob.glob(text)))
-        else:
-            expanded.append(path)
-    return expanded
-
-
 def main() -> int:
     args = parse_arguments()
-    results = [load(path) for path in expand(args.results)]
+    results = [load(path) for path in expand_globs(args.results)]
     if not results:
         print("No result files supplied.", file=sys.stderr)
         return 1

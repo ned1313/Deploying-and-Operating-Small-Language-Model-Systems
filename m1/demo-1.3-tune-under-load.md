@@ -6,12 +6,12 @@ memory-pressure case, and a hard out-of-memory failure. Finish with a baseline c
 has measured headroom.
 
 Prerequisites: Demo 1.2 state (selected candidate running via `serve.sh`, `gateway` up,
-`source m1/env.sh`). The examples below use Qwen; substitute the winner from Demo 1.2.
+`source m1/env.sh`). The examples below use Llama; substitute the winner from Demo 1.2.
 
 ```bash
-CAND=qwen                       # qwen | llama | granite
-SERVED="$QWEN_SERVED_NAME"      # LLAMA_SERVED_NAME | GRANITE_SERVED_NAME
-EXTRA="$QWEN_EXTRA_BODY"        # LLAMA_EXTRA_BODY  | GRANITE_EXTRA_BODY
+CAND=llama                       # llama | qwen | granite
+SERVED="$LLAMA_SERVED_NAME"      # QWEN_SERVED_NAME | GRANITE_SERVED_NAME
+EXTRA="$LLAMA_EXTRA_BODY"        # QWEN_EXTRA_BODY  | GRANITE_EXTRA_BODY
 ```
 
 ---
@@ -45,6 +45,48 @@ podman compose run --rm tools tools/load_sweep.py \
     --concurrency 1,4,8,16,32 --requests-per-level 32 --max-tokens 300 \
     --label baseline
 ```
+
+### What the flags control
+
+| flag | meaning |
+| --- | --- |
+| `--concurrency 1,4,8,16,32` | One run ("level") per value. At each level the script keeps exactly N requests in flight: when one finishes, the next starts. This is a closed-loop test, so the load never exceeds N. |
+| `--requests-per-level 32` | Requests to complete at each level before moving on. Prompts cycle through the 20 screening scenarios, so the prompt mix is the same at every level. |
+| `--max-tokens 300` | Output budget per request. It caps decode time and how far each sequence can grow its KV-cache footprint. |
+| `--pad-prompt-tokens N` | Appends about N tokens of filler text to each prompt. This raises prefill cost and KV-cache use per request (used in step 3). |
+| `--structured-output json_schema` | Adds guided decoding, to measure its overhead under load (step 5d). |
+| `--label` | Tag written into the results file name and summary, so runs can be compared later. |
+| `--metrics-interval 1.0` | How often, in seconds, `/metrics` is scraped during a level. Spikes shorter than this can be missed. |
+
+Requests use `temperature 0.7`, not 0. Identical greedy requests would all produce the same output
+length, which makes the batch unrealistically uniform.
+
+### What the output columns mean
+
+Each level prints a progress line, and the run ends with a summary table. Both report the same
+fields; the progress line spells some names out, e.g. `peak waiting`, `preemptions`, `errors`.
+On older vLLM images, `kv %` is read from `vllm:gpu_cache_usage_perc` instead.
+
+| column | measured by | what it tells you |
+| --- | --- | --- |
+| `conc` | client | The concurrency level for this row. |
+| `req/s` | client | Successful requests divided by the level's wall-clock time. This is completed-work throughput. |
+| `out tok/s` | client (`usage.completion_tokens`) | Generated tokens per second across *all* in-flight requests. This is decode throughput, the card's real output rate. It includes reasoning tokens if thinking is enabled. |
+| `lat p50` / `lat p95` | client | Seconds from sending a request to receiving its last token. p50 is the typical request; p95 is the slow tail that users notice. Includes gateway and network time. |
+| `ttft p50` / `ttft p95` | client (streaming) | Time to first token: seconds until the first streamed content arrives. This is roughly queue wait plus prefill. A rising TTFT with a flat `lat - ttft` means requests are waiting, not decoding slower. |
+| `peak wait` | server (`vllm:num_requests_waiting`) | The most requests sitting in vLLM's queue at any scrape. Above 0 means the scheduler had no room to start them: `--max-num-seqs` or the KV cache is full. |
+| `kv %` | server (`vllm:kv_cache_usage_perc`) | Peak share of preallocated KV-cache blocks in use. Near 100 means new tokens have nowhere to go. |
+| `preempt` | server (`vllm:num_preemptions_total`, delta) | How many times vLLM evicted a running sequence during this level to free KV cache, recomputing it later. Any non-zero value is wasted GPU work and a latency spike. |
+| `err` | client | Failed requests (HTTP errors or timeouts). The first three error messages are printed under the level. |
+
+Rules of thumb for reading a sweep:
+
+- **Spare capacity:** `out tok/s` rises with `conc` while `lat p95` stays roughly flat.
+- **Saturation:** `out tok/s` flattens while `lat p95` and `ttft p95` keep climbing, and `peak wait` > 0. Adding users now only adds queueing.
+- **Memory pressure:** `kv %` near 100 together with `preempt` > 0.
+
+`peak_running`, token means, and the raw per-level numbers are also in
+`results/load-<model>-<label>-<timestamp>.json` for later comparison (step 5).
 
 Narration while it runs (keep nvtop visible):
 
@@ -99,20 +141,15 @@ Give vLLM nearly the whole card, then take some of it away with a second process
 ./m1/serve.sh $CAND --gpu-memory-utilization 0.97
 podman compose logs -f vllm    # wait for startup; nvtop shows ~23 GB in use
 
-# In a second SSH session, occupy ~1.5 GB of VRAM alongside the server (reuses the vLLM image for torch):
+# Try to occupy ~1.5 GB of VRAM alongside the server (reuses the vLLM image for torch):
 podman run --rm --device nvidia.com/gpu=all --name vram-hog --entrypoint python3 "$VLLM_IMAGE" -c \
   'import torch,time; x=torch.empty(int(1.5*1024**3), dtype=torch.uint8, device="cuda"); print("holding 1.5 GiB"); time.sleep(600)'
-
-# Back in the first session, push a burst through:
-podman compose run --rm tools tools/load_sweep.py --model "$SERVED" --extra-body "$EXTRA" \
-    --concurrency 32 --requests-per-level 64 --max-tokens 400 --pad-prompt-tokens 3000 --label oom
-podman compose logs vllm 2>&1 | grep -iE 'out of memory|CUDA error|EngineCore' | tail -5
-podman ps -a --filter name=vllm --format '{{.Status}}'
 ```
 
-Depending on the vLLM version, the engine either dies (container exits, every request 5xx) or
-survives with heavy preemption. Either way the lesson is the same: `--gpu-memory-utilization` is
-a promise about *exclusive* use of the card. Clean up:
+The second container will fail to start since there is insufficient capacity: `--gpu-memory-utilization` is
+a promise about *exclusive* use of the card.
+
+Clean up:
 
 ```bash
 podman rm -f vram-hog 2>/dev/null
@@ -149,20 +186,28 @@ podman compose run --rm tools tools/load_sweep.py --model "$SERVED" --extra-body
     --concurrency 8,16 --requests-per-level 32 --max-tokens 300 --structured-output json_schema --label guided
 ```
 
-Compare runs side by side from the saved JSON:
+Compare runs side by side from the saved JSON. The quotes keep the host shell from expanding the
+glob; the tool expands it inside the container.
 
 ```bash
-python3 - "$RESULTS_DIR"/load-*.json <<'EOF'
-import json, sys
-print(f"{'run':<34}{'conc':>5}{'req/s':>8}{'tok/s':>8}{'p50':>7}{'p95':>7}{'ttft95':>8}{'wait':>6}{'kv%':>6}{'pre':>5}{'err':>5}")
-for path in sys.argv[1:]:
-    r = json.load(open(path))
-    for lvl in r["levels"]:
-        v, lat, t = lvl["vllm"], lvl["latency_seconds"], lvl["ttft_seconds"]
-        f = lambda x, w=7, p=2: f"{x:>{w}.{p}f}" if isinstance(x, (int, float)) else f"{'-':>{w}}"
-        print(f"{(r['label'] or 'run')[:33]:<34}{lvl['concurrency']:>5}{f(lvl['requests_per_second'],8)}{f(lvl['output_tokens_per_second'],8,0)}"
-              f"{f(lat['p50'])}{f(lat['p95'])}{f(t['p95'],8)}{f(v['peak_waiting'],6,0)}{f(v['peak_kv_cache_usage_pct'],6,0)}{f(v['preemptions_delta'],5,0)}{lvl['errors']:>5}")
-EOF
+podman compose run --rm tools tools/compare_load.py 'results/load-*.json'
+
+# Or pick specific runs and name the CSV
+podman compose run --rm tools tools/compare_load.py --csv results/tuning.csv \
+    'results/load-*-baseline-*.json' 'results/load-*-kv-fp8-*.json'
+```
+
+The tool prints two tables. **Runs** shows the settings for each sweep. **Levels** has one row per
+concurrency level, with every column from step 2 plus `lat avg`/`lat max`, `ttft avg`/`ttft max`,
+`run` (peak running), `in tok`/`out tok` (mean tokens per request), and `samples` (number of
+`/metrics` scrapes).
+
+It also writes `results/load-comparison-<timestamp>.csv` with one row per run and level and every
+recorded field: run settings, the source file and timestamp, and the first error message. Copy it
+to the desktop for Excel:
+
+```bash
+scp <user>@<MODEL_HOST>:<clone-path>/m1/results/load-comparison-*.csv .
 ```
 
 ---

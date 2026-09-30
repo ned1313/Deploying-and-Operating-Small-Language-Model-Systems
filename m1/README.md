@@ -29,6 +29,7 @@ m1/
     screen_models.py          Demo 1.2 screening with schema/grounding/policy grading
     compare_screening.py      Demo 1.2 side-by-side table and per-scenario pass/fail grid
     load_sweep.py             Demo 1.3 concurrency sweep with TTFT, throughput, queue and KV-cache metrics
+    compare_load.py           Demo 1.3 side-by-side table of load sweeps plus a CSV export of every field
     sample_vram.sh            host-side nvidia-smi sampler; feeds --vram-log for peak VRAM
   results/                  generated JSON/CSV output (git-ignored)
 ```

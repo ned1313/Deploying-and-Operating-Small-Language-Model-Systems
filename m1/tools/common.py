@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import math
 import os
@@ -243,6 +244,18 @@ def peak_vram_from_log(path: Path | None) -> dict[str, Any] | None:
 
 def timestamp_slug() -> str:
     return time.strftime("%Y%m%d-%H%M%S")
+
+
+def expand_globs(paths: list[Path]) -> list[Path]:
+    """Expand glob patterns the host shell did not (e.g. when quoted through `podman compose run`)."""
+    expanded: list[Path] = []
+    for path in paths:
+        text = str(path)
+        if any(ch in text for ch in "*?["):
+            expanded.extend(sorted(Path(p) for p in glob.glob(text)))
+        else:
+            expanded.append(path)
+    return expanded
 
 
 def safe_slug(value: str) -> str:
