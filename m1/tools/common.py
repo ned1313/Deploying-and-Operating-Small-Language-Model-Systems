@@ -36,7 +36,7 @@ METRIC_NAMES = (
 def add_connection_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--base-url",
-        default=os.environ.get("BASE_URL", "http://localhost:8080/v1"),
+        default=os.environ.get("BASE_URL") or "http://localhost:8080/v1",
         help="OpenAI-compatible base URL ending in /v1 (default: $BASE_URL or http://localhost:8080/v1).",
     )
     parser.add_argument(
@@ -46,12 +46,13 @@ def add_connection_arguments(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         "--model",
-        default=os.environ.get("MODEL"),
+        # Compose passes unset variables as "", which must still trigger model discovery.
+        default=os.environ.get("MODEL") or None,
         help="Served model name (default: $MODEL, or the first model returned by /v1/models).",
     )
     parser.add_argument(
         "--metrics-url",
-        default=os.environ.get("METRICS_URL"),
+        default=os.environ.get("METRICS_URL") or None,
         help="Prometheus metrics URL (default: derived from --base-url by replacing /v1 with /metrics).",
     )
     parser.add_argument(
