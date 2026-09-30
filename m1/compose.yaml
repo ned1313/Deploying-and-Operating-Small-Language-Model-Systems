@@ -16,7 +16,7 @@ services:
     image: ${VLLM_IMAGE:?source m1/env.sh first}
     # podman-compose shell-splits string commands before interpolating, so the argument string is
     # passed as an env var and split (with serve.sh's %q quoting honored) by bash in the container.
-    entrypoint: ["/bin/bash", "-c", "eval exec vllm serve \"$$VLLM_ARGS\""]
+    entrypoint: ["/bin/bash", "-c", ": \"$${VLLM_ARGS:?empty - start this service with m1/serve.sh}\"; eval exec vllm serve \"$$VLLM_ARGS\""]
     ipc: host
     devices:
       - nvidia.com/gpu=0
@@ -26,7 +26,8 @@ services:
       - hf-cache:/root/.cache/huggingface
     environment:
       HF_TOKEN: ${HF_TOKEN:-}                  # from the shell, never stored here
-      VLLM_ARGS: ${VLLM_ARGS:?run m1/serve.sh or export VLLM_ARGS}
+      # Checked inside the container: a compose-level check would fail every command, e.g. `ps`.
+      VLLM_ARGS: ${VLLM_ARGS:-}
       VLLM_LOGGING_LEVEL: DEBUG
       VLLM_USE_RUST_FRONTEND: "1"
     networks:

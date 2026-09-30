@@ -31,7 +31,7 @@ podman compose build tools
 ```
 
 > Gated repositories (Llama) need `export HF_TOKEN=hf_...` in this shell before `serve.sh`.
-> Compose passes the variable through by name (`environment: - HF_TOKEN`); it is never written to disk.
+> Compose reads it from the shell (`HF_TOKEN: ${HF_TOKEN:-}`); it is never written to a file in this repo.
 
 ---
 
