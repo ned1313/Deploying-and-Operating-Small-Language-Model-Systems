@@ -151,7 +151,8 @@ async def run_scenario(
     row: dict[str, Any] = {"scenario_id": scenario["scenario_id"], "label": scenario["label"]}
     request: dict[str, Any] = {
         "model": args.model, "messages": build_messages(scenario, system_prompt),
-        "temperature": args.temperature, "max_tokens": args.max_tokens, "seed": 42, **extra_body,
+        "temperature": args.temperature, "max_tokens": args.max_tokens, "seed": 42,
+        "extra_body": extra_body or None,
     }
     response_format = response_format_for(args.structured_output, schema)
     if response_format:

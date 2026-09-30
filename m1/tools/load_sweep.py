@@ -183,7 +183,7 @@ async def run(args: argparse.Namespace) -> dict[str, Any]:
                 if padding:
                     messages[1]["content"] += "\n\n" + padding
                 request: dict[str, Any] = {"model": args.model, "messages": messages, "temperature": 0.7,
-                                           "max_tokens": args.max_tokens, **extra_body}
+                                           "max_tokens": args.max_tokens, "extra_body": extra_body or None}
                 if args.structured_output == "json_schema":
                     request["response_format"] = {"type": "json_schema",
                                                   "json_schema": {"name": "resolution_proposal", "schema": schema, "strict": True}}

@@ -139,13 +139,12 @@ def main() -> int:
         ],
         "temperature": 0,
         "max_tokens": min(args.max_tokens, 200),
-        **extra_body,
     }
-    print("Request body:")
-    print(json.dumps(request_body, indent=2))
+    print("Request body (as sent on the wire):")
+    print(json.dumps({**request_body, **extra_body}, indent=2))
     started = time.perf_counter()
     try:
-        response = client.chat.completions.create(**request_body)
+        response = client.chat.completions.create(**request_body, extra_body=extra_body or None)
     except APIError as error:
         failures += 1
         record["checks"]["plain_chat"] = {"ok": False, "error": report_error("plain chat completion", error)}
@@ -176,7 +175,7 @@ def main() -> int:
             response = client.chat.completions.create(
                 model=args.model, messages=messages, temperature=0, max_tokens=args.max_tokens,
                 response_format={"type": "json_schema", "json_schema": {"name": "resolution_proposal", "schema": schema, "strict": True}},
-                **extra_body,
+                extra_body=extra_body or None,
             )
         except APIError as error:
             failures += 1

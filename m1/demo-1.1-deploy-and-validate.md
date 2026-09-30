@@ -69,7 +69,7 @@ curl -s -o /dev/null -w 'health=%{http_code}\n' "http://127.0.0.1:${VLLM_PORT}/h
 
 ```bash
 # Which model is served, and what context length did the server settle on?
-curl -s "${BASE_URL_DIRECT}/models" | python3 -m json.tool
+curl -s "${BASE_URL_DIRECT}/models" | jq
 
 # A minimal OpenAI-style chat completion. Note the request shape: model, messages[], sampling knobs.
 curl -s "${BASE_URL_DIRECT}/chat/completions" \
@@ -83,7 +83,7 @@ curl -s "${BASE_URL_DIRECT}/chat/completions" \
     "temperature": 0,
     "max_tokens": 120,
     "chat_template_kwargs": {"enable_thinking": false}
-  }' | python3 -m json.tool
+  }' | jq
 ```
 
 Point out in the response: `choices[0].message.content`, `finish_reason` (`stop` vs `length`),
