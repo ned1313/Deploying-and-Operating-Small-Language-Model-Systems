@@ -225,16 +225,16 @@ export MAX_MODEL_LEN=4096 MAX_NUM_SEQS=64 GPU_MEMORY_UTILIZATION=0.90
 podman compose logs -f vllm
 
 podman compose run --rm tools tools/screen_models.py --model "$SERVED" --extra-body "$EXTRA" \
-    --label tuned-baseline
+    --label tuned-baseline 
 
 podman compose run --rm tools tools/compare_screening.py \
     "results/screening-${SERVED}-baseline-*.json" "results/screening-${SERVED}-tuned-baseline-*.json"
 
 # Refresh the deployment record with the final arguments (serve.sh saved them)
 podman compose run --rm tools tools/smoke_test.py --model "$SERVED" --extra-body "$EXTRA" \
-    --hf-repo "$QWEN_REPO" --revision "$QWEN_REVISION" --quantization "$QWEN_QUANT_LABEL" \
-    --chat-template "tokenizer default" --reasoning-parser "$QWEN_REASONING_PARSER" \
-    --tool-call-parser "$QWEN_TOOL_PARSER" --serving-image "$VLLM_IMAGE" \
+    --hf-repo "$LLAMA_REPO" --revision "$LLAMA_REVISION" --quantization "$LLAMA_QUANT_LABEL" \
+    --chat-template "tokenizer default" --reasoning-parser "$LLAMA_REASONING_PARSER" \
+    --tool-call-parser "$LLAMA_TOOL_PARSER" --serving-image "$VLLM_IMAGE" \
     --serving-args "$(cat "$RESULTS_DIR/last-serving-args.txt")" \
     --notes "module 1 tuned baseline"
 ```
