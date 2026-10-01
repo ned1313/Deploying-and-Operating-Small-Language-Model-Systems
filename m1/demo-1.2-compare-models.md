@@ -104,18 +104,26 @@ kill $SAMPLER
 
 ---
 
-## 4. Swap to candidate 3: Granite-4.2-8B
+## 4. Swap to candidate 3: Mistral-Small-3.2-24B-Instruct
+
+Three times the parameters of the other two, but 4-bit (Intel AutoRound int4, about 15 GB of
+weights). Point out the smaller "GPU KV cache size" in the startup log: the same 24 GB card holds
+fewer concurrent tokens, which Demo 1.3 measures.
 
 ```bash
-./m1/serve.sh granite
+./m1/serve.sh mistral
 podman compose logs -f vllm
 
-./m1/tools/sample_vram.sh "$RESULTS_DIR/vram-${GRANITE_SERVED_NAME}.csv" & SAMPLER=$!
-podman compose run --rm tools tools/screen_models.py --model "$GRANITE_SERVED_NAME" \
-    --extra-body "$GRANITE_EXTRA_BODY" --label baseline \
-    --vram-log "/app/results/vram-${GRANITE_SERVED_NAME}.csv" --include-full-responses
+./m1/tools/sample_vram.sh "$RESULTS_DIR/vram-${MISTRAL_SERVED_NAME}.csv" & SAMPLER=$!
+podman compose run --rm tools tools/screen_models.py --model "$MISTRAL_SERVED_NAME" \
+    --extra-body "$MISTRAL_EXTRA_BODY" --label baseline \
+    --vram-log "/app/results/vram-${MISTRAL_SERVED_NAME}.csv" --include-full-responses
 kill $SAMPLER
 ```
+
+If startup fails because the image does not recognize the `auto-round` quantization method, or tool
+calls later come back as raw text, retry with `MISTRAL_TOKENIZER_MODE=auto ./m1/serve.sh mistral`
+or a newer `VLLM_IMAGE`.
 
 If a candidate fails to start (unsupported architecture, quantization, or parser name), that is a
 Demo 1.1-style compatibility result: record it in the comparison as "not loadable on this
@@ -153,7 +161,7 @@ Note the selection is provisional until module 2 confirms tool calling with the 
 
 ```bash
 # Put the chosen candidate back and leave it running for Demo 1.3
-./m1/serve.sh qwen        # or llama / granite
+./m1/serve.sh qwen        # or llama / mistral
 podman compose logs -f vllm
 ```
 
