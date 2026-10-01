@@ -50,16 +50,16 @@ export LLAMA_QUANT_LABEL="gptq-int8"
 export LLAMA_TOOL_PARSER="${LLAMA_TOOL_PARSER:-llama3_json}"
 export LLAMA_EXTRA_BODY='{}'
 
-# ----- candidate 3: Mistral-Small-3.2-24B-Instruct-2506 --------------------------------------------
-# Intel AutoRound int4 (group 128, GPTQ packing) runs on Ampere via Marlin; ~15 GB of weights, so less
-# KV-cache headroom than the 8B candidates. Multimodal checkpoint; image inputs are disabled below.
-export MISTRAL_REPO="${MISTRAL_REPO:-Intel/Mistral-Small-3.2-24B-Instruct-2506-int4-AutoRound}"
-export MISTRAL_REVISION="${MISTRAL_REVISION:-21907bf9a442ec05c91e059ef17b08a8b44983f5}"
-export MISTRAL_SERVED_NAME="mistral-small-3.2-24b"
-export MISTRAL_QUANT_LABEL="autoround-int4"
-export MISTRAL_TOKENIZER_MODE="${MISTRAL_TOKENIZER_MODE:-mistral}"   # set to auto to use the shipped chat_template.jinja
-export MISTRAL_TOOL_PARSER="${MISTRAL_TOOL_PARSER:-mistral}"
-export MISTRAL_EXTRA_BODY='{}'
+# ----- candidate 3: Ministral-3-8B-Instruct-2512 -----------------------------------------------------
+# FP8 weights (~10.4 GB). Ampere has no FP8 math, so vLLM serves it weight-only (W8A16) with Marlin
+# kernels. Mistral3ForConditionalGeneration (multimodal); image inputs are disabled in serve.sh.
+export MINISTRAL_REPO="${MINISTRAL_REPO:-unsloth/Ministral-3-8B-Instruct-2512-FP8}"
+export MINISTRAL_REVISION="${MINISTRAL_REVISION:-6fbffd209c5ad4784bd5a786c9f4fe63c4a1aed2}"
+export MINISTRAL_SERVED_NAME="ministral-3-8b"
+export MINISTRAL_QUANT_LABEL="fp8-w8a16-marlin"
+export MINISTRAL_TOKENIZER_MODE="${MINISTRAL_TOKENIZER_MODE:-mistral}"   # set to auto to use the shipped chat_template.jinja
+export MINISTRAL_TOOL_PARSER="${MINISTRAL_TOOL_PARSER:-mistral}"
+export MINISTRAL_EXTRA_BODY='{}'
 
 # Hugging Face token for gated repositories (Llama). Set it in your shell, never in this file.
 : "${HF_TOKEN:=}"
