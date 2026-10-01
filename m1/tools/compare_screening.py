@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from common import expand_globs, print_table
+from taco_shared.reporting import expand_globs, print_table
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -68,7 +68,7 @@ def main() -> int:
         ])
     print_table(headers, rows)
     print("\nscore = 0.35*schema + 0.25*grounded + 0.30*policy + 0.10*category (rates over scored scenarios).")
-    print("Screening only: 20 scenarios, single run, no tool use. Confirm tool calling in module 2 before finalizing.")
+    print("Screening only: 22 scenarios, single run, no tool use. Confirm tool calling in module 2 before finalizing.")
 
     if args.by_scenario:
         scenario_ids = sorted({row["scenario_id"] for r in results for row in r["rows"]})

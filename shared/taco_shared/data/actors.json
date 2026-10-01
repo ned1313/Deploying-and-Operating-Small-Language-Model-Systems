@@ -1,0 +1,8 @@
+{
+  "description": "Synthetic service representatives. store_ids is the trusted scope the application applies to every tool call.",
+  "actors": [
+    {"actor_id": "rep-kop-01", "role": "service_rep", "store_ids": ["KOP"]},
+    {"actor_id": "rep-wg-01", "role": "service_rep", "store_ids": ["WG"]},
+    {"actor_id": "rep-multi-01", "role": "service_rep", "store_ids": ["ALN", "CHL", "DOY", "KOP", "LAN", "NBR", "PHL", "PRN", "WAR", "WG"]}
+  ]
+}

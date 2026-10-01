@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "taco-shared"
+version = "0.2.0"
+description = "Shared code, data, and services for the Taco Alley SLM course modules."
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=1.50,<4",
+    "httpx>=0.27,<1",
+    "jsonschema>=4.20,<5",
+    "pydantic>=2.7,<3",
+]
+
+[project.optional-dependencies]
+agent = [
+    "langchain>=1.4,<2",
+    "langchain-core>=1.6,<2",
+    "langchain-openai>=1.6,<2",
+]
+service = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.30,<1",
+]
+dev = [
+    "pytest>=8,<10",
+]
+
+[tool.setuptools.packages.find]
+include = ["taco_shared*"]
+
+[tool.setuptools.package-data]
+taco_shared = ["data/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

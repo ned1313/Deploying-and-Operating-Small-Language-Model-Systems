@@ -1,0 +1,120 @@
+# Module 2 application project (desktop, or the GPU host for single-machine setups).
+#
+#   cp .env.example .env                          # then set INFERENCE_BASE_URL / INFERENCE_MODEL
+#   printf 'demo-key' > secrets/inference_api_key # placeholder; module 6 starts enforcing it
+#   podman-compose build
+#   podman-compose run --rm seed
+#   podman-compose up -d case-api
+#   podman-compose run --rm basic-agent --check
+#
+# The model server is NOT part of this project; it runs independently on the GPU host (module 1).
+
+name: taco-app
+
+x-agent-image: &agent-image
+  image: localhost/taco-m2-agent:latest
+  build:
+    context: ..
+    dockerfile: m2/Containerfile
+
+x-inference-env: &inference-env
+  INFERENCE_BASE_URL: ${INFERENCE_BASE_URL:?copy .env.example to .env and set INFERENCE_BASE_URL}
+  INFERENCE_MODEL: ${INFERENCE_MODEL:?set INFERENCE_MODEL in .env}
+  INFERENCE_TIMEOUT_SECONDS: ${INFERENCE_TIMEOUT_SECONDS:-120}
+  INFERENCE_EXTRA_BODY: ${INFERENCE_EXTRA_BODY:-}
+  INFERENCE_TOOL_CALLING: ${INFERENCE_TOOL_CALLING:-native}
+  INFERENCE_STRUCTURED_OUTPUT: ${INFERENCE_STRUCTURED_OUTPUT:-json_schema}
+  INFERENCE_API_KEY_FILE: /run/secrets/inference_api_key
+  AGENT_MAX_TOOL_CALLS: ${AGENT_MAX_TOOL_CALLS:-8}
+  AGENT_MAX_OUTPUT_TOKENS: ${AGENT_MAX_OUTPUT_TOKENS:-800}
+  TACO_POLICY_VERSION: ${TACO_POLICY_VERSION:-2026.09}
+  TACO_ACTOR: ${TACO_ACTOR:-rep-kop-01}
+  TACO_APP_DB: /data/app/taco_app.db
+  CASE_API_URL: http://case-api:8081
+  RESULTS_DIR: /app/results
+
+services:
+  case-api:
+    image: localhost/taco-case-api:latest
+    build:
+      context: ..
+      dockerfile: shared/services/mock_case_api/Containerfile
+    volumes:
+      - taco-case-data:/data/cases
+    ports:
+      - "127.0.0.1:${CASE_API_PORT:-8081}:8081"   # loopback only, for on-camera curl
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8081/healthz', timeout=2).status == 200 else 1)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  seed:
+    # One-shot: podman-compose run --rm seed [--reset]
+    <<: *agent-image
+    profiles: ["setup"]
+    entrypoint: ["python", "-m", "taco_shared.dataset.seed"]
+    command: []
+    environment:
+      TACO_APP_DB: /data/app/taco_app.db
+    volumes:
+      - taco-app-data:/data/app
+
+  basic-agent:
+    # One-shot teaching script: podman-compose run --rm basic-agent --mode tools --scenario A01
+    <<: *agent-image
+    profiles: ["demo"]
+    entrypoint: ["python", "examples/basic_agent.py"]
+    command: ["--check"]
+    environment: *inference-env
+    secrets:
+      - inference_api_key
+    volumes:
+      - taco-app-data:/data/app:ro   # read-only: the script never writes application state
+      - ${RESULTS_DIR:-./results}:/app/results
+
+  agent-eval:
+    # One-shot evaluation: podman-compose run --rm agent-eval --label agent-baseline
+    <<: *agent-image
+    profiles: ["demo"]
+    entrypoint: ["python", "eval/run_agent_scenarios.py"]
+    command: []
+    environment: *inference-env
+    secrets:
+      - inference_api_key
+    volumes:
+      - taco-app-data:/data/app:ro
+      - ${RESULTS_DIR:-./results}:/app/results
+
+  agent-compare:
+    # podman-compose run --rm agent-compare '/m1-results/screening-<model>-*.json' 'results/agent-<model>-*.json'
+    <<: *agent-image
+    profiles: ["demo"]
+    entrypoint: ["python", "eval/compare_agent_vs_screening.py"]
+    command: []
+    volumes:
+      - ${RESULTS_DIR:-./results}:/app/results:ro
+      - ${M1_RESULTS_DIR:-../m1/results}:/m1-results:ro
+
+  tests:
+    # podman-compose run --rm tests   (no network or GPU needed)
+    <<: *agent-image
+    profiles: ["test"]
+    entrypoint: ["sh", "-c"]
+    command: ["pytest -q -p no:cacheprovider /opt/shared/tests && pytest -q -p no:cacheprovider /app/tests"]
+    network_mode: none
+
+secrets:
+  inference_api_key:
+    file: ./secrets/inference_api_key
+
+volumes:
+  taco-app-data:
+    name: taco-app-data
+  taco-case-data:
+    name: taco-case-data
+
+networks:
+  default:
+    name: taco-app-private

@@ -24,22 +24,13 @@ import httpx
 from jsonschema import Draft202012Validator
 from openai import APIError, OpenAI
 
-from common import (
-    DEFAULT_POLICY,
-    DEFAULT_RESULTS_DIR,
-    DEFAULT_SCENARIOS,
-    DEFAULT_SCHEMA,
-    add_connection_arguments,
-    build_messages,
-    build_system_prompt,
-    describe_error,
-    fetch_metrics,
-    load_json,
-    metrics_url_from_base,
-    parse_extra_body,
-    parse_json_output,
-    safe_slug,
-)
+from taco_shared.cli import add_connection_arguments, parse_extra_body
+from taco_shared.errors import describe_error
+from taco_shared.jsonutil import parse_json_output
+from taco_shared.metrics import fetch_metrics, metrics_url_from_base
+from taco_shared.paths import DEFAULT_POLICY, DEFAULT_RESULTS_DIR, DEFAULT_SCENARIOS, DEFAULT_SCHEMA, load_json
+from taco_shared.reporting import safe_slug
+from taco_shared.screening import build_messages, build_system_prompt
 
 
 def parse_arguments() -> argparse.Namespace:

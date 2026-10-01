@@ -1,0 +1,136 @@
+{
+  "source": "taco_shared/data/source/taco_alley_customer_complaints.csv",
+  "source_sha256_lf": "68ec3b08e19070fb7eb32ddaad7bf66c2fef5b3247af14e73c2890c58c7996bf",
+  "dataset_seed": "taco-alley-2026.09",
+  "policy_version": "2026.09",
+  "screening_version": "screening-v2",
+  "agent_version": "agent-v1",
+  "rates": {
+    "filing_window": 0.03,
+    "prior_history": 0.2,
+    "already_compensated": 0.02,
+    "recovered_wrong_address": 0.4
+  },
+  "rows_read": 1000,
+  "rows_kept": 980,
+  "rows_dropped": 20,
+  "dropped": [
+    {
+      "source_row": 0,
+      "customer_id": "CUST-14165",
+      "reason": "future date '3050-06-15'"
+    },
+    {
+      "source_row": 1,
+      "customer_id": "CUST-87236",
+      "reason": "impossible date '2025-02-31'"
+    },
+    {
+      "source_row": 2,
+      "customer_id": "CUST-22676",
+      "reason": "future date '3050-06-15'"
+    },
+    {
+      "source_row": 3,
+      "customer_id": "CUST-91070",
+      "reason": "impossible date '2025-02-31'"
+    },
+    {
+      "source_row": 4,
+      "customer_id": "CUST-69429",
+      "reason": "future date '3050-06-15'"
+    },
+    {
+      "source_row": 5,
+      "customer_id": "CUST-59735",
+      "reason": "impossible date '2025-02-31'"
+    },
+    {
+      "source_row": 6,
+      "customer_id": "CUST-37653",
+      "reason": "future date '3050-06-15'"
+    },
+    {
+      "source_row": 7,
+      "customer_id": "CUST-28301",
+      "reason": "impossible date '2025-02-31'"
+    },
+    {
+      "source_row": 21,
+      "customer_id": "CUST-17492",
+      "reason": "empty message"
+    },
+    {
+      "source_row": 22,
+      "customer_id": "CUST-40828",
+      "reason": "empty message"
+    },
+    {
+      "source_row": 23,
+      "customer_id": "CUST-36772",
+      "reason": "empty message"
+    },
+    {
+      "source_row": 24,
+      "customer_id": "CUST-83792",
+      "reason": "empty message"
+    },
+    {
+      "source_row": 25,
+      "customer_id": "CUST-12A45",
+      "reason": "malformed customer_id 'CUST-12A45'"
+    },
+    {
+      "source_row": 26,
+      "customer_id": "CUST12345",
+      "reason": "malformed customer_id 'CUST12345'"
+    },
+    {
+      "source_row": 27,
+      "customer_id": "cust-54321",
+      "reason": "malformed customer_id 'cust-54321'"
+    },
+    {
+      "source_row": 28,
+      "customer_id": "CUST-1234",
+      "reason": "malformed customer_id 'CUST-1234'"
+    },
+    {
+      "source_row": 29,
+      "customer_id": "CLIENT-99999",
+      "reason": "malformed customer_id 'CLIENT-99999'"
+    },
+    {
+      "source_row": 30,
+      "customer_id": "CUST-ABCDE",
+      "reason": "malformed customer_id 'CUST-ABCDE'"
+    },
+    {
+      "source_row": 31,
+      "customer_id": "CUST--12345",
+      "reason": "malformed customer_id 'CUST--12345'"
+    },
+    {
+      "source_row": 32,
+      "customer_id": "BROKEN-ID",
+      "reason": "malformed customer_id 'BROKEN-ID'"
+    }
+  ],
+  "label_status_counts": {
+    "ambiguous": 133,
+    "labeled": 841,
+    "multi_outcome": 6
+  },
+  "ambiguous_by_sub_category": {
+    "Customization ignored": 71,
+    "Damaged/spilled": 18,
+    "Incorrect preparation": 18,
+    "Portion size": 15,
+    "Stale ingredients": 11
+  },
+  "curated_scenarios": 24,
+  "screening_scenarios": 22,
+  "agent_scenarios": 24,
+  "orders": 980,
+  "prior_resolutions": 414
+}

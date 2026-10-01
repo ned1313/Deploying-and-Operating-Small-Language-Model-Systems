@@ -1,5 +1,13 @@
 __pycache__/
 *.pyc
 .venv/
+*.egg-info/
+build/
+planning.md
+m2/.env
+m2/secrets/*
+!m2/secrets/README.md
 
 Outline.md
+planning.md
+implementation_status.md

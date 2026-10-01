@@ -20,24 +20,12 @@ from typing import Any
 
 from openai import APIError, AsyncOpenAI
 
-from common import (
-    DEFAULT_POLICY,
-    DEFAULT_RESULTS_DIR,
-    DEFAULT_SCENARIOS,
-    DEFAULT_SCHEMA,
-    add_connection_arguments,
-    build_messages,
-    build_system_prompt,
-    describe_error,
-    fetch_metrics,
-    load_json,
-    metrics_url_from_base,
-    parse_extra_body,
-    print_table,
-    safe_slug,
-    summarize_latency,
-    timestamp_slug,
-)
+from taco_shared.cli import add_connection_arguments, parse_extra_body
+from taco_shared.errors import describe_error
+from taco_shared.metrics import fetch_metrics, metrics_url_from_base
+from taco_shared.paths import DEFAULT_POLICY, DEFAULT_RESULTS_DIR, DEFAULT_SCENARIOS, DEFAULT_SCHEMA, load_json
+from taco_shared.reporting import print_table, safe_slug, summarize_latency, timestamp_slug
+from taco_shared.screening import build_messages, build_system_prompt
 
 # Filler paragraph appended to the user prompt to pad context; ~55 tokens per repetition.
 FILLER = (

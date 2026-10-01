@@ -1,0 +1,14 @@
+{
+  "stores": [
+    {"store_id": "ALN", "name": "Allentown", "location": "Allentown, PA", "state": "PA", "tax_rate": 0.06},
+    {"store_id": "CHL", "name": "Cherry Hill", "location": "Cherry Hill, NJ", "state": "NJ", "tax_rate": 0.06625},
+    {"store_id": "DOY", "name": "Doylestown", "location": "Doylestown, PA", "state": "PA", "tax_rate": 0.06},
+    {"store_id": "KOP", "name": "King of Prussia", "location": "King of Prussia, PA", "state": "PA", "tax_rate": 0.06},
+    {"store_id": "LAN", "name": "Lansdale", "location": "Lansdale, PA", "state": "PA", "tax_rate": 0.06},
+    {"store_id": "NBR", "name": "New Britain", "location": "New Britain, PA", "state": "PA", "tax_rate": 0.06},
+    {"store_id": "PHL", "name": "Philadelphia", "location": "Philadelphia, PA", "state": "PA", "tax_rate": 0.08},
+    {"store_id": "PRN", "name": "Princeton", "location": "Princeton, NJ", "state": "NJ", "tax_rate": 0.06625},
+    {"store_id": "WAR", "name": "Warrington", "location": "Warrington, PA", "state": "PA", "tax_rate": 0.06},
+    {"store_id": "WG", "name": "Willow Grove", "location": "Willow Grove, PA", "state": "PA", "tax_rate": 0.06}
+  ]
+}

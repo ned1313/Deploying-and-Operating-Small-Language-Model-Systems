@@ -1,0 +1,24 @@
+Taco Alley Complaint Resolution Policy, version 2026.09 (synthetic, for course demonstrations)
+
+Definitions
+- "Order total" is the total field on the order record (subtotal + tax + delivery fee).
+- "Item price" is quantity multiplied by unit price for that line on the order record.
+- "Late" is measured from the promised_delivery_time to the actual_delivery_time on the order record.
+- "Monetary resolution" means store_credit, partial_refund, or full_refund with a refund_amount greater than 0.
+- "Recent resolutions" are entries in the prior resolutions list dated within the 90 days before the complaint date.
+
+Rules
+R1  Missing items. If the customer reports an item as missing and the item appears on the order record, propose partial_refund equal to the item price of the missing quantity. If every item on the order is missing, treat the complaint as order_not_received (R4). If the item the customer names does not appear on the order record, propose no_action, cite R1, and explain that the item was not part of the order.
+R2  Wrong item. If the customer received a different item than ordered, propose either replacement (refund_amount 0) or partial_refund equal to the item price of the item that was wrong. Cite R2.
+R3  Late delivery. Less than 15 minutes late: apology_only. 15 to 30 minutes late: store_credit of 5.00. More than 30 minutes late: store_credit of 20 percent of the order total, rounded to the nearest cent, with a maximum of 15.00. Cite R3.
+R4  Order not received. If the customer never received the order, propose full_refund of the order total. Cite R4.
+R5  Wrong address. If the courier delivered to the wrong address and the customer did not receive the order, propose full_refund of the order total and cite R5. If the customer eventually recovered the order, treat it as a late delivery under R3 instead.
+R6  Food quality. For cold, stale, incorrectly prepared, or otherwise poor-quality food with no safety concern, propose either replacement (refund_amount 0) or partial_refund equal to the item price of the affected items. Cite R6.
+R7  Food safety. For foreign objects, undercooked meat, allergen exposure, or reported illness, propose escalate_to_manager with refund_amount 0 and requires_human_approval true. Do not propose a refund amount; the manager decides. Cite R7.
+R8  Cleanliness and staff conduct. For complaints about the dining area, restrooms, or employee behavior that do not involve an order defect, propose apology_only with refund_amount 0 and log the complaint for the store manager. Cite R8.
+R9  Approval threshold. Any monetary resolution greater than 25.00 requires requires_human_approval true. Cite R9 in addition to the rule that set the amount.
+R10 Repeat resolutions. If the customer has 2 or more recent resolutions, any monetary resolution requires requires_human_approval true. The customer remains eligible for the resolution. Cite R10 in addition to the rule that set the amount.
+R11 Limits. refund_amount may never exceed the order total. affected_items must be item names copied exactly from the order record. Refunds go to the original payment method; store credit is used only where a rule specifies it.
+R12 Filing window. If the complaint date is more than 14 days after the order date, the complaint is not eligible for a monetary resolution. Propose apology_only with refund_amount 0 and cite R12, unless R7 applies, in which case escalate.
+
+Unless a rule says otherwise, requires_human_approval is false.

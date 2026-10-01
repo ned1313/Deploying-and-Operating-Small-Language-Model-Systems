@@ -7,7 +7,7 @@ project ([compose.yaml](compose.yaml)).
 | Demo | File | Outcome |
 | --- | --- | --- |
 | 1.1 | [demo-1.1-deploy-and-validate.md](demo-1.1-deploy-and-validate.md) | vLLM serving a quantized candidate behind nginx, validated with `smoke_test.py`, deployment record written |
-| 1.2 | [demo-1.2-compare-models.md](demo-1.2-compare-models.md) | 20-scenario screening of Qwen, Llama, and Granite with `screen_models.py`; comparison table; model selected |
+| 1.2 | [demo-1.2-compare-models.md](demo-1.2-compare-models.md) | 22-scenario screening of Qwen, Llama, and Granite with `screen_models.py`; comparison table; model selected |
 | 1.3 | [demo-1.3-tune-under-load.md](demo-1.3-tune-under-load.md) | Concurrency sweeps with `load_sweep.py`, memory-pressure and OOM cases, tuned baseline confirmed |
 
 ## Layout
@@ -18,13 +18,8 @@ m1/
   env.sh                    host settings, image tags, COMPOSE_FILE, and the three candidate definitions (edit before recording)
   serve.sh                  build VLLM_ARGS for a candidate and `podman compose up -d --force-recreate vllm`
   gateway/nginx.conf        unauthenticated reverse proxy on :8080 -> fixed vllm upstream address (module 6 hardens it)
-  scenarios/
-    screening_scenarios.json  20 synthetic complaints with order, prior-resolution facts, and expected outcomes
-    policy.txt                resolution policy inlined into the system prompt (rules R1-R12)
-    proposal_schema.json      required JSON output schema
   tools/
-    Containerfile, requirements.txt   tools image (python:3.12-slim + openai + jsonschema), built by `podman compose build tools`
-    common.py                 prompt construction, JSON parsing, /metrics scraping, shared CLI flags
+    Containerfile             tools image (python:3.12-slim + the shared package), built from the repository root
     smoke_test.py             Demo 1.1 endpoint validation + deployment record
     screen_models.py          Demo 1.2 screening with schema/grounding/policy grading
     compare_screening.py      Demo 1.2 side-by-side table and per-scenario pass/fail grid
@@ -32,6 +27,17 @@ m1/
     compare_load.py           Demo 1.3 side-by-side table of load sweeps plus a CSV export of every field
     sample_vram.sh            host-side nvidia-smi sampler; feeds --vram-log for peak VRAM
   results/                  generated JSON/CSV output (git-ignored)
+```
+
+Scenarios, policy, schema, grading, and the shared helpers live in [`shared/`](../shared/README.md)
+because module 2 uses the same ones:
+
+```
+shared/taco_shared/
+  screening.py, grading.py, cli.py, ...           prompt construction, grading, connection flags, /metrics scraping
+  data/policy/2026.09.txt                         resolution policy inlined into the system prompt (rules R1-R14)
+  data/schemas/proposal.v1.json                   required JSON output schema
+  data/generated/screening_scenarios.json         22 synthetic complaints with order, prior-resolution facts, and expected outcomes
 ```
 
 ## One-time setup on the GPU host
@@ -71,16 +77,16 @@ podman compose run --rm tools tools/<script>.py ...
 # From the desktop, through the LAN (same compose file; only the tools service is used)
 BASE_URL=http://<MODEL_HOST>:8080/v1 podman compose run --rm tools tools/<script>.py ...
 
-# Without containers (any machine with Python 3.10+)
-pip install -r m1/tools/requirements.txt
-python m1/tools/<script>.py --base-url http://<MODEL_HOST>:8080/v1 ...
+# Without containers (any machine with Python 3.12+)
+pip install -r shared/requirements/core.txt && pip install --no-deps ./shared
+cd m1 && python tools/<script>.py --base-url http://<MODEL_HOST>:8080/v1 ...
 ```
 
 ## What the screening grades
 
 `screen_models.py` scores each scenario on four independent checks and reports the rate of each:
 
-- **schema_valid**: strict JSON that validates against `proposal_schema.json` (with
+- **schema_valid**: strict JSON that validates against `proposal.v1.json` (with
   `--structured-output none` this measures the model; with `json_schema` it measures the backend).
 - **grounded**: `order_id` matches, `affected_items` are names from the order record, the refund is
   within the order total, and the affected items match the expected set.

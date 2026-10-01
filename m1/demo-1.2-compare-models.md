@@ -1,11 +1,11 @@
 # Demo 1.2: Compare the three model candidates
 
-Goal: run the same 20 Taco Alley complaints, with order, prior-resolution, and policy facts inlined
+Goal: run the same 22 Taco Alley complaints, with order, prior-resolution, and policy facts inlined
 in the prompt, against each candidate. Grade schema validity, factual grounding, policy compliance,
 latency, token use, and peak VRAM. Pick one model to carry into the tuning demo.
 
 Not graded here: tool selection or tool arguments. That is module 2, using the same scenarios.
-This is a screening pass (20 prompts, one run each), not a production benchmark.
+This is a screening pass (22 prompts, one run each), not a production benchmark.
 
 Prerequisites: Demo 1.1 state (`gateway` running, tools image built, `source m1/env.sh`).
 
@@ -14,29 +14,32 @@ Prerequisites: Demo 1.1 state (`gateway` running, tools image built, `source m1/
 ## 1. Look at what the model is being asked to do
 
 ```bash
-# Twenty scenarios, each with the order record, prior resolutions, and expected outcome
+# Twenty-two scenarios, each with the order record, prior resolutions, and expected outcome.
+# They are generated from the complaint CSV by shared/taco_shared/dataset/build.py (module 2 reuses them).
 python3 -c '
-import json; d=json.load(open("m1/scenarios/screening_scenarios.json"))
+import json; d=json.load(open("shared/taco_shared/data/generated/screening_scenarios.json"))
 for s in d["scenarios"]: print(s["scenario_id"], s["label"].ljust(36), s["expected"]["resolution_type"], s["expected"]["refund_amount"])'
 
 # The policy the model must apply (inlined into the system prompt)
-cat m1/scenarios/policy.txt
+cat shared/taco_shared/data/policy/2026.09.txt
 
 # The required output schema
-python3 -m json.tool m1/scenarios/proposal_schema.json | head -40
+python3 -m json.tool shared/taco_shared/data/schemas/proposal.v1.json | head -40
 
 # One full prompt as the model sees it
 podman compose run --rm tools -c '
-import sys; sys.path.insert(0, "tools")
-from common import *
+from taco_shared.paths import DEFAULT_POLICY, DEFAULT_SCENARIOS, DEFAULT_SCHEMA, load_json
+from taco_shared.screening import build_system_prompt, build_user_prompt
 s = load_json(DEFAULT_SCENARIOS)["scenarios"][12]           # S13: wrong address, recovered late
 print(build_system_prompt(DEFAULT_POLICY.read_text(), load_json(DEFAULT_SCHEMA))[:1200], "...\n")
 print(build_user_prompt(s))'
 ```
 
 Worth pointing out: S04 asks for a refund on an item that is not on the order (grounding trap),
-S13 needs R5-then-R3 reasoning, S20 is outside the 14-day window, S02/S03/S11 test the approval
-flags. Every fact needed is in the prompt, so a miss is a reasoning or compliance miss.
+S06 is exactly 30 minutes late (the 15-to-30 bucket is inclusive), S13 needs R5-then-R3 reasoning,
+S20 is outside the 14-day window, S02/S03/S11 test the approval flags, S21 is a billing complaint
+the policy does not cover (R14: escalate), and S22 was already refunded for the same order (R13).
+Every fact needed is in the prompt, so a miss is a reasoning or compliance miss.
 
 ---
 
@@ -139,7 +142,7 @@ Columns to discuss:
 | `peak VRAM` | weights + KV-cache preallocation + runtime overhead at these serving settings |
 
 The per-scenario grid shows *where* each model fails (S=schema, G=grounding, P=policy, C=category),
-which matters more than the aggregate at n=20.
+which matters more than the aggregate at n=22.
 
 ---
 

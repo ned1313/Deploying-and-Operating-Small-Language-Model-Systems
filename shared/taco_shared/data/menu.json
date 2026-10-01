@@ -1,0 +1,24 @@
+{
+  "description": "Synthetic Taco Alley menu. Prices are per unit in USD. Aliases are lower-case phrases matched in complaint messages (longest first).",
+  "items": [
+    {"name": "Carnitas Taco", "unit_price": 4.25, "aliases": ["carnitas tacos", "carnitas taco"], "meat": true},
+    {"name": "Chicken Taco", "unit_price": 3.95, "aliases": ["chicken tacos", "chicken taco"], "meat": true},
+    {"name": "Fish Taco", "unit_price": 4.50, "aliases": ["fish tacos", "fish taco"], "meat": true},
+    {"name": "Steak Burrito", "unit_price": 11.50, "aliases": ["steak burrito"], "meat": true},
+    {"name": "Breakfast Burrito", "unit_price": 8.95, "aliases": ["breakfast burrito"], "meat": true},
+    {"name": "Chicken Burrito", "unit_price": 10.50, "aliases": ["chicken burrito"], "meat": true},
+    {"name": "Quesadilla", "unit_price": 8.75, "aliases": ["quesadilla"]},
+    {"name": "Nachos Grande", "unit_price": 9.75, "aliases": ["nachos"]},
+    {"name": "Taco Salad", "unit_price": 10.25, "aliases": ["taco salad"]},
+    {"name": "Rice Bowl", "unit_price": 10.95, "aliases": ["rice bowl"]},
+    {"name": "Chips and Queso", "unit_price": 5.95, "aliases": ["chips and queso"]},
+    {"name": "Chips and Guacamole", "unit_price": 6.50, "aliases": ["guacamole"]},
+    {"name": "Chips and Salsa", "unit_price": 3.50, "aliases": ["salsa container"]},
+    {"name": "Street Corn", "unit_price": 4.95, "aliases": ["street corn"]},
+    {"name": "Churros", "unit_price": 4.50, "aliases": ["churros"]},
+    {"name": "Horchata", "unit_price": 3.25, "aliases": []},
+    {"name": "Mexican Coke", "unit_price": 2.75, "aliases": []},
+    {"name": "Taco Family Pack", "unit_price": 32.00, "aliases": [], "meat": true}
+  ],
+  "customization_prefixes": ["extra ", "no ", "mild "]
+}

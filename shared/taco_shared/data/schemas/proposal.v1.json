@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TacoAlleyResolutionProposal",
+  "type": "object",
+  "properties": {
+    "order_id": {
+      "type": "string",
+      "description": "The order_id from the provided order record."
+    },
+    "complaint_category": {
+      "type": "string",
+      "enum": [
+        "missing_items",
+        "wrong_item",
+        "late_delivery",
+        "order_not_received",
+        "wrong_address",
+        "food_quality",
+        "food_safety",
+        "cleanliness",
+        "staff_conduct",
+        "other"
+      ]
+    },
+    "resolution_type": {
+      "type": "string",
+      "enum": [
+        "no_action",
+        "apology_only",
+        "store_credit",
+        "partial_refund",
+        "full_refund",
+        "replacement",
+        "refer_to_delivery_partner",
+        "escalate_to_manager"
+      ]
+    },
+    "refund_amount": {
+      "type": "number",
+      "minimum": 0,
+      "description": "USD value of the refund or store credit. 0 for non-monetary resolutions."
+    },
+    "affected_items": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Item names copied exactly from the order record. Empty if no specific item is affected."
+    },
+    "policy_rule_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "R11", "R12", "R13", "R14"]
+      },
+      "description": "Policy rule ids that justify the resolution."
+    },
+    "requires_human_approval": { "type": "boolean" },
+    "customer_message": {
+      "type": "string",
+      "maxLength": 600,
+      "description": "Short message to the customer explaining the resolution."
+    },
+    "justification": {
+      "type": "string",
+      "maxLength": 400,
+      "description": "Internal one- or two-sentence explanation citing the facts used."
+    }
+  },
+  "required": [
+    "order_id",
+    "complaint_category",
+    "resolution_type",
+    "refund_amount",
+    "affected_items",
+    "policy_rule_ids",
+    "requires_human_approval",
+    "customer_message",
+    "justification"
+  ],
+  "additionalProperties": false
+}

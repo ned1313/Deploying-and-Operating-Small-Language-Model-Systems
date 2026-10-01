@@ -1,0 +1,3902 @@
+[
+  {
+    "customer_id": "CUST-10178",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-10463",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-10484",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-10547",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-10568",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-10659",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-10667",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-10716",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-10780",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-10895",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-10947",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-11052",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-11059",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-11092",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-11109",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-11238",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-11255",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-11317",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-11388",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-11469",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-11567",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-11731",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-11958",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-11990",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-12213",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-12263",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-12279",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-12313",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-12371",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-12727",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-12758",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-12872",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-13027",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-13219",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-13251",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-13325",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-13390",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-13515",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-13667",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-13847",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-13873",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-13890",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-14117",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-14159",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-14277",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-14635",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-14696",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-14705",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-14791",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-14877",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-14903",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-15136",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-15175",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-15535",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-15697",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-15723",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-15741",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-15768",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-15997",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-16047",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-16157",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-16255",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-16265",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-16286",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-16536",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-16564",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-16705",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-16764",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-16839",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-16875",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-17051",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-17113",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-17266",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-17329",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-17424",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-17502",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-17603",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-17641",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-17730",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-17754",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-17784",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-17872",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-17897",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-18151",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-18250",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-18256",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-18523",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-18739",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-18855",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-18891",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-18906",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-18993",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-19038",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-19103",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-19123",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-19171",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-19248",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-19275",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-19403",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-19661",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-19694",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-19812",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-19869",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-20011",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-20013",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-20052",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-20089",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-20151",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-20208",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-20350",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-20357",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-20494",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-20611",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-20625",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-20696",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-20752",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-20937",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-21115",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-21136",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-21415",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-21452",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-21829",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-21835",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-21836",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-21915",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-21919",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-21953",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-22098",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-22121",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-22160",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-22203",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-22217",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-22315",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-22418",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-22699",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-22795",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-23124",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-23205",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-23224",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-23272",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-23466",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-23606",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-23645",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-23710",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-23751",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-23875",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-23894",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-23917",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-23922",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-24139",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-24239",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-24539",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-24563",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-24643",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-24733",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-24833",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-24860",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-24890",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-25075",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-25163",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-25167",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-25203",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-25264",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-25324",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-25376",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-25380",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-25381",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-25465",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-25806",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-25891",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-25966",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-26118",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-26187",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-26199",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-26260",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-26401",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-26414",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-26512",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-26539",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-26558",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-26721",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-26827",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-27329",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-27474",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-27536",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-27643",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-27878",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-27888",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-27984",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-28018",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-28139",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-28242",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-28408",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-28550",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-28568",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-28660",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-28661",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-28714",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-28777",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-28844",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-28953",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-28964",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-28985",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-29025",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-29048",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-29078",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-29194",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-29313",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-29323",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-29346",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-29391",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-29424",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-29432",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-29480",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-29481",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-29482",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-29669",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-29670",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-29742",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-29974",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-30006",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-30070",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-30144",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-30147",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-30253",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-30287",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-30290",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-30332",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-30582",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-30625",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-30636",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-30932",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-30940",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-30975",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-31061",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-31108",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-31237",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-31245",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-31344",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-31409",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-31465",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-32103",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-32241",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-32338",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-32645",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-32768",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-32779",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-32789",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-32871",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-32954",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-32972",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-33078",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-33283",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-33363",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-33394",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-33568",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-33580",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-33628",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-33670",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-33777",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-33839",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-33878",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-34149",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-34596",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-34635",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-34662",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-34672",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-35106",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-35127",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-35237",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-35295",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-35330",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-35430",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-35496",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-35499",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-35571",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-35612",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-35703",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-35891",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-35919",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-36013",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-36100",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-36462",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-36467",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-36651",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-36680",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-36772",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-36789",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-36887",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-36896",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-36922",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-36945",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-36972",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-37063",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-37122",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-37235",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-37359",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-37424",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-37462",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-37508",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-37529",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-37549",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-37605",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-37707",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-37745",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-37925",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-37964",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-38020",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-38063",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-38074",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-38157",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-38329",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-38477",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-38869",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-38879",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-38919",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-38922",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-38986",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-39038",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-39064",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-39135",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-39145",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-39156",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-39188",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-39333",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-39401",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-39437",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-39451",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-39523",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-39536",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-39552",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-39603",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-39949",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-40169",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-40279",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-40427",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-40613",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-40945",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-40947",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-40972",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-40982",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-41031",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-41056",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-41599",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-41795",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-41856",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-41890",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-42177",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-42264",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-42321",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-42406",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-42426",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-42536",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-42576",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-42737",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-42778",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-43162",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-43419",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-43444",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-43491",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-43823",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-43862",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-43913",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-43954",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-44116",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-44229",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-44237",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-44314",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-44413",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-44522",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-44578",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-44737",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-44761",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-44782",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-44787",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-44803",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-45056",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-45247",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-45296",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-45358",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-45382",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-45477",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-45645",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-45755",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-45774",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-45815",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-45903",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-45916",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-45918",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-46002",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-46010",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-46188",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-46208",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-46226",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-46352",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-46406",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-46418",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-46497",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-46587",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-46659",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-46709",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-46715",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-46885",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-46989",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-47083",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-47304",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-47618",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-47745",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-47762",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-47767",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-47782",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-47808",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-47831",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-48086",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-48185",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-48188",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-48254",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-48362",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-48602",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-48696",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-48745",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-48986",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-49013",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-49124",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-49223",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-49229",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-49251",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-49252",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-49258",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-49294",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-49596",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-49666",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-49789",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-49834",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-49874",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-49935",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-49953",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-50107",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-50345",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-50412",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-50730",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-50812",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-50871",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-51048",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-51124",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-51193",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-51399",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-51446",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-51515",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-51552",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-51599",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-51662",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-51971",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-52094",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-52147",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-52343",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-52477",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-52495",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-52523",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-52567",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-52725",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-52840",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-53160",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-53193",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-53426",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-53449",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-53743",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-53842",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-53970",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-53975",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-53997",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-54020",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-54175",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-54520",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-54560",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-54572",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-54681",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-54688",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-54914",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-54932",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-54939",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-55227",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-55249",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-55351",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-55523",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-55698",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-55870",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-56168",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-56179",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-56210",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-56385",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-56562",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-56659",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-56725",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-56810",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-57118",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-57265",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-57416",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-57624",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-57683",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-58148",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-58319",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-58353",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-58449",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-58466",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-58867",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-58887",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-59054",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-59278",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-59327",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-59509",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-59510",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-59613",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-59844",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-59856",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-59894",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-59899",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-59998",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-60012",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-60132",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-60165",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-60265",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-60272",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-60324",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-60328",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-60335",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-60343",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-60738",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-60871",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-60934",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-61061",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-61131",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-61248",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-61292",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-61491",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-61502",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-61508",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-61546",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-61662",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-61748",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-61853",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-62034",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-62082",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-62100",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-62171",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-62183",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-62334",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-62386",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-62421",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-62502",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-62513",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-62535",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-62610",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-62694",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-62757",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-62976",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-62990",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-63090",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-63296",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-63382",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-63424",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-63558",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-63636",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-63665",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-63707",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-63907",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-63948",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-64053",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-64057",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-64162",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-64209",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-64232",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-64266",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-64269",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-64325",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-64328",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-64346",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-64396",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-64590",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-64747",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-64819",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-64919",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-65057",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-65212",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-65270",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-65291",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-65372",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-65389",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-65567",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-65572",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-65615",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-65725",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-65816",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-65838",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-65982",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-66055",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-66068",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-66314",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-66418",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-66479",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-66485",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-66616",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-66917",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-67080",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-67127",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-67164",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-67261",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-67325",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-67333",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-67342",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-67377",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-67464",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-67577",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-67708",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-67729",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-67732",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-67733",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-67779",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-67947",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-67963",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-68008",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-68220",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-68341",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-68427",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-68529",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-68619",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-68654",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-69388",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-69405",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-69454",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-69473",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-69558",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-69591",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-69600",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-69638",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-69839",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-69910",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-70014",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-70076",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-70314",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-70404",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-70570",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-70577",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-70610",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-70637",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-70810",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-70846",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-70875",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-70960",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-71171",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-71393",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-71433",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-71487",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-71503",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-71537",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-71592",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-71706",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-71993",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-72018",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-72021",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-72070",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-72118",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-72204",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-72240",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-72242",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-72341",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-72391",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-72406",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-72419",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-72469",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-72784",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-73068",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-73115",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-73176",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-73185",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-73191",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-73234",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-73246",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-73373",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-73464",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-73891",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-73941",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-73968",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-73979",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-74004",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-74038",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-74044",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-74157",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-74175",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-74178",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-74260",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-74283",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-74349",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-74350",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-74437",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-74494",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-74613",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-74713",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-74771",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-74840",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-74921",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-75191",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-75390",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-75521",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-75543",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-75700",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-75991",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-76088",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-76341",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-76366",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-76616",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-76692",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-76995",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-77033",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-77171",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-77212",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-77264",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-77653",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-77740",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-77796",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-77889",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-78021",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-78113",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-78114",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-78387",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-78719",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-78731",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-78852",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-78982",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-79391",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-79523",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-79603",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-79637",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-79722",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-79887",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-79932",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-80010",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-80092",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-80244",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-80381",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-80458",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-80517",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-80571",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-80697",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-80701",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-80742",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-80852",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-80855",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-80932",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-80972",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-81098",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-81258",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-81319",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-81376",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-81819",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-81939",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-81989",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-81994",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-82260",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-82450",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-82487",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-82512",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-82562",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-82667",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-83071",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-83342",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-83351",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-83512",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-83526",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-83584",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-83608",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-83772",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-83889",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-83946",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-83956",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-84107",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-84199",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-84289",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-84336",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-84349",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-84364",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-84487",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-84636",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-84698",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-84720",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-84760",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-84766",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-84887",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-85101",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-85166",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-85231",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-85255",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-85372",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-85399",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-85456",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-85465",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-85513",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-85598",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-85617",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-85684",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-85740",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-85748",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-85750",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-85877",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-86037",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-86064",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-86177",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-86304",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-86380",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-86541",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-86550",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-86585",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-86640",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-86751",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-86830",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-86917",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-86943",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-87183",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-87251",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-87356",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-87430",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-87436",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-87459",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-87469",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-87489",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-87580",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-87743",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-87826",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-88059",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-88128",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-88139",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-88301",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-88317",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-88618",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-88732",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-88804",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-88855",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-89084",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-89116",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-89140",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-89174",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-89225",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-89269",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-89391",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-89478",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-89507",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-89511",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-89556",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-89621",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-89920",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-90031",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-90147",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-90149",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-90213",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-90314",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-90356",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-90495",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-91006",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-91051",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-91185",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-91235",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-91293",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-91360",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-91522",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-91625",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-91689",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-91810",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-92009",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-92074",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-92213",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-92388",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-92660",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-92863",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-92864",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-93000",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-93032",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-93071",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-93160",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-93320",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-93354",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-93387",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-93498",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-93521",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-93584",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-93614",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-93627",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-93648",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-93674",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-93692",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-93705",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-93717",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-93719",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-93780",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-93824",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-93904",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-94030",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-94058",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-94343",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-94392",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-94393",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-94473",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-94540",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-94554",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-94559",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-94585",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-94663",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-94671",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-94696",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-94707",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-94843",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-94853",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-94922",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-94930",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-94972",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-95397",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-95550",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-95615",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-95715",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-95729",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-95799",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-95824",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-95979",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-96099",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-96108",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-96184",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-96334",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-96356",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-96406",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-96556",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-96560",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-96563",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-96670",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-96736",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-96761",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-96805",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-96969",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-96997",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-97097",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-97194",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-97274",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-97282",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-97382",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-97392",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-97404",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-97551",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-97562",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-97586",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-97771",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-97797",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-97897",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-97932",
+    "home_store_id": "PRN"
+  },
+  {
+    "customer_id": "CUST-97994",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-98027",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-98029",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-98181",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-98432",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-98487",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-98511",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-98562",
+    "home_store_id": "WAR"
+  },
+  {
+    "customer_id": "CUST-98575",
+    "home_store_id": "DOY"
+  },
+  {
+    "customer_id": "CUST-98643",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-98918",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-98940",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-99224",
+    "home_store_id": "LAN"
+  },
+  {
+    "customer_id": "CUST-99318",
+    "home_store_id": "NBR"
+  },
+  {
+    "customer_id": "CUST-99551",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-99742",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-99762",
+    "home_store_id": "ALN"
+  },
+  {
+    "customer_id": "CUST-99764",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-99824",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-99848",
+    "home_store_id": "KOP"
+  },
+  {
+    "customer_id": "CUST-99883",
+    "home_store_id": "PHL"
+  },
+  {
+    "customer_id": "CUST-99899",
+    "home_store_id": "WG"
+  },
+  {
+    "customer_id": "CUST-99908",
+    "home_store_id": "CHL"
+  },
+  {
+    "customer_id": "CUST-99959",
+    "home_store_id": "WAR"
+  }
+]

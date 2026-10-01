@@ -4,6 +4,15 @@ These are the exercise files meant to accompany my Pluralsight course of the sam
 
 ## Repository Structure
 
+| Folder | Contents |
+| --- | --- |
+| [shared/](shared/README.md) | Code, data, and services used by more than one module: the `taco_shared` Python package, the complaint dataset and its generated orders and scenarios, the resolution policy, proposal schemas, and the mock case-management API |
+| [m1/](m1/README.md) | Module 1: serve a quantized model with vLLM behind an nginx gateway, screen three candidates, and tune serving under load |
+| [m2/](m2/README.md) | Module 2: a LangChain agent with typed tools that investigates a complaint and produces a validated, structured resolution proposal |
+
+Each module folder has its own compose file, runbooks (`demo-*.md`), and a git-ignored `results/` directory.
+[ARCHITECTURE.md](ARCHITECTURE.md) shows how the system evolves from module to module.
+
 ## Course Prerequisites
 
 The course assumes that you have access to a system that can run the following:

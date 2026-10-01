@@ -52,8 +52,8 @@ services:
     # Disposable evaluation/load client. Use `podman compose run --rm tools <script> [args]`.
     image: localhost/taco-m1-tools:latest
     build:
-      context: .
-      dockerfile: tools/Containerfile
+      context: ..
+      dockerfile: m1/tools/Containerfile
     volumes:
       - ${RESULTS_DIR:-./results}:/app/results
     environment:

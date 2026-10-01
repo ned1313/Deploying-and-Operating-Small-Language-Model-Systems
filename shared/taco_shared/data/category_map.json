@@ -1,0 +1,30 @@
+{
+  "description": "Maps (CSV category, CSV sub_category) to the policy complaint_category used by the proposal schema. Approved in planning decision 15.",
+  "mappings": [
+    {"category": "Order Accuracy", "sub_category": "Missing item", "policy_category": "missing_items"},
+    {"category": "Order Accuracy", "sub_category": "Wrong item", "policy_category": "wrong_item"},
+    {"category": "Order Accuracy", "sub_category": "Customization ignored", "policy_category": "food_quality", "safety_keywords": ["allergic", "allergy", "allergen", "reaction"]},
+    {"category": "Delivery", "sub_category": "Late delivery", "policy_category": "late_delivery"},
+    {"category": "Delivery", "sub_category": "Wrong address/dropoff", "policy_category": "wrong_address"},
+    {"category": "Delivery", "sub_category": "Damaged/spilled", "policy_category": "food_quality"},
+    {"category": "App & Online Ordering", "sub_category": "Order not received", "policy_category": "order_not_received"},
+    {"category": "App & Online Ordering", "sub_category": "App error", "policy_category": "other"},
+    {"category": "App & Online Ordering", "sub_category": "Menu mismatch", "policy_category": "other"},
+    {"category": "Food Quality", "sub_category": "Cold food", "policy_category": "food_quality"},
+    {"category": "Food Quality", "sub_category": "Incorrect preparation", "policy_category": "food_quality"},
+    {"category": "Food Quality", "sub_category": "Stale ingredients", "policy_category": "food_quality"},
+    {"category": "Food Quality", "sub_category": "Portion size", "policy_category": "food_quality"},
+    {"category": "Food Quality", "sub_category": "Undercooked/overcooked", "policy_category": "food_quality", "safety_keywords": ["undercooked", "raw"]},
+    {"category": "Cleanliness", "sub_category": "Dining area", "policy_category": "cleanliness"},
+    {"category": "Cleanliness", "sub_category": "Restroom", "policy_category": "cleanliness"},
+    {"category": "Cleanliness", "sub_category": "Food handling", "policy_category": "food_safety"},
+    {"category": "Service", "sub_category": "Rude staff", "policy_category": "staff_conduct"},
+    {"category": "Service", "sub_category": "Ignored customer", "policy_category": "staff_conduct"},
+    {"category": "Service", "sub_category": "Slow service", "policy_category": "staff_conduct"},
+    {"category": "Billing & Pricing", "sub_category": "Duplicate charge", "policy_category": "other"},
+    {"category": "Billing & Pricing", "sub_category": "Overcharged", "policy_category": "other"},
+    {"category": "Billing & Pricing", "sub_category": "Promotion not applied", "policy_category": "other"},
+    {"category": "Product Availability", "sub_category": "Out of stock", "policy_category": "other"},
+    {"category": "Product Availability", "sub_category": "Substitution", "policy_category": "other"}
+  ]
+}

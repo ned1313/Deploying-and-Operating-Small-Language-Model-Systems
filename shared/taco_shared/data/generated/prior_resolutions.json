@@ -1,0 +1,4142 @@
+[
+  {
+    "resolution_id": "RES-0011-1",
+    "record_id": "resolution:RES-0011-1",
+    "customer_id": "CUST-80697",
+    "date": "2025-09-11",
+    "order_id": "TA-95646",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0016-1",
+    "record_id": "resolution:RES-0016-1",
+    "customer_id": "CUST-71993",
+    "date": "2026-07-21",
+    "order_id": "TA-93776",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0018-1",
+    "record_id": "resolution:RES-0018-1",
+    "customer_id": "CUST-70637",
+    "date": "2025-05-12",
+    "order_id": "TA-91813",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0018-2",
+    "record_id": "resolution:RES-0018-2",
+    "customer_id": "CUST-70637",
+    "date": "2025-07-08",
+    "order_id": "TA-99156",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0018-3",
+    "record_id": "resolution:RES-0018-3",
+    "customer_id": "CUST-70637",
+    "date": "2025-07-18",
+    "order_id": "TA-96124",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0020-1",
+    "record_id": "resolution:RES-0020-1",
+    "customer_id": "CUST-69638",
+    "date": "2026-02-01",
+    "order_id": "TA-97315",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0020-2",
+    "record_id": "resolution:RES-0020-2",
+    "customer_id": "CUST-69638",
+    "date": "2025-10-27",
+    "order_id": "TA-91859",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0020-3",
+    "record_id": "resolution:RES-0020-3",
+    "customer_id": "CUST-69638",
+    "date": "2025-11-11",
+    "order_id": "TA-97079",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0034-1",
+    "record_id": "resolution:RES-0034-1",
+    "customer_id": "CUST-77033",
+    "date": "2025-11-01",
+    "order_id": "TA-95553",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0034-2",
+    "record_id": "resolution:RES-0034-2",
+    "customer_id": "CUST-77033",
+    "date": "2025-08-08",
+    "order_id": "TA-93557",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0037-1",
+    "record_id": "resolution:RES-0037-1",
+    "customer_id": "CUST-37549",
+    "date": "2026-02-24",
+    "order_id": "TA-10038",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0038-1",
+    "record_id": "resolution:RES-0038-1",
+    "customer_id": "CUST-32241",
+    "date": "2025-09-12",
+    "order_id": "TA-95079",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0038-2",
+    "record_id": "resolution:RES-0038-2",
+    "customer_id": "CUST-32241",
+    "date": "2025-10-16",
+    "order_id": "TA-98900",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0040-1",
+    "record_id": "resolution:RES-0040-1",
+    "customer_id": "CUST-60328",
+    "date": "2026-03-25",
+    "order_id": "TA-91153",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0040-2",
+    "record_id": "resolution:RES-0040-2",
+    "customer_id": "CUST-60328",
+    "date": "2026-05-09",
+    "order_id": "TA-99320",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0040-3",
+    "record_id": "resolution:RES-0040-3",
+    "customer_id": "CUST-60328",
+    "date": "2026-04-30",
+    "order_id": "TA-97435",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0046-1",
+    "record_id": "resolution:RES-0046-1",
+    "customer_id": "CUST-85456",
+    "date": "2026-04-09",
+    "order_id": "TA-96694",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0055-1",
+    "record_id": "resolution:RES-0055-1",
+    "customer_id": "CUST-67080",
+    "date": "2026-01-10",
+    "order_id": "TA-99736",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0055-2",
+    "record_id": "resolution:RES-0055-2",
+    "customer_id": "CUST-67080",
+    "date": "2026-02-03",
+    "order_id": "TA-93208",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0057-1",
+    "record_id": "resolution:RES-0057-1",
+    "customer_id": "CUST-43862",
+    "date": "2025-05-20",
+    "order_id": "TA-95954",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0058-1",
+    "record_id": "resolution:RES-0058-1",
+    "customer_id": "CUST-74038",
+    "date": "2025-03-18",
+    "order_id": "TA-94393",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0058-2",
+    "record_id": "resolution:RES-0058-2",
+    "customer_id": "CUST-74038",
+    "date": "2025-04-13",
+    "order_id": "TA-93128",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0058-3",
+    "record_id": "resolution:RES-0058-3",
+    "customer_id": "CUST-74038",
+    "date": "2025-03-23",
+    "order_id": "TA-92422",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0059-1",
+    "record_id": "resolution:RES-0059-1",
+    "customer_id": "CUST-41890",
+    "date": "2025-05-20",
+    "order_id": "TA-91618",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0059-2",
+    "record_id": "resolution:RES-0059-2",
+    "customer_id": "CUST-41890",
+    "date": "2025-06-06",
+    "order_id": "TA-96508",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0059-3",
+    "record_id": "resolution:RES-0059-3",
+    "customer_id": "CUST-41890",
+    "date": "2025-04-25",
+    "order_id": "TA-98160",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0062-1",
+    "record_id": "resolution:RES-0062-1",
+    "customer_id": "CUST-80010",
+    "date": "2025-09-14",
+    "order_id": "TA-97525",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0062-2",
+    "record_id": "resolution:RES-0062-2",
+    "customer_id": "CUST-80010",
+    "date": "2025-10-03",
+    "order_id": "TA-93426",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0063-1",
+    "record_id": "resolution:RES-0063-1",
+    "customer_id": "CUST-67733",
+    "date": "2026-05-21",
+    "order_id": "TA-10064",
+    "resolution_type": "partial_refund",
+    "amount": 10.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0067-1",
+    "record_id": "resolution:RES-0067-1",
+    "customer_id": "CUST-71592",
+    "date": "2026-01-17",
+    "order_id": "TA-91469",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0067-2",
+    "record_id": "resolution:RES-0067-2",
+    "customer_id": "CUST-71592",
+    "date": "2026-02-11",
+    "order_id": "TA-91600",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0070-1",
+    "record_id": "resolution:RES-0070-1",
+    "customer_id": "CUST-13390",
+    "date": "2025-12-08",
+    "order_id": "TA-97571",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0070-2",
+    "record_id": "resolution:RES-0070-2",
+    "customer_id": "CUST-13390",
+    "date": "2025-10-29",
+    "order_id": "TA-91059",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0074-1",
+    "record_id": "resolution:RES-0074-1",
+    "customer_id": "CUST-16764",
+    "date": "2026-01-12",
+    "order_id": "TA-94318",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0074-2",
+    "record_id": "resolution:RES-0074-2",
+    "customer_id": "CUST-16764",
+    "date": "2025-09-22",
+    "order_id": "TA-93784",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0080-1",
+    "record_id": "resolution:RES-0080-1",
+    "customer_id": "CUST-87356",
+    "date": "2025-03-24",
+    "order_id": "TA-91304",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0080-2",
+    "record_id": "resolution:RES-0080-2",
+    "customer_id": "CUST-87356",
+    "date": "2025-03-18",
+    "order_id": "TA-92741",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0080-3",
+    "record_id": "resolution:RES-0080-3",
+    "customer_id": "CUST-87356",
+    "date": "2025-07-26",
+    "order_id": "TA-96784",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0086-1",
+    "record_id": "resolution:RES-0086-1",
+    "customer_id": "CUST-65615",
+    "date": "2025-12-25",
+    "order_id": "TA-91602",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0094-1",
+    "record_id": "resolution:RES-0094-1",
+    "customer_id": "CUST-14877",
+    "date": "2025-08-28",
+    "order_id": "TA-94658",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0094-2",
+    "record_id": "resolution:RES-0094-2",
+    "customer_id": "CUST-14877",
+    "date": "2025-05-16",
+    "order_id": "TA-96103",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0106-1",
+    "record_id": "resolution:RES-0106-1",
+    "customer_id": "CUST-83608",
+    "date": "2025-12-26",
+    "order_id": "TA-98895",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0106-2",
+    "record_id": "resolution:RES-0106-2",
+    "customer_id": "CUST-83608",
+    "date": "2025-11-27",
+    "order_id": "TA-95568",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0115-1",
+    "record_id": "resolution:RES-0115-1",
+    "customer_id": "CUST-93904",
+    "date": "2026-05-21",
+    "order_id": "TA-10116",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0119-1",
+    "record_id": "resolution:RES-0119-1",
+    "customer_id": "CUST-83889",
+    "date": "2026-05-25",
+    "order_id": "TA-91333",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0119-2",
+    "record_id": "resolution:RES-0119-2",
+    "customer_id": "CUST-83889",
+    "date": "2026-05-02",
+    "order_id": "TA-96055",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0119-3",
+    "record_id": "resolution:RES-0119-3",
+    "customer_id": "CUST-83889",
+    "date": "2026-05-21",
+    "order_id": "TA-92475",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0130-1",
+    "record_id": "resolution:RES-0130-1",
+    "customer_id": "CUST-84766",
+    "date": "2025-10-23",
+    "order_id": "TA-96904",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0130-2",
+    "record_id": "resolution:RES-0130-2",
+    "customer_id": "CUST-84766",
+    "date": "2025-10-22",
+    "order_id": "TA-99210",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0130-3",
+    "record_id": "resolution:RES-0130-3",
+    "customer_id": "CUST-84766",
+    "date": "2025-12-30",
+    "order_id": "TA-95899",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0146-1",
+    "record_id": "resolution:RES-0146-1",
+    "customer_id": "CUST-84349",
+    "date": "2026-01-01",
+    "order_id": "TA-96541",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0146-2",
+    "record_id": "resolution:RES-0146-2",
+    "customer_id": "CUST-84349",
+    "date": "2025-12-25",
+    "order_id": "TA-93401",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0151-1",
+    "record_id": "resolution:RES-0151-1",
+    "customer_id": "CUST-58353",
+    "date": "2025-05-31",
+    "order_id": "TA-96494",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0151-2",
+    "record_id": "resolution:RES-0151-2",
+    "customer_id": "CUST-58353",
+    "date": "2025-06-02",
+    "order_id": "TA-98295",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0151-3",
+    "record_id": "resolution:RES-0151-3",
+    "customer_id": "CUST-58353",
+    "date": "2025-03-10",
+    "order_id": "TA-99868",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0163-1",
+    "record_id": "resolution:RES-0163-1",
+    "customer_id": "CUST-16705",
+    "date": "2026-02-15",
+    "order_id": "TA-92877",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0163-2",
+    "record_id": "resolution:RES-0163-2",
+    "customer_id": "CUST-16705",
+    "date": "2026-02-19",
+    "order_id": "TA-94558",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0168-1",
+    "record_id": "resolution:RES-0168-1",
+    "customer_id": "CUST-44803",
+    "date": "2026-02-23",
+    "order_id": "TA-98659",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0168-2",
+    "record_id": "resolution:RES-0168-2",
+    "customer_id": "CUST-44803",
+    "date": "2026-03-28",
+    "order_id": "TA-98431",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0173-1",
+    "record_id": "resolution:RES-0173-1",
+    "customer_id": "CUST-85166",
+    "date": "2026-05-09",
+    "order_id": "TA-92575",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0173-2",
+    "record_id": "resolution:RES-0173-2",
+    "customer_id": "CUST-85166",
+    "date": "2026-02-16",
+    "order_id": "TA-99422",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0173-3",
+    "record_id": "resolution:RES-0173-3",
+    "customer_id": "CUST-85166",
+    "date": "2026-01-31",
+    "order_id": "TA-91637",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0178-1",
+    "record_id": "resolution:RES-0178-1",
+    "customer_id": "CUST-62034",
+    "date": "2025-05-23",
+    "order_id": "TA-91426",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0178-2",
+    "record_id": "resolution:RES-0178-2",
+    "customer_id": "CUST-62034",
+    "date": "2025-05-09",
+    "order_id": "TA-92705",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0178-3",
+    "record_id": "resolution:RES-0178-3",
+    "customer_id": "CUST-62034",
+    "date": "2025-06-07",
+    "order_id": "TA-93964",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0182-1",
+    "record_id": "resolution:RES-0182-1",
+    "customer_id": "CUST-10895",
+    "date": "2026-03-09",
+    "order_id": "TA-97282",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0182-2",
+    "record_id": "resolution:RES-0182-2",
+    "customer_id": "CUST-10895",
+    "date": "2025-12-26",
+    "order_id": "TA-93386",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0182-3",
+    "record_id": "resolution:RES-0182-3",
+    "customer_id": "CUST-10895",
+    "date": "2026-02-06",
+    "order_id": "TA-93886",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0183-1",
+    "record_id": "resolution:RES-0183-1",
+    "customer_id": "CUST-40972",
+    "date": "2025-04-14",
+    "order_id": "TA-93765",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0183-2",
+    "record_id": "resolution:RES-0183-2",
+    "customer_id": "CUST-40972",
+    "date": "2025-02-13",
+    "order_id": "TA-98234",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0183-3",
+    "record_id": "resolution:RES-0183-3",
+    "customer_id": "CUST-40972",
+    "date": "2025-05-14",
+    "order_id": "TA-96945",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0184-1",
+    "record_id": "resolution:RES-0184-1",
+    "customer_id": "CUST-93717",
+    "date": "2026-07-03",
+    "order_id": "TA-92850",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0185-1",
+    "record_id": "resolution:RES-0185-1",
+    "customer_id": "CUST-81989",
+    "date": "2025-12-24",
+    "order_id": "TA-98310",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0188-1",
+    "record_id": "resolution:RES-0188-1",
+    "customer_id": "CUST-98181",
+    "date": "2025-12-08",
+    "order_id": "TA-94217",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0188-2",
+    "record_id": "resolution:RES-0188-2",
+    "customer_id": "CUST-98181",
+    "date": "2026-02-22",
+    "order_id": "TA-96534",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0190-1",
+    "record_id": "resolution:RES-0190-1",
+    "customer_id": "CUST-60132",
+    "date": "2026-02-03",
+    "order_id": "TA-94957",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0191-1",
+    "record_id": "resolution:RES-0191-1",
+    "customer_id": "CUST-39188",
+    "date": "2025-10-16",
+    "order_id": "TA-95298",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0191-2",
+    "record_id": "resolution:RES-0191-2",
+    "customer_id": "CUST-39188",
+    "date": "2025-09-12",
+    "order_id": "TA-99144",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0196-1",
+    "record_id": "resolution:RES-0196-1",
+    "customer_id": "CUST-97994",
+    "date": "2025-03-19",
+    "order_id": "TA-92183",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0196-2",
+    "record_id": "resolution:RES-0196-2",
+    "customer_id": "CUST-97994",
+    "date": "2025-05-16",
+    "order_id": "TA-97777",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0196-3",
+    "record_id": "resolution:RES-0196-3",
+    "customer_id": "CUST-97994",
+    "date": "2025-05-10",
+    "order_id": "TA-96536",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0199-1",
+    "record_id": "resolution:RES-0199-1",
+    "customer_id": "CUST-34662",
+    "date": "2026-01-28",
+    "order_id": "TA-94254",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0201-1",
+    "record_id": "resolution:RES-0201-1",
+    "customer_id": "CUST-59894",
+    "date": "2025-11-18",
+    "order_id": "TA-91366",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0201-2",
+    "record_id": "resolution:RES-0201-2",
+    "customer_id": "CUST-59894",
+    "date": "2026-03-15",
+    "order_id": "TA-91004",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0201-3",
+    "record_id": "resolution:RES-0201-3",
+    "customer_id": "CUST-59894",
+    "date": "2025-12-02",
+    "order_id": "TA-98937",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0204-1",
+    "record_id": "resolution:RES-0204-1",
+    "customer_id": "CUST-99764",
+    "date": "2025-09-10",
+    "order_id": "TA-91218",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0212-1",
+    "record_id": "resolution:RES-0212-1",
+    "customer_id": "CUST-84289",
+    "date": "2025-07-14",
+    "order_id": "TA-96671",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0212-2",
+    "record_id": "resolution:RES-0212-2",
+    "customer_id": "CUST-84289",
+    "date": "2025-08-11",
+    "order_id": "TA-95028",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0217-1",
+    "record_id": "resolution:RES-0217-1",
+    "customer_id": "CUST-20752",
+    "date": "2025-12-09",
+    "order_id": "TA-97475",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0222-1",
+    "record_id": "resolution:RES-0222-1",
+    "customer_id": "CUST-53193",
+    "date": "2025-12-13",
+    "order_id": "TA-93201",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0223-1",
+    "record_id": "resolution:RES-0223-1",
+    "customer_id": "CUST-33283",
+    "date": "2026-06-19",
+    "order_id": "TA-96504",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0223-2",
+    "record_id": "resolution:RES-0223-2",
+    "customer_id": "CUST-33283",
+    "date": "2026-04-29",
+    "order_id": "TA-92020",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0223-3",
+    "record_id": "resolution:RES-0223-3",
+    "customer_id": "CUST-33283",
+    "date": "2026-06-29",
+    "order_id": "TA-98951",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0229-1",
+    "record_id": "resolution:RES-0229-1",
+    "customer_id": "CUST-13219",
+    "date": "2025-11-06",
+    "order_id": "TA-91107",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0229-2",
+    "record_id": "resolution:RES-0229-2",
+    "customer_id": "CUST-13219",
+    "date": "2025-11-29",
+    "order_id": "TA-95702",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0232-1",
+    "record_id": "resolution:RES-0232-1",
+    "customer_id": "CUST-63090",
+    "date": "2025-11-19",
+    "order_id": "TA-95524",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0232-2",
+    "record_id": "resolution:RES-0232-2",
+    "customer_id": "CUST-63090",
+    "date": "2025-09-21",
+    "order_id": "TA-97599",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0241-1",
+    "record_id": "resolution:RES-0241-1",
+    "customer_id": "CUST-65725",
+    "date": "2025-03-24",
+    "order_id": "TA-94390",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0241-2",
+    "record_id": "resolution:RES-0241-2",
+    "customer_id": "CUST-65725",
+    "date": "2025-05-18",
+    "order_id": "TA-97026",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0246-1",
+    "record_id": "resolution:RES-0246-1",
+    "customer_id": "CUST-73968",
+    "date": "2025-11-16",
+    "order_id": "TA-95966",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0249-1",
+    "record_id": "resolution:RES-0249-1",
+    "customer_id": "CUST-45916",
+    "date": "2025-06-17",
+    "order_id": "TA-96983",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0250-1",
+    "record_id": "resolution:RES-0250-1",
+    "customer_id": "CUST-21953",
+    "date": "2025-11-02",
+    "order_id": "TA-92262",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0251-1",
+    "record_id": "resolution:RES-0251-1",
+    "customer_id": "CUST-25806",
+    "date": "2025-07-20",
+    "order_id": "TA-97785",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0254-1",
+    "record_id": "resolution:RES-0254-1",
+    "customer_id": "CUST-60335",
+    "date": "2025-05-20",
+    "order_id": "TA-95732",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0254-2",
+    "record_id": "resolution:RES-0254-2",
+    "customer_id": "CUST-60335",
+    "date": "2025-06-19",
+    "order_id": "TA-91671",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0260-1",
+    "record_id": "resolution:RES-0260-1",
+    "customer_id": "CUST-67342",
+    "date": "2026-04-18",
+    "order_id": "TA-91584",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0260-2",
+    "record_id": "resolution:RES-0260-2",
+    "customer_id": "CUST-67342",
+    "date": "2026-02-07",
+    "order_id": "TA-97239",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0260-3",
+    "record_id": "resolution:RES-0260-3",
+    "customer_id": "CUST-67342",
+    "date": "2026-03-23",
+    "order_id": "TA-95857",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0263-1",
+    "record_id": "resolution:RES-0263-1",
+    "customer_id": "CUST-17266",
+    "date": "2026-03-18",
+    "order_id": "TA-96138",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0263-2",
+    "record_id": "resolution:RES-0263-2",
+    "customer_id": "CUST-17266",
+    "date": "2025-11-30",
+    "order_id": "TA-91733",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0263-3",
+    "record_id": "resolution:RES-0263-3",
+    "customer_id": "CUST-17266",
+    "date": "2026-03-28",
+    "order_id": "TA-92263",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0268-1",
+    "record_id": "resolution:RES-0268-1",
+    "customer_id": "CUST-41795",
+    "date": "2025-07-28",
+    "order_id": "TA-98602",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0268-2",
+    "record_id": "resolution:RES-0268-2",
+    "customer_id": "CUST-41795",
+    "date": "2025-07-06",
+    "order_id": "TA-98648",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0268-3",
+    "record_id": "resolution:RES-0268-3",
+    "customer_id": "CUST-41795",
+    "date": "2025-09-14",
+    "order_id": "TA-92834",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0269-1",
+    "record_id": "resolution:RES-0269-1",
+    "customer_id": "CUST-93354",
+    "date": "2025-08-02",
+    "order_id": "TA-98117",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0271-1",
+    "record_id": "resolution:RES-0271-1",
+    "customer_id": "CUST-93521",
+    "date": "2025-08-17",
+    "order_id": "TA-93170",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0271-2",
+    "record_id": "resolution:RES-0271-2",
+    "customer_id": "CUST-93521",
+    "date": "2025-09-09",
+    "order_id": "TA-91347",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0279-1",
+    "record_id": "resolution:RES-0279-1",
+    "customer_id": "CUST-75390",
+    "date": "2025-05-16",
+    "order_id": "TA-91762",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0279-2",
+    "record_id": "resolution:RES-0279-2",
+    "customer_id": "CUST-75390",
+    "date": "2025-05-16",
+    "order_id": "TA-96242",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0285-1",
+    "record_id": "resolution:RES-0285-1",
+    "customer_id": "CUST-90495",
+    "date": "2025-04-26",
+    "order_id": "TA-99454",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0285-2",
+    "record_id": "resolution:RES-0285-2",
+    "customer_id": "CUST-90495",
+    "date": "2025-05-26",
+    "order_id": "TA-97600",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0295-1",
+    "record_id": "resolution:RES-0295-1",
+    "customer_id": "CUST-74349",
+    "date": "2025-04-02",
+    "order_id": "TA-96493",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0295-2",
+    "record_id": "resolution:RES-0295-2",
+    "customer_id": "CUST-74349",
+    "date": "2025-07-29",
+    "order_id": "TA-93974",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0295-3",
+    "record_id": "resolution:RES-0295-3",
+    "customer_id": "CUST-74349",
+    "date": "2025-07-17",
+    "order_id": "TA-94020",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0298-1",
+    "record_id": "resolution:RES-0298-1",
+    "customer_id": "CUST-83956",
+    "date": "2025-10-06",
+    "order_id": "TA-98868",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0298-2",
+    "record_id": "resolution:RES-0298-2",
+    "customer_id": "CUST-83956",
+    "date": "2025-07-25",
+    "order_id": "TA-99220",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0304-1",
+    "record_id": "resolution:RES-0304-1",
+    "customer_id": "CUST-95824",
+    "date": "2025-12-27",
+    "order_id": "TA-94033",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0304-2",
+    "record_id": "resolution:RES-0304-2",
+    "customer_id": "CUST-95824",
+    "date": "2025-10-17",
+    "order_id": "TA-94519",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0304-3",
+    "record_id": "resolution:RES-0304-3",
+    "customer_id": "CUST-95824",
+    "date": "2025-11-22",
+    "order_id": "TA-97693",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0307-1",
+    "record_id": "resolution:RES-0307-1",
+    "customer_id": "CUST-37707",
+    "date": "2026-01-09",
+    "order_id": "TA-93629",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0307-2",
+    "record_id": "resolution:RES-0307-2",
+    "customer_id": "CUST-37707",
+    "date": "2026-03-05",
+    "order_id": "TA-95155",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0310-1",
+    "record_id": "resolution:RES-0310-1",
+    "customer_id": "CUST-72204",
+    "date": "2025-10-17",
+    "order_id": "TA-96925",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0310-2",
+    "record_id": "resolution:RES-0310-2",
+    "customer_id": "CUST-72204",
+    "date": "2025-12-04",
+    "order_id": "TA-96760",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0310-3",
+    "record_id": "resolution:RES-0310-3",
+    "customer_id": "CUST-72204",
+    "date": "2026-03-04",
+    "order_id": "TA-91775",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0316-1",
+    "record_id": "resolution:RES-0316-1",
+    "customer_id": "CUST-48745",
+    "date": "2026-05-12",
+    "order_id": "TA-92823",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0316-2",
+    "record_id": "resolution:RES-0316-2",
+    "customer_id": "CUST-48745",
+    "date": "2026-06-17",
+    "order_id": "TA-94116",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0317-1",
+    "record_id": "resolution:RES-0317-1",
+    "customer_id": "CUST-39145",
+    "date": "2026-04-07",
+    "order_id": "TA-94396",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0317-2",
+    "record_id": "resolution:RES-0317-2",
+    "customer_id": "CUST-39145",
+    "date": "2026-01-07",
+    "order_id": "TA-92808",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0320-1",
+    "record_id": "resolution:RES-0320-1",
+    "customer_id": "CUST-35499",
+    "date": "2026-05-15",
+    "order_id": "TA-99038",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0321-1",
+    "record_id": "resolution:RES-0321-1",
+    "customer_id": "CUST-54914",
+    "date": "2025-05-11",
+    "order_id": "TA-96398",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0321-2",
+    "record_id": "resolution:RES-0321-2",
+    "customer_id": "CUST-54914",
+    "date": "2025-08-08",
+    "order_id": "TA-92064",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0325-1",
+    "record_id": "resolution:RES-0325-1",
+    "customer_id": "CUST-60272",
+    "date": "2025-11-27",
+    "order_id": "TA-91391",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0328-1",
+    "record_id": "resolution:RES-0328-1",
+    "customer_id": "CUST-16286",
+    "date": "2025-07-24",
+    "order_id": "TA-93528",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0331-1",
+    "record_id": "resolution:RES-0331-1",
+    "customer_id": "CUST-63707",
+    "date": "2025-06-17",
+    "order_id": "TA-93125",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0331-2",
+    "record_id": "resolution:RES-0331-2",
+    "customer_id": "CUST-63707",
+    "date": "2025-11-09",
+    "order_id": "TA-92135",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0333-1",
+    "record_id": "resolution:RES-0333-1",
+    "customer_id": "CUST-16564",
+    "date": "2026-03-04",
+    "order_id": "TA-99399",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0333-2",
+    "record_id": "resolution:RES-0333-2",
+    "customer_id": "CUST-16564",
+    "date": "2025-11-07",
+    "order_id": "TA-94073",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0340-1",
+    "record_id": "resolution:RES-0340-1",
+    "customer_id": "CUST-19812",
+    "date": "2025-12-15",
+    "order_id": "TA-91372",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0340-2",
+    "record_id": "resolution:RES-0340-2",
+    "customer_id": "CUST-19812",
+    "date": "2025-12-30",
+    "order_id": "TA-92556",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0343-1",
+    "record_id": "resolution:RES-0343-1",
+    "customer_id": "CUST-57624",
+    "date": "2026-02-23",
+    "order_id": "TA-91127",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0343-2",
+    "record_id": "resolution:RES-0343-2",
+    "customer_id": "CUST-57624",
+    "date": "2026-06-18",
+    "order_id": "TA-96830",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0343-3",
+    "record_id": "resolution:RES-0343-3",
+    "customer_id": "CUST-57624",
+    "date": "2026-06-13",
+    "order_id": "TA-98111",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0344-1",
+    "record_id": "resolution:RES-0344-1",
+    "customer_id": "CUST-39064",
+    "date": "2025-04-17",
+    "order_id": "TA-97326",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0353-1",
+    "record_id": "resolution:RES-0353-1",
+    "customer_id": "CUST-80932",
+    "date": "2026-06-27",
+    "order_id": "TA-94705",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0355-1",
+    "record_id": "resolution:RES-0355-1",
+    "customer_id": "CUST-93071",
+    "date": "2025-07-06",
+    "order_id": "TA-91961",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0362-1",
+    "record_id": "resolution:RES-0362-1",
+    "customer_id": "CUST-95397",
+    "date": "2025-10-23",
+    "order_id": "TA-93963",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0364-1",
+    "record_id": "resolution:RES-0364-1",
+    "customer_id": "CUST-17113",
+    "date": "2025-11-16",
+    "order_id": "TA-93248",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0364-2",
+    "record_id": "resolution:RES-0364-2",
+    "customer_id": "CUST-17113",
+    "date": "2025-11-16",
+    "order_id": "TA-91563",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0368-1",
+    "record_id": "resolution:RES-0368-1",
+    "customer_id": "CUST-10659",
+    "date": "2026-01-25",
+    "order_id": "TA-96897",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0368-2",
+    "record_id": "resolution:RES-0368-2",
+    "customer_id": "CUST-10659",
+    "date": "2026-02-25",
+    "order_id": "TA-91405",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0379-1",
+    "record_id": "resolution:RES-0379-1",
+    "customer_id": "CUST-69591",
+    "date": "2025-06-02",
+    "order_id": "TA-98346",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0379-2",
+    "record_id": "resolution:RES-0379-2",
+    "customer_id": "CUST-69591",
+    "date": "2025-07-15",
+    "order_id": "TA-96118",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0379-3",
+    "record_id": "resolution:RES-0379-3",
+    "customer_id": "CUST-69591",
+    "date": "2025-07-24",
+    "order_id": "TA-94036",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0383-1",
+    "record_id": "resolution:RES-0383-1",
+    "customer_id": "CUST-87436",
+    "date": "2025-10-18",
+    "order_id": "TA-96467",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0383-2",
+    "record_id": "resolution:RES-0383-2",
+    "customer_id": "CUST-87436",
+    "date": "2025-10-22",
+    "order_id": "TA-95367",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0390-1",
+    "record_id": "resolution:RES-0390-1",
+    "customer_id": "CUST-85513",
+    "date": "2025-10-19",
+    "order_id": "TA-98529",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0390-2",
+    "record_id": "resolution:RES-0390-2",
+    "customer_id": "CUST-85513",
+    "date": "2025-11-14",
+    "order_id": "TA-93231",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0413-1",
+    "record_id": "resolution:RES-0413-1",
+    "customer_id": "CUST-92660",
+    "date": "2025-06-08",
+    "order_id": "TA-96307",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0413-2",
+    "record_id": "resolution:RES-0413-2",
+    "customer_id": "CUST-92660",
+    "date": "2025-07-20",
+    "order_id": "TA-98720",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0416-1",
+    "record_id": "resolution:RES-0416-1",
+    "customer_id": "CUST-47304",
+    "date": "2026-03-30",
+    "order_id": "TA-98051",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0416-2",
+    "record_id": "resolution:RES-0416-2",
+    "customer_id": "CUST-47304",
+    "date": "2026-01-29",
+    "order_id": "TA-99979",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0430-1",
+    "record_id": "resolution:RES-0430-1",
+    "customer_id": "CUST-14159",
+    "date": "2026-02-12",
+    "order_id": "TA-94010",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0435-1",
+    "record_id": "resolution:RES-0435-1",
+    "customer_id": "CUST-99908",
+    "date": "2025-08-15",
+    "order_id": "TA-93364",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0435-2",
+    "record_id": "resolution:RES-0435-2",
+    "customer_id": "CUST-99908",
+    "date": "2025-06-20",
+    "order_id": "TA-92412",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0435-3",
+    "record_id": "resolution:RES-0435-3",
+    "customer_id": "CUST-99908",
+    "date": "2025-11-01",
+    "order_id": "TA-94584",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0444-1",
+    "record_id": "resolution:RES-0444-1",
+    "customer_id": "CUST-17641",
+    "date": "2026-01-16",
+    "order_id": "TA-98171",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0445-1",
+    "record_id": "resolution:RES-0445-1",
+    "customer_id": "CUST-40279",
+    "date": "2026-01-21",
+    "order_id": "TA-95283",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0445-2",
+    "record_id": "resolution:RES-0445-2",
+    "customer_id": "CUST-40279",
+    "date": "2025-12-22",
+    "order_id": "TA-92289",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0445-3",
+    "record_id": "resolution:RES-0445-3",
+    "customer_id": "CUST-40279",
+    "date": "2026-02-26",
+    "order_id": "TA-92967",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0451-1",
+    "record_id": "resolution:RES-0451-1",
+    "customer_id": "CUST-86304",
+    "date": "2025-05-04",
+    "order_id": "TA-93530",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0451-2",
+    "record_id": "resolution:RES-0451-2",
+    "customer_id": "CUST-86304",
+    "date": "2025-06-29",
+    "order_id": "TA-96505",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0451-3",
+    "record_id": "resolution:RES-0451-3",
+    "customer_id": "CUST-86304",
+    "date": "2025-09-08",
+    "order_id": "TA-94350",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0454-1",
+    "record_id": "resolution:RES-0454-1",
+    "customer_id": "CUST-78731",
+    "date": "2026-06-21",
+    "order_id": "TA-10455",
+    "resolution_type": "partial_refund",
+    "amount": 11.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0455-1",
+    "record_id": "resolution:RES-0455-1",
+    "customer_id": "CUST-85399",
+    "date": "2025-10-13",
+    "order_id": "TA-99378",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0460-1",
+    "record_id": "resolution:RES-0460-1",
+    "customer_id": "CUST-41856",
+    "date": "2025-07-10",
+    "order_id": "TA-99899",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0460-2",
+    "record_id": "resolution:RES-0460-2",
+    "customer_id": "CUST-41856",
+    "date": "2025-05-17",
+    "order_id": "TA-98294",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0460-3",
+    "record_id": "resolution:RES-0460-3",
+    "customer_id": "CUST-41856",
+    "date": "2025-08-18",
+    "order_id": "TA-94122",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0463-1",
+    "record_id": "resolution:RES-0463-1",
+    "customer_id": "CUST-96556",
+    "date": "2026-03-20",
+    "order_id": "TA-94680",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0463-2",
+    "record_id": "resolution:RES-0463-2",
+    "customer_id": "CUST-96556",
+    "date": "2026-05-19",
+    "order_id": "TA-96511",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0465-1",
+    "record_id": "resolution:RES-0465-1",
+    "customer_id": "CUST-79391",
+    "date": "2026-05-08",
+    "order_id": "TA-99793",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0465-2",
+    "record_id": "resolution:RES-0465-2",
+    "customer_id": "CUST-79391",
+    "date": "2025-12-24",
+    "order_id": "TA-99558",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0469-1",
+    "record_id": "resolution:RES-0469-1",
+    "customer_id": "CUST-29025",
+    "date": "2025-11-05",
+    "order_id": "TA-99032",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0469-2",
+    "record_id": "resolution:RES-0469-2",
+    "customer_id": "CUST-29025",
+    "date": "2026-03-08",
+    "order_id": "TA-93537",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0469-3",
+    "record_id": "resolution:RES-0469-3",
+    "customer_id": "CUST-29025",
+    "date": "2025-12-21",
+    "order_id": "TA-99723",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0471-1",
+    "record_id": "resolution:RES-0471-1",
+    "customer_id": "CUST-90213",
+    "date": "2025-08-23",
+    "order_id": "TA-96609",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0471-2",
+    "record_id": "resolution:RES-0471-2",
+    "customer_id": "CUST-90213",
+    "date": "2025-05-19",
+    "order_id": "TA-96666",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0479-1",
+    "record_id": "resolution:RES-0479-1",
+    "customer_id": "CUST-36467",
+    "date": "2025-07-29",
+    "order_id": "TA-98898",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0479-2",
+    "record_id": "resolution:RES-0479-2",
+    "customer_id": "CUST-36467",
+    "date": "2025-05-09",
+    "order_id": "TA-93792",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0479-3",
+    "record_id": "resolution:RES-0479-3",
+    "customer_id": "CUST-36467",
+    "date": "2025-02-28",
+    "order_id": "TA-94402",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0480-1",
+    "record_id": "resolution:RES-0480-1",
+    "customer_id": "CUST-60343",
+    "date": "2025-10-30",
+    "order_id": "TA-92389",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0484-1",
+    "record_id": "resolution:RES-0484-1",
+    "customer_id": "CUST-29432",
+    "date": "2025-11-30",
+    "order_id": "TA-91206",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0486-1",
+    "record_id": "resolution:RES-0486-1",
+    "customer_id": "CUST-49229",
+    "date": "2025-11-18",
+    "order_id": "TA-94211",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0489-1",
+    "record_id": "resolution:RES-0489-1",
+    "customer_id": "CUST-33580",
+    "date": "2026-01-26",
+    "order_id": "TA-97282",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0489-2",
+    "record_id": "resolution:RES-0489-2",
+    "customer_id": "CUST-33580",
+    "date": "2026-03-05",
+    "order_id": "TA-95878",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0491-1",
+    "record_id": "resolution:RES-0491-1",
+    "customer_id": "CUST-18891",
+    "date": "2026-07-09",
+    "order_id": "TA-97473",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0491-2",
+    "record_id": "resolution:RES-0491-2",
+    "customer_id": "CUST-18891",
+    "date": "2026-03-06",
+    "order_id": "TA-96772",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0493-1",
+    "record_id": "resolution:RES-0493-1",
+    "customer_id": "CUST-80381",
+    "date": "2026-03-02",
+    "order_id": "TA-93408",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0501-1",
+    "record_id": "resolution:RES-0501-1",
+    "customer_id": "CUST-83351",
+    "date": "2025-04-29",
+    "order_id": "TA-94939",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0501-2",
+    "record_id": "resolution:RES-0501-2",
+    "customer_id": "CUST-83351",
+    "date": "2025-07-05",
+    "order_id": "TA-99495",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0503-1",
+    "record_id": "resolution:RES-0503-1",
+    "customer_id": "CUST-17051",
+    "date": "2026-04-16",
+    "order_id": "TA-94298",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0503-2",
+    "record_id": "resolution:RES-0503-2",
+    "customer_id": "CUST-17051",
+    "date": "2026-04-10",
+    "order_id": "TA-98423",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0503-3",
+    "record_id": "resolution:RES-0503-3",
+    "customer_id": "CUST-17051",
+    "date": "2026-05-25",
+    "order_id": "TA-99720",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0510-1",
+    "record_id": "resolution:RES-0510-1",
+    "customer_id": "CUST-88128",
+    "date": "2025-08-23",
+    "order_id": "TA-93333",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0518-1",
+    "record_id": "resolution:RES-0518-1",
+    "customer_id": "CUST-41031",
+    "date": "2025-02-08",
+    "order_id": "TA-91968",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0518-2",
+    "record_id": "resolution:RES-0518-2",
+    "customer_id": "CUST-41031",
+    "date": "2025-07-08",
+    "order_id": "TA-99361",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0518-3",
+    "record_id": "resolution:RES-0518-3",
+    "customer_id": "CUST-41031",
+    "date": "2025-05-22",
+    "order_id": "TA-99930",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0519-1",
+    "record_id": "resolution:RES-0519-1",
+    "customer_id": "CUST-73115",
+    "date": "2026-02-22",
+    "order_id": "TA-92926",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0519-2",
+    "record_id": "resolution:RES-0519-2",
+    "customer_id": "CUST-73115",
+    "date": "2026-04-13",
+    "order_id": "TA-96829",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0519-3",
+    "record_id": "resolution:RES-0519-3",
+    "customer_id": "CUST-73115",
+    "date": "2026-05-09",
+    "order_id": "TA-94671",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0520-1",
+    "record_id": "resolution:RES-0520-1",
+    "customer_id": "CUST-96997",
+    "date": "2025-05-08",
+    "order_id": "TA-95089",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0520-2",
+    "record_id": "resolution:RES-0520-2",
+    "customer_id": "CUST-96997",
+    "date": "2025-07-22",
+    "order_id": "TA-99136",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0522-1",
+    "record_id": "resolution:RES-0522-1",
+    "customer_id": "CUST-72018",
+    "date": "2025-12-31",
+    "order_id": "TA-93120",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0535-1",
+    "record_id": "resolution:RES-0535-1",
+    "customer_id": "CUST-74494",
+    "date": "2025-06-03",
+    "order_id": "TA-92889",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0535-2",
+    "record_id": "resolution:RES-0535-2",
+    "customer_id": "CUST-74494",
+    "date": "2025-06-04",
+    "order_id": "TA-93951",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0543-1",
+    "record_id": "resolution:RES-0543-1",
+    "customer_id": "CUST-91051",
+    "date": "2025-11-26",
+    "order_id": "TA-99542",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0543-2",
+    "record_id": "resolution:RES-0543-2",
+    "customer_id": "CUST-91051",
+    "date": "2025-11-19",
+    "order_id": "TA-92654",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0543-3",
+    "record_id": "resolution:RES-0543-3",
+    "customer_id": "CUST-91051",
+    "date": "2026-02-02",
+    "order_id": "TA-95420",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0547-1",
+    "record_id": "resolution:RES-0547-1",
+    "customer_id": "CUST-92863",
+    "date": "2026-03-26",
+    "order_id": "TA-94405",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0547-2",
+    "record_id": "resolution:RES-0547-2",
+    "customer_id": "CUST-92863",
+    "date": "2026-02-25",
+    "order_id": "TA-91321",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0548-1",
+    "record_id": "resolution:RES-0548-1",
+    "customer_id": "CUST-72391",
+    "date": "2026-03-04",
+    "order_id": "TA-91770",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0548-2",
+    "record_id": "resolution:RES-0548-2",
+    "customer_id": "CUST-72391",
+    "date": "2026-06-25",
+    "order_id": "TA-91440",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0573-1",
+    "record_id": "resolution:RES-0573-1",
+    "customer_id": "CUST-29391",
+    "date": "2025-05-13",
+    "order_id": "TA-98479",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0575-1",
+    "record_id": "resolution:RES-0575-1",
+    "customer_id": "CUST-67947",
+    "date": "2025-12-10",
+    "order_id": "TA-92641",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0575-2",
+    "record_id": "resolution:RES-0575-2",
+    "customer_id": "CUST-67947",
+    "date": "2026-02-26",
+    "order_id": "TA-96119",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0575-3",
+    "record_id": "resolution:RES-0575-3",
+    "customer_id": "CUST-67947",
+    "date": "2026-05-01",
+    "order_id": "TA-93896",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0577-1",
+    "record_id": "resolution:RES-0577-1",
+    "customer_id": "CUST-21452",
+    "date": "2026-03-01",
+    "order_id": "TA-97487",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0579-1",
+    "record_id": "resolution:RES-0579-1",
+    "customer_id": "CUST-47831",
+    "date": "2026-02-08",
+    "order_id": "TA-95610",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0579-2",
+    "record_id": "resolution:RES-0579-2",
+    "customer_id": "CUST-47831",
+    "date": "2025-12-03",
+    "order_id": "TA-97227",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0579-3",
+    "record_id": "resolution:RES-0579-3",
+    "customer_id": "CUST-47831",
+    "date": "2025-10-02",
+    "order_id": "TA-91529",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0596-1",
+    "record_id": "resolution:RES-0596-1",
+    "customer_id": "CUST-51193",
+    "date": "2025-11-15",
+    "order_id": "TA-95775",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0596-2",
+    "record_id": "resolution:RES-0596-2",
+    "customer_id": "CUST-51193",
+    "date": "2025-12-31",
+    "order_id": "TA-95255",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0598-1",
+    "record_id": "resolution:RES-0598-1",
+    "customer_id": "CUST-19123",
+    "date": "2025-09-12",
+    "order_id": "TA-99774",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0598-2",
+    "record_id": "resolution:RES-0598-2",
+    "customer_id": "CUST-19123",
+    "date": "2025-11-19",
+    "order_id": "TA-92737",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0598-3",
+    "record_id": "resolution:RES-0598-3",
+    "customer_id": "CUST-19123",
+    "date": "2025-11-16",
+    "order_id": "TA-96005",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0599-1",
+    "record_id": "resolution:RES-0599-1",
+    "customer_id": "CUST-61748",
+    "date": "2026-01-02",
+    "order_id": "TA-96853",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0602-1",
+    "record_id": "resolution:RES-0602-1",
+    "customer_id": "CUST-27643",
+    "date": "2026-02-11",
+    "order_id": "TA-98499",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0602-2",
+    "record_id": "resolution:RES-0602-2",
+    "customer_id": "CUST-27643",
+    "date": "2026-03-06",
+    "order_id": "TA-97075",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0603-1",
+    "record_id": "resolution:RES-0603-1",
+    "customer_id": "CUST-91522",
+    "date": "2026-06-14",
+    "order_id": "TA-91474",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0603-2",
+    "record_id": "resolution:RES-0603-2",
+    "customer_id": "CUST-91522",
+    "date": "2026-02-07",
+    "order_id": "TA-94516",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0603-3",
+    "record_id": "resolution:RES-0603-3",
+    "customer_id": "CUST-91522",
+    "date": "2026-06-04",
+    "order_id": "TA-96180",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0605-1",
+    "record_id": "resolution:RES-0605-1",
+    "customer_id": "CUST-59327",
+    "date": "2025-08-03",
+    "order_id": "TA-91762",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0606-1",
+    "record_id": "resolution:RES-0606-1",
+    "customer_id": "CUST-73891",
+    "date": "2025-04-30",
+    "order_id": "TA-93314",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0606-2",
+    "record_id": "resolution:RES-0606-2",
+    "customer_id": "CUST-73891",
+    "date": "2025-07-04",
+    "order_id": "TA-95544",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0610-1",
+    "record_id": "resolution:RES-0610-1",
+    "customer_id": "CUST-80571",
+    "date": "2025-05-15",
+    "order_id": "TA-94484",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0610-2",
+    "record_id": "resolution:RES-0610-2",
+    "customer_id": "CUST-80571",
+    "date": "2025-04-13",
+    "order_id": "TA-91070",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0617-1",
+    "record_id": "resolution:RES-0617-1",
+    "customer_id": "CUST-99824",
+    "date": "2025-06-18",
+    "order_id": "TA-97221",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0617-2",
+    "record_id": "resolution:RES-0617-2",
+    "customer_id": "CUST-99824",
+    "date": "2025-09-20",
+    "order_id": "TA-98379",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0618-1",
+    "record_id": "resolution:RES-0618-1",
+    "customer_id": "CUST-88804",
+    "date": "2026-02-04",
+    "order_id": "TA-97727",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0620-1",
+    "record_id": "resolution:RES-0620-1",
+    "customer_id": "CUST-15535",
+    "date": "2026-05-07",
+    "order_id": "TA-93548",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0626-1",
+    "record_id": "resolution:RES-0626-1",
+    "customer_id": "CUST-61508",
+    "date": "2025-06-06",
+    "order_id": "TA-92090",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0626-2",
+    "record_id": "resolution:RES-0626-2",
+    "customer_id": "CUST-61508",
+    "date": "2025-09-20",
+    "order_id": "TA-99258",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0631-1",
+    "record_id": "resolution:RES-0631-1",
+    "customer_id": "CUST-64328",
+    "date": "2025-08-13",
+    "order_id": "TA-96530",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0631-2",
+    "record_id": "resolution:RES-0631-2",
+    "customer_id": "CUST-64328",
+    "date": "2026-01-08",
+    "order_id": "TA-97439",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0631-3",
+    "record_id": "resolution:RES-0631-3",
+    "customer_id": "CUST-64328",
+    "date": "2025-11-10",
+    "order_id": "TA-92402",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0638-1",
+    "record_id": "resolution:RES-0638-1",
+    "customer_id": "CUST-83342",
+    "date": "2026-03-25",
+    "order_id": "TA-94929",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0643-1",
+    "record_id": "resolution:RES-0643-1",
+    "customer_id": "CUST-45755",
+    "date": "2025-06-09",
+    "order_id": "TA-96479",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0643-2",
+    "record_id": "resolution:RES-0643-2",
+    "customer_id": "CUST-45755",
+    "date": "2025-07-22",
+    "order_id": "TA-98328",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0643-3",
+    "record_id": "resolution:RES-0643-3",
+    "customer_id": "CUST-45755",
+    "date": "2025-10-24",
+    "order_id": "TA-99661",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0647-1",
+    "record_id": "resolution:RES-0647-1",
+    "customer_id": "CUST-43444",
+    "date": "2025-03-20",
+    "order_id": "TA-91768",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0647-2",
+    "record_id": "resolution:RES-0647-2",
+    "customer_id": "CUST-43444",
+    "date": "2025-08-18",
+    "order_id": "TA-92689",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0651-1",
+    "record_id": "resolution:RES-0651-1",
+    "customer_id": "CUST-67325",
+    "date": "2025-12-01",
+    "order_id": "TA-91527",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0651-2",
+    "record_id": "resolution:RES-0651-2",
+    "customer_id": "CUST-67325",
+    "date": "2026-04-22",
+    "order_id": "TA-97709",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0659-1",
+    "record_id": "resolution:RES-0659-1",
+    "customer_id": "CUST-25264",
+    "date": "2025-04-18",
+    "order_id": "TA-91588",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0659-2",
+    "record_id": "resolution:RES-0659-2",
+    "customer_id": "CUST-25264",
+    "date": "2025-07-20",
+    "order_id": "TA-92440",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0659-3",
+    "record_id": "resolution:RES-0659-3",
+    "customer_id": "CUST-25264",
+    "date": "2025-09-30",
+    "order_id": "TA-95138",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0666-1",
+    "record_id": "resolution:RES-0666-1",
+    "customer_id": "CUST-74713",
+    "date": "2026-01-30",
+    "order_id": "TA-93882",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0666-2",
+    "record_id": "resolution:RES-0666-2",
+    "customer_id": "CUST-74713",
+    "date": "2025-12-04",
+    "order_id": "TA-92895",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0670-1",
+    "record_id": "resolution:RES-0670-1",
+    "customer_id": "CUST-30582",
+    "date": "2025-07-03",
+    "order_id": "TA-95101",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0675-1",
+    "record_id": "resolution:RES-0675-1",
+    "customer_id": "CUST-82562",
+    "date": "2025-10-13",
+    "order_id": "TA-91248",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0675-2",
+    "record_id": "resolution:RES-0675-2",
+    "customer_id": "CUST-82562",
+    "date": "2025-12-07",
+    "order_id": "TA-98046",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0675-3",
+    "record_id": "resolution:RES-0675-3",
+    "customer_id": "CUST-82562",
+    "date": "2026-01-23",
+    "order_id": "TA-92217",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0677-1",
+    "record_id": "resolution:RES-0677-1",
+    "customer_id": "CUST-53842",
+    "date": "2025-08-17",
+    "order_id": "TA-92825",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0677-2",
+    "record_id": "resolution:RES-0677-2",
+    "customer_id": "CUST-53842",
+    "date": "2025-10-27",
+    "order_id": "TA-92405",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0677-3",
+    "record_id": "resolution:RES-0677-3",
+    "customer_id": "CUST-53842",
+    "date": "2025-12-04",
+    "order_id": "TA-91057",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0680-1",
+    "record_id": "resolution:RES-0680-1",
+    "customer_id": "CUST-40945",
+    "date": "2025-03-21",
+    "order_id": "TA-97602",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0680-2",
+    "record_id": "resolution:RES-0680-2",
+    "customer_id": "CUST-40945",
+    "date": "2025-05-20",
+    "order_id": "TA-97363",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0683-1",
+    "record_id": "resolution:RES-0683-1",
+    "customer_id": "CUST-86585",
+    "date": "2025-11-03",
+    "order_id": "TA-92013",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0683-2",
+    "record_id": "resolution:RES-0683-2",
+    "customer_id": "CUST-86585",
+    "date": "2025-10-19",
+    "order_id": "TA-91530",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0695-1",
+    "record_id": "resolution:RES-0695-1",
+    "customer_id": "CUST-52495",
+    "date": "2025-10-31",
+    "order_id": "TA-95120",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0695-2",
+    "record_id": "resolution:RES-0695-2",
+    "customer_id": "CUST-52495",
+    "date": "2025-09-11",
+    "order_id": "TA-99636",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0695-3",
+    "record_id": "resolution:RES-0695-3",
+    "customer_id": "CUST-52495",
+    "date": "2025-10-31",
+    "order_id": "TA-91625",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0696-1",
+    "record_id": "resolution:RES-0696-1",
+    "customer_id": "CUST-45296",
+    "date": "2025-12-12",
+    "order_id": "TA-97967",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0696-2",
+    "record_id": "resolution:RES-0696-2",
+    "customer_id": "CUST-45296",
+    "date": "2025-11-01",
+    "order_id": "TA-99045",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0702-1",
+    "record_id": "resolution:RES-0702-1",
+    "customer_id": "CUST-96805",
+    "date": "2026-04-10",
+    "order_id": "TA-99725",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0702-2",
+    "record_id": "resolution:RES-0702-2",
+    "customer_id": "CUST-96805",
+    "date": "2026-05-12",
+    "order_id": "TA-94465",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0702-3",
+    "record_id": "resolution:RES-0702-3",
+    "customer_id": "CUST-96805",
+    "date": "2026-02-13",
+    "order_id": "TA-95939",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0711-1",
+    "record_id": "resolution:RES-0711-1",
+    "customer_id": "CUST-13325",
+    "date": "2025-10-18",
+    "order_id": "TA-99925",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0711-2",
+    "record_id": "resolution:RES-0711-2",
+    "customer_id": "CUST-13325",
+    "date": "2025-07-24",
+    "order_id": "TA-94376",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0711-3",
+    "record_id": "resolution:RES-0711-3",
+    "customer_id": "CUST-13325",
+    "date": "2026-01-10",
+    "order_id": "TA-96467",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0717-1",
+    "record_id": "resolution:RES-0717-1",
+    "customer_id": "CUST-26512",
+    "date": "2025-05-09",
+    "order_id": "TA-95382",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0718-1",
+    "record_id": "resolution:RES-0718-1",
+    "customer_id": "CUST-67127",
+    "date": "2025-06-05",
+    "order_id": "TA-97243",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0718-2",
+    "record_id": "resolution:RES-0718-2",
+    "customer_id": "CUST-67127",
+    "date": "2025-05-16",
+    "order_id": "TA-93540",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0722-1",
+    "record_id": "resolution:RES-0722-1",
+    "customer_id": "CUST-10484",
+    "date": "2025-07-17",
+    "order_id": "TA-99061",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0722-2",
+    "record_id": "resolution:RES-0722-2",
+    "customer_id": "CUST-10484",
+    "date": "2025-06-30",
+    "order_id": "TA-92037",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0727-1",
+    "record_id": "resolution:RES-0727-1",
+    "customer_id": "CUST-59054",
+    "date": "2025-07-20",
+    "order_id": "TA-95075",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0727-2",
+    "record_id": "resolution:RES-0727-2",
+    "customer_id": "CUST-59054",
+    "date": "2025-05-18",
+    "order_id": "TA-97594",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0729-1",
+    "record_id": "resolution:RES-0729-1",
+    "customer_id": "CUST-60871",
+    "date": "2026-04-22",
+    "order_id": "TA-95109",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0729-2",
+    "record_id": "resolution:RES-0729-2",
+    "customer_id": "CUST-60871",
+    "date": "2026-05-08",
+    "order_id": "TA-96625",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0729-3",
+    "record_id": "resolution:RES-0729-3",
+    "customer_id": "CUST-60871",
+    "date": "2026-01-20",
+    "order_id": "TA-93543",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0734-1",
+    "record_id": "resolution:RES-0734-1",
+    "customer_id": "CUST-77212",
+    "date": "2025-03-20",
+    "order_id": "TA-94039",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0734-2",
+    "record_id": "resolution:RES-0734-2",
+    "customer_id": "CUST-77212",
+    "date": "2025-05-30",
+    "order_id": "TA-92917",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0742-1",
+    "record_id": "resolution:RES-0742-1",
+    "customer_id": "CUST-89084",
+    "date": "2025-08-07",
+    "order_id": "TA-98731",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0742-2",
+    "record_id": "resolution:RES-0742-2",
+    "customer_id": "CUST-89084",
+    "date": "2025-05-14",
+    "order_id": "TA-91575",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0744-1",
+    "record_id": "resolution:RES-0744-1",
+    "customer_id": "CUST-37063",
+    "date": "2025-10-24",
+    "order_id": "TA-93507",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0744-2",
+    "record_id": "resolution:RES-0744-2",
+    "customer_id": "CUST-37063",
+    "date": "2026-01-10",
+    "order_id": "TA-96961",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0745-1",
+    "record_id": "resolution:RES-0745-1",
+    "customer_id": "CUST-99762",
+    "date": "2025-12-19",
+    "order_id": "TA-95987",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0745-2",
+    "record_id": "resolution:RES-0745-2",
+    "customer_id": "CUST-99762",
+    "date": "2025-08-02",
+    "order_id": "TA-97508",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0752-1",
+    "record_id": "resolution:RES-0752-1",
+    "customer_id": "CUST-46587",
+    "date": "2025-10-10",
+    "order_id": "TA-98472",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0758-1",
+    "record_id": "resolution:RES-0758-1",
+    "customer_id": "CUST-46497",
+    "date": "2026-03-15",
+    "order_id": "TA-95650",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0758-2",
+    "record_id": "resolution:RES-0758-2",
+    "customer_id": "CUST-46497",
+    "date": "2025-11-14",
+    "order_id": "TA-95263",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0758-3",
+    "record_id": "resolution:RES-0758-3",
+    "customer_id": "CUST-46497",
+    "date": "2025-09-27",
+    "order_id": "TA-93672",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0760-1",
+    "record_id": "resolution:RES-0760-1",
+    "customer_id": "CUST-12313",
+    "date": "2025-12-21",
+    "order_id": "TA-93329",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0760-2",
+    "record_id": "resolution:RES-0760-2",
+    "customer_id": "CUST-12313",
+    "date": "2025-07-15",
+    "order_id": "TA-92489",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0760-3",
+    "record_id": "resolution:RES-0760-3",
+    "customer_id": "CUST-12313",
+    "date": "2025-10-03",
+    "order_id": "TA-94215",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0763-1",
+    "record_id": "resolution:RES-0763-1",
+    "customer_id": "CUST-47808",
+    "date": "2025-03-26",
+    "order_id": "TA-99994",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0763-2",
+    "record_id": "resolution:RES-0763-2",
+    "customer_id": "CUST-47808",
+    "date": "2025-04-29",
+    "order_id": "TA-94396",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0770-1",
+    "record_id": "resolution:RES-0770-1",
+    "customer_id": "CUST-10547",
+    "date": "2025-08-09",
+    "order_id": "TA-99608",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0783-1",
+    "record_id": "resolution:RES-0783-1",
+    "customer_id": "CUST-42576",
+    "date": "2025-12-28",
+    "order_id": "TA-93596",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0788-1",
+    "record_id": "resolution:RES-0788-1",
+    "customer_id": "CUST-97897",
+    "date": "2026-03-28",
+    "order_id": "TA-99438",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0789-1",
+    "record_id": "resolution:RES-0789-1",
+    "customer_id": "CUST-88732",
+    "date": "2025-07-27",
+    "order_id": "TA-99307",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0789-2",
+    "record_id": "resolution:RES-0789-2",
+    "customer_id": "CUST-88732",
+    "date": "2026-01-03",
+    "order_id": "TA-91092",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0796-1",
+    "record_id": "resolution:RES-0796-1",
+    "customer_id": "CUST-81819",
+    "date": "2026-05-17",
+    "order_id": "TA-92619",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0796-2",
+    "record_id": "resolution:RES-0796-2",
+    "customer_id": "CUST-81819",
+    "date": "2026-02-22",
+    "order_id": "TA-95825",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0797-1",
+    "record_id": "resolution:RES-0797-1",
+    "customer_id": "CUST-35571",
+    "date": "2025-10-23",
+    "order_id": "TA-91507",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0797-2",
+    "record_id": "resolution:RES-0797-2",
+    "customer_id": "CUST-35571",
+    "date": "2025-07-29",
+    "order_id": "TA-93931",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0797-3",
+    "record_id": "resolution:RES-0797-3",
+    "customer_id": "CUST-35571",
+    "date": "2025-11-10",
+    "order_id": "TA-93780",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0801-1",
+    "record_id": "resolution:RES-0801-1",
+    "customer_id": "CUST-88139",
+    "date": "2025-10-21",
+    "order_id": "TA-94731",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0801-2",
+    "record_id": "resolution:RES-0801-2",
+    "customer_id": "CUST-88139",
+    "date": "2025-09-01",
+    "order_id": "TA-99694",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0801-3",
+    "record_id": "resolution:RES-0801-3",
+    "customer_id": "CUST-88139",
+    "date": "2025-10-25",
+    "order_id": "TA-97289",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0805-1",
+    "record_id": "resolution:RES-0805-1",
+    "customer_id": "CUST-86640",
+    "date": "2026-02-20",
+    "order_id": "TA-99322",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0809-1",
+    "record_id": "resolution:RES-0809-1",
+    "customer_id": "CUST-28568",
+    "date": "2025-07-07",
+    "order_id": "TA-99804",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0809-2",
+    "record_id": "resolution:RES-0809-2",
+    "customer_id": "CUST-28568",
+    "date": "2025-06-03",
+    "order_id": "TA-95295",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0811-1",
+    "record_id": "resolution:RES-0811-1",
+    "customer_id": "CUST-19248",
+    "date": "2026-06-04",
+    "order_id": "TA-94322",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0811-2",
+    "record_id": "resolution:RES-0811-2",
+    "customer_id": "CUST-19248",
+    "date": "2026-03-31",
+    "order_id": "TA-98254",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0811-3",
+    "record_id": "resolution:RES-0811-3",
+    "customer_id": "CUST-19248",
+    "date": "2026-03-02",
+    "order_id": "TA-95164",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0817-1",
+    "record_id": "resolution:RES-0817-1",
+    "customer_id": "CUST-93780",
+    "date": "2026-04-11",
+    "order_id": "TA-92500",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0817-2",
+    "record_id": "resolution:RES-0817-2",
+    "customer_id": "CUST-93780",
+    "date": "2026-05-20",
+    "order_id": "TA-98432",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0818-1",
+    "record_id": "resolution:RES-0818-1",
+    "customer_id": "CUST-66068",
+    "date": "2026-02-02",
+    "order_id": "TA-94795",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0818-2",
+    "record_id": "resolution:RES-0818-2",
+    "customer_id": "CUST-66068",
+    "date": "2025-11-05",
+    "order_id": "TA-96259",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0818-3",
+    "record_id": "resolution:RES-0818-3",
+    "customer_id": "CUST-66068",
+    "date": "2026-03-05",
+    "order_id": "TA-99624",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0830-1",
+    "record_id": "resolution:RES-0830-1",
+    "customer_id": "CUST-24139",
+    "date": "2025-08-26",
+    "order_id": "TA-98853",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0830-2",
+    "record_id": "resolution:RES-0830-2",
+    "customer_id": "CUST-24139",
+    "date": "2025-10-27",
+    "order_id": "TA-93734",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0830-3",
+    "record_id": "resolution:RES-0830-3",
+    "customer_id": "CUST-24139",
+    "date": "2026-01-18",
+    "order_id": "TA-91135",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0838-1",
+    "record_id": "resolution:RES-0838-1",
+    "customer_id": "CUST-37529",
+    "date": "2025-10-07",
+    "order_id": "TA-91053",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0848-1",
+    "record_id": "resolution:RES-0848-1",
+    "customer_id": "CUST-38919",
+    "date": "2025-12-09",
+    "order_id": "TA-10849",
+    "resolution_type": "partial_refund",
+    "amount": 8.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0850-1",
+    "record_id": "resolution:RES-0850-1",
+    "customer_id": "CUST-12758",
+    "date": "2026-08-01",
+    "order_id": "TA-98078",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0850-2",
+    "record_id": "resolution:RES-0850-2",
+    "customer_id": "CUST-12758",
+    "date": "2026-02-13",
+    "order_id": "TA-96634",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0850-3",
+    "record_id": "resolution:RES-0850-3",
+    "customer_id": "CUST-12758",
+    "date": "2026-05-27",
+    "order_id": "TA-93197",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0856-1",
+    "record_id": "resolution:RES-0856-1",
+    "customer_id": "CUST-24733",
+    "date": "2026-02-21",
+    "order_id": "TA-98299",
+    "resolution_type": "partial_refund",
+    "amount": 6.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0856-2",
+    "record_id": "resolution:RES-0856-2",
+    "customer_id": "CUST-24733",
+    "date": "2026-02-05",
+    "order_id": "TA-99814",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0856-3",
+    "record_id": "resolution:RES-0856-3",
+    "customer_id": "CUST-24733",
+    "date": "2026-06-07",
+    "order_id": "TA-92738",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0859-1",
+    "record_id": "resolution:RES-0859-1",
+    "customer_id": "CUST-29482",
+    "date": "2026-04-22",
+    "order_id": "TA-95338",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0859-2",
+    "record_id": "resolution:RES-0859-2",
+    "customer_id": "CUST-29482",
+    "date": "2026-03-31",
+    "order_id": "TA-98099",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0859-3",
+    "record_id": "resolution:RES-0859-3",
+    "customer_id": "CUST-29482",
+    "date": "2026-03-05",
+    "order_id": "TA-93709",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0866-1",
+    "record_id": "resolution:RES-0866-1",
+    "customer_id": "CUST-64590",
+    "date": "2025-04-15",
+    "order_id": "TA-99515",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0868-1",
+    "record_id": "resolution:RES-0868-1",
+    "customer_id": "CUST-43823",
+    "date": "2025-10-30",
+    "order_id": "TA-97951",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0868-2",
+    "record_id": "resolution:RES-0868-2",
+    "customer_id": "CUST-43823",
+    "date": "2026-02-13",
+    "order_id": "TA-91984",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0884-1",
+    "record_id": "resolution:RES-0884-1",
+    "customer_id": "CUST-33628",
+    "date": "2026-04-24",
+    "order_id": "TA-98667",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0884-2",
+    "record_id": "resolution:RES-0884-2",
+    "customer_id": "CUST-33628",
+    "date": "2025-12-30",
+    "order_id": "TA-92068",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0885-1",
+    "record_id": "resolution:RES-0885-1",
+    "customer_id": "CUST-72419",
+    "date": "2026-05-30",
+    "order_id": "TA-98177",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0885-2",
+    "record_id": "resolution:RES-0885-2",
+    "customer_id": "CUST-72419",
+    "date": "2026-04-27",
+    "order_id": "TA-99284",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0885-3",
+    "record_id": "resolution:RES-0885-3",
+    "customer_id": "CUST-72419",
+    "date": "2026-04-10",
+    "order_id": "TA-93232",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0889-1",
+    "record_id": "resolution:RES-0889-1",
+    "customer_id": "CUST-31061",
+    "date": "2025-12-27",
+    "order_id": "TA-92366",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0889-2",
+    "record_id": "resolution:RES-0889-2",
+    "customer_id": "CUST-31061",
+    "date": "2025-11-29",
+    "order_id": "TA-97714",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0891-1",
+    "record_id": "resolution:RES-0891-1",
+    "customer_id": "CUST-24890",
+    "date": "2025-10-07",
+    "order_id": "TA-92209",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0891-2",
+    "record_id": "resolution:RES-0891-2",
+    "customer_id": "CUST-24890",
+    "date": "2025-09-05",
+    "order_id": "TA-97728",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0891-3",
+    "record_id": "resolution:RES-0891-3",
+    "customer_id": "CUST-24890",
+    "date": "2025-09-05",
+    "order_id": "TA-95646",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0893-1",
+    "record_id": "resolution:RES-0893-1",
+    "customer_id": "CUST-57683",
+    "date": "2026-05-17",
+    "order_id": "TA-92898",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0893-2",
+    "record_id": "resolution:RES-0893-2",
+    "customer_id": "CUST-57683",
+    "date": "2026-04-07",
+    "order_id": "TA-97125",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0893-3",
+    "record_id": "resolution:RES-0893-3",
+    "customer_id": "CUST-57683",
+    "date": "2026-04-07",
+    "order_id": "TA-92696",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0896-1",
+    "record_id": "resolution:RES-0896-1",
+    "customer_id": "CUST-23606",
+    "date": "2025-07-23",
+    "order_id": "TA-96313",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0896-2",
+    "record_id": "resolution:RES-0896-2",
+    "customer_id": "CUST-23606",
+    "date": "2025-09-16",
+    "order_id": "TA-92967",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0896-3",
+    "record_id": "resolution:RES-0896-3",
+    "customer_id": "CUST-23606",
+    "date": "2025-05-04",
+    "order_id": "TA-95985",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0900-1",
+    "record_id": "resolution:RES-0900-1",
+    "customer_id": "CUST-78021",
+    "date": "2025-05-14",
+    "order_id": "TA-99215",
+    "resolution_type": "partial_refund",
+    "amount": 4.5,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0900-2",
+    "record_id": "resolution:RES-0900-2",
+    "customer_id": "CUST-78021",
+    "date": "2025-07-07",
+    "order_id": "TA-91826",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0905-1",
+    "record_id": "resolution:RES-0905-1",
+    "customer_id": "CUST-28844",
+    "date": "2026-04-12",
+    "order_id": "TA-98703",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0905-2",
+    "record_id": "resolution:RES-0905-2",
+    "customer_id": "CUST-28844",
+    "date": "2026-01-27",
+    "order_id": "TA-97976",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0906-1",
+    "record_id": "resolution:RES-0906-1",
+    "customer_id": "CUST-22160",
+    "date": "2025-08-21",
+    "order_id": "TA-93554",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0906-2",
+    "record_id": "resolution:RES-0906-2",
+    "customer_id": "CUST-22160",
+    "date": "2025-08-09",
+    "order_id": "TA-93774",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0908-1",
+    "record_id": "resolution:RES-0908-1",
+    "customer_id": "CUST-54932",
+    "date": "2025-09-02",
+    "order_id": "TA-99831",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0908-2",
+    "record_id": "resolution:RES-0908-2",
+    "customer_id": "CUST-54932",
+    "date": "2025-06-19",
+    "order_id": "TA-96067",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0908-3",
+    "record_id": "resolution:RES-0908-3",
+    "customer_id": "CUST-54932",
+    "date": "2025-07-05",
+    "order_id": "TA-95762",
+    "resolution_type": "partial_refund",
+    "amount": 10.25,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0911-1",
+    "record_id": "resolution:RES-0911-1",
+    "customer_id": "CUST-62421",
+    "date": "2026-03-01",
+    "order_id": "TA-95869",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0911-2",
+    "record_id": "resolution:RES-0911-2",
+    "customer_id": "CUST-62421",
+    "date": "2025-12-02",
+    "order_id": "TA-95342",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0922-1",
+    "record_id": "resolution:RES-0922-1",
+    "customer_id": "CUST-23466",
+    "date": "2025-07-23",
+    "order_id": "TA-94805",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0931-1",
+    "record_id": "resolution:RES-0931-1",
+    "customer_id": "CUST-29742",
+    "date": "2025-05-10",
+    "order_id": "TA-94294",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0933-1",
+    "record_id": "resolution:RES-0933-1",
+    "customer_id": "CUST-16536",
+    "date": "2025-11-16",
+    "order_id": "TA-98198",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0933-2",
+    "record_id": "resolution:RES-0933-2",
+    "customer_id": "CUST-16536",
+    "date": "2026-03-24",
+    "order_id": "TA-98734",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0936-1",
+    "record_id": "resolution:RES-0936-1",
+    "customer_id": "CUST-99318",
+    "date": "2026-03-30",
+    "order_id": "TA-94397",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0938-1",
+    "record_id": "resolution:RES-0938-1",
+    "customer_id": "CUST-12279",
+    "date": "2025-11-02",
+    "order_id": "TA-95999",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0938-2",
+    "record_id": "resolution:RES-0938-2",
+    "customer_id": "CUST-12279",
+    "date": "2026-02-12",
+    "order_id": "TA-98065",
+    "resolution_type": "partial_refund",
+    "amount": 9.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0944-1",
+    "record_id": "resolution:RES-0944-1",
+    "customer_id": "CUST-11092",
+    "date": "2025-12-16",
+    "order_id": "TA-99737",
+    "resolution_type": "partial_refund",
+    "amount": 4.25,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0944-2",
+    "record_id": "resolution:RES-0944-2",
+    "customer_id": "CUST-11092",
+    "date": "2025-12-13",
+    "order_id": "TA-94448",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0948-1",
+    "record_id": "resolution:RES-0948-1",
+    "customer_id": "CUST-93498",
+    "date": "2026-01-24",
+    "order_id": "TA-93569",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0954-1",
+    "record_id": "resolution:RES-0954-1",
+    "customer_id": "CUST-48086",
+    "date": "2025-08-01",
+    "order_id": "TA-99135",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0957-1",
+    "record_id": "resolution:RES-0957-1",
+    "customer_id": "CUST-25966",
+    "date": "2026-02-10",
+    "order_id": "TA-97803",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0957-2",
+    "record_id": "resolution:RES-0957-2",
+    "customer_id": "CUST-25966",
+    "date": "2026-02-03",
+    "order_id": "TA-93330",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0960-1",
+    "record_id": "resolution:RES-0960-1",
+    "customer_id": "CUST-69910",
+    "date": "2025-09-25",
+    "order_id": "TA-96400",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0960-2",
+    "record_id": "resolution:RES-0960-2",
+    "customer_id": "CUST-69910",
+    "date": "2025-12-28",
+    "order_id": "TA-92619",
+    "resolution_type": "partial_refund",
+    "amount": 8.75,
+    "reason": "food quality"
+  },
+  {
+    "resolution_id": "RES-0969-1",
+    "record_id": "resolution:RES-0969-1",
+    "customer_id": "CUST-84487",
+    "date": "2025-04-22",
+    "order_id": "TA-91743",
+    "resolution_type": "partial_refund",
+    "amount": 3.95,
+    "reason": "missing item"
+  },
+  {
+    "resolution_id": "RES-0975-1",
+    "record_id": "resolution:RES-0975-1",
+    "customer_id": "CUST-19275",
+    "date": "2025-12-14",
+    "order_id": "TA-96124",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0980-1",
+    "record_id": "resolution:RES-0980-1",
+    "customer_id": "CUST-33670",
+    "date": "2025-08-25",
+    "order_id": "TA-95420",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0986-1",
+    "record_id": "resolution:RES-0986-1",
+    "customer_id": "CUST-96560",
+    "date": "2026-03-18",
+    "order_id": "TA-96800",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  },
+  {
+    "resolution_id": "RES-0986-2",
+    "record_id": "resolution:RES-0986-2",
+    "customer_id": "CUST-96560",
+    "date": "2026-04-05",
+    "order_id": "TA-94699",
+    "resolution_type": "store_credit",
+    "amount": 5.0,
+    "reason": "late delivery"
+  }
+]

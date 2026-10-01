@@ -51,7 +51,7 @@ podman compose run --rm tools tools/load_sweep.py \
 | flag | meaning |
 | --- | --- |
 | `--concurrency 1,4,8,16,32` | One run ("level") per value. At each level the script keeps exactly N requests in flight: when one finishes, the next starts. This is a closed-loop test, so the load never exceeds N. |
-| `--requests-per-level 32` | Requests to complete at each level before moving on. Prompts cycle through the 20 screening scenarios, so the prompt mix is the same at every level. |
+| `--requests-per-level 32` | Requests to complete at each level before moving on. Prompts cycle through the 22 screening scenarios, so the prompt mix is the same at every level. |
 | `--max-tokens 300` | Output budget per request. It caps decode time and how far each sequence can grow its KV-cache footprint. |
 | `--pad-prompt-tokens N` | Appends about N tokens of filler text to each prompt. This raises prefill cost and KV-cache use per request (used in step 3). |
 | `--structured-output json_schema` | Adds guided decoding, to measure its overhead under load (step 5d). |
@@ -241,7 +241,7 @@ podman compose run --rm tools tools/smoke_test.py --model "$SERVED" --extra-body
 
 Limitations to state on camera: 32-64 requests per level is enough to see the shape of the curve,
 not to certify an SLO; the workload is synthetic and uniform; and quality was checked with a
-20-scenario screen. Module 4 adds Locust, Prometheus, and Grafana for the real baseline.
+22-scenario screen. Module 4 adds Locust, Prometheus, and Grafana for the real baseline.
 
 Leave `vllm` and `gateway` running. Module 2 consumes `http://${MODEL_HOST}:${GATEWAY_PORT}/v1`
 with model name `$SERVED`.

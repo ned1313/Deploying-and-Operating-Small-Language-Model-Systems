@@ -1,0 +1,15 @@
+FROM docker.io/library/python:3.12-slim
+
+# Build context is the repository root.
+WORKDIR /app
+COPY shared/requirements/service.txt /tmp/service.txt
+RUN pip install --no-cache-dir -r /tmp/service.txt
+COPY shared/ /opt/shared/
+RUN pip install --no-cache-dir --no-deps /opt/shared
+COPY shared/services/mock_case_api/main.py /app/main.py
+
+ENV TACO_CASE_DB=/data/cases/cases.db
+EXPOSE 8081
+HEALTHCHECK --interval=5s --timeout=3s --retries=10 \
+  CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8081/healthz', timeout=2).status == 200 else 1)"
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8081"]

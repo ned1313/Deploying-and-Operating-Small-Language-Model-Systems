@@ -16,7 +16,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from common import DEFAULT_RESULTS_DIR, expand_globs, print_table, timestamp_slug
+from taco_shared.paths import DEFAULT_RESULTS_DIR
+from taco_shared.reporting import expand_globs, print_table, timestamp_slug
 
 # (CSV column, console header or None to keep it CSV-only, getter)
 RUN_FIELDS: list[tuple[str, str | None, Any]] = [

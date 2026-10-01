@@ -1,0 +1,22 @@
+FROM docker.io/library/python:3.12-slim
+
+# Build context is the repository root (see m2/compose.yaml). One image runs the teaching script, the
+# evaluation, the seed job, and the tests.
+WORKDIR /app
+COPY shared/requirements/dev.txt /tmp/dev.txt
+RUN pip install --no-cache-dir -r /tmp/dev.txt
+COPY shared/ /opt/shared/
+RUN pip install --no-cache-dir --no-deps /opt/shared
+
+COPY m2/agent/ /app/agent/
+COPY m2/examples/ /app/examples/
+COPY m2/eval/ /app/eval/
+COPY m2/tests/ /app/tests/
+
+ENV PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1 \
+    RESULTS_DIR=/app/results
+RUN mkdir -p /app/results
+
+ENTRYPOINT ["python"]
+CMD ["examples/basic_agent.py", "--help"]
