@@ -7,7 +7,7 @@ project ([compose.yaml](compose.yaml)).
 | Demo | File | Outcome |
 | --- | --- | --- |
 | 1.1 | [demo-1.1-deploy-and-validate.md](demo-1.1-deploy-and-validate.md) | vLLM serving a quantized candidate behind nginx, validated with `smoke_test.py`, deployment record written |
-| 1.2 | [demo-1.2-compare-models.md](demo-1.2-compare-models.md) | 22-scenario screening of Qwen, Llama, and Ministral with `screen_models.py`; comparison table; model selected |
+| 1.2 | [demo-1.2-compare-models.md](demo-1.2-compare-models.md) | 22-scenario screening of Qwen, Llama, and Granite with `screen_models.py`; comparison table; model selected |
 | 1.3 | [demo-1.3-tune-under-load.md](demo-1.3-tune-under-load.md) | Concurrency sweeps with `load_sweep.py`, memory-pressure and OOM cases, tuned baseline confirmed |
 
 ## Layout

@@ -9,9 +9,9 @@ Prerequisites: Demo 1.2 state (selected candidate running via `serve.sh`, `gatew
 `source m1/env.sh`). The examples below use Llama; substitute the winner from Demo 1.2.
 
 ```bash
-CAND=llama                       # llama | qwen | ministral
-SERVED="$LLAMA_SERVED_NAME"      # QWEN_SERVED_NAME | MINISTRAL_SERVED_NAME
-EXTRA="$LLAMA_EXTRA_BODY"        # QWEN_EXTRA_BODY  | MINISTRAL_EXTRA_BODY
+CAND=llama                       # llama | qwen | granite
+SERVED="$LLAMA_SERVED_NAME"      # QWEN_SERVED_NAME | GRANITE_SERVED_NAME
+EXTRA="$LLAMA_EXTRA_BODY"        # QWEN_EXTRA_BODY  | GRANITE_EXTRA_BODY
 ```
 
 ---

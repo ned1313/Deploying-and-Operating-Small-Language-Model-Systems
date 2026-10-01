@@ -5,13 +5,13 @@
 #   source m1/env.sh
 #   ./m1/serve.sh qwen                              # baseline settings from env.sh
 #   ./m1/serve.sh llama --max-model-len 4096        # extra args are appended to vLLM
-#   ./m1/serve.sh ministral --kv-cache-dtype fp8 --max-num-seqs 64
+#   ./m1/serve.sh granite --kv-cache-dtype fp8 --max-num-seqs 64
 #   ./m1/serve.sh qwen --dry-run                    # print VLLM_ARGS and the compose command only
 #
 # Equivalent by hand:  VLLM_ARGS="--model ..." podman compose up -d --force-recreate vllm
 set -euo pipefail
 
-candidate="${1:?usage: serve.sh <qwen|llama|ministral> [extra vllm args...]}"
+candidate="${1:?usage: serve.sh <qwen|llama|granite> [extra vllm args...]}"
 shift
 
 : "${COMPOSE_FILE:?source m1/env.sh first}"
@@ -30,13 +30,12 @@ case "$candidate" in
     repo="$LLAMA_REPO"; revision="$LLAMA_REVISION"; served="$LLAMA_SERVED_NAME"
     parser_args=(--enable-auto-tool-choice --tool-call-parser "$LLAMA_TOOL_PARSER")
     ;;
-  ministral)
-    repo="$MINISTRAL_REPO"; revision="$MINISTRAL_REVISION"; served="$MINISTRAL_SERVED_NAME"
-    parser_args=(--tokenizer-mode "$MINISTRAL_TOKENIZER_MODE" --limit-mm-per-prompt '{"image":0}'
-                 --enable-auto-tool-choice --tool-call-parser "$MINISTRAL_TOOL_PARSER")
+  granite)
+    repo="$GRANITE_REPO"; revision="$GRANITE_REVISION"; served="$GRANITE_SERVED_NAME"
+    parser_args=(--enable-auto-tool-choice --tool-call-parser "$GRANITE_TOOL_PARSER")
     ;;
   *)
-    echo "unknown candidate: $candidate (expected qwen, llama, or ministral)" >&2; exit 2 ;;
+    echo "unknown candidate: $candidate (expected qwen, llama, or granite)" >&2; exit 2 ;;
 esac
 
 vllm_args=(

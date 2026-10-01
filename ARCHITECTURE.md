@@ -41,7 +41,7 @@ The inference connection contract shared by every client:
 | Setting | Example | Source |
 | --- | --- | --- |
 | `INFERENCE_BASE_URL` | `http://<MODEL_HOST>:8080/v1` | `.env` |
-| `INFERENCE_MODEL` | `qwen3.5-9b` | `.env` |
+| `INFERENCE_MODEL` | `qwen3-14b` | `.env` |
 | `INFERENCE_EXTRA_BODY` | `{"chat_template_kwargs": {"enable_thinking": false}}` | `.env` |
 | service credential | file mounted at `/run/secrets/inference_api_key` | `secrets/` (enforced from module 6) |
 

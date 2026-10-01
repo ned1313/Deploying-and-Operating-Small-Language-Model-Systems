@@ -32,11 +32,12 @@ export MAX_MODEL_LEN="${MAX_MODEL_LEN:-8192}"
 export GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-0.90}"
 export MAX_NUM_SEQS="${MAX_NUM_SEQS:-32}"
 
-# ----- candidate 1: Qwen3.5-9B -----------------------------------------------------------------
-export QWEN_REPO="${QWEN_REPO:-RedHatAI/Qwen3.5-9B-quantized.w8a8}"
-export QWEN_REVISION="${QWEN_REVISION:-main}"
-export QWEN_SERVED_NAME="qwen3.5-9b"
-export QWEN_QUANT_LABEL="gptq-int8"
+# ----- candidate 1: Qwen3-14B ---------------------------------------------------------------------
+# AWQ int4 (group 128); vLLM serves it with awq_marlin on Ampere. ~10 GB of weights.
+export QWEN_REPO="${QWEN_REPO:-Qwen/Qwen3-14B-AWQ}"
+export QWEN_REVISION="${QWEN_REVISION:-31c69efc29464b6bb0aee1398b5a7b50a99340c3}"
+export QWEN_SERVED_NAME="qwen3-14b"
+export QWEN_QUANT_LABEL="awq-int4"
 export QWEN_REASONING_PARSER="${QWEN_REASONING_PARSER:-qwen3}"
 export QWEN_TOOL_PARSER="${QWEN_TOOL_PARSER:-hermes}"
 # Qwen thinking mode inflates tokens and latency for a structured task; disable it per request.
@@ -50,16 +51,16 @@ export LLAMA_QUANT_LABEL="gptq-int8"
 export LLAMA_TOOL_PARSER="${LLAMA_TOOL_PARSER:-llama3_json}"
 export LLAMA_EXTRA_BODY='{}'
 
-# ----- candidate 3: Ministral-3-8B-Instruct-2512 -----------------------------------------------------
-# FP8 weights (~10.4 GB). Ampere has no FP8 math, so vLLM serves it weight-only (W8A16) with Marlin
-# kernels. Mistral3ForConditionalGeneration (multimodal); image inputs are disabled in serve.sh.
-export MINISTRAL_REPO="${MINISTRAL_REPO:-unsloth/Ministral-3-8B-Instruct-2512-FP8}"
-export MINISTRAL_REVISION="${MINISTRAL_REVISION:-6fbffd209c5ad4784bd5a786c9f4fe63c4a1aed2}"
-export MINISTRAL_SERVED_NAME="ministral-3-8b"
-export MINISTRAL_QUANT_LABEL="fp8-w8a16-marlin"
-export MINISTRAL_TOKENIZER_MODE="${MINISTRAL_TOKENIZER_MODE:-mistral}"   # set to auto to use the shipped chat_template.jinja
-export MINISTRAL_TOOL_PARSER="${MINISTRAL_TOOL_PARSER:-mistral}"
-export MINISTRAL_EXTRA_BODY='{}'
+# ----- candidate 3: Granite-4.2-8B -----------------------------------------------------------------
+# FP8 (compressed-tensors); Ampere runs it weight-only (W8A16) via Marlin. ~9.6 GB of weights.
+# Thinking is on by default in the chat template; the MXFP4 build with thinking on failed every scenario.
+export GRANITE_REPO="${GRANITE_REPO:-ibm-granite/granite-4.2-8b-fp8}"
+export GRANITE_REVISION="${GRANITE_REVISION:-6eb3735036ce2010f4ec8319820172a1c06508d7}"
+export GRANITE_SERVED_NAME="granite-4.2-8b"
+export GRANITE_QUANT_LABEL="fp8-w8a16-marlin"
+# The template emits <tool_call><function=...><parameter=...> XML, which the qwen3_coder parser reads.
+export GRANITE_TOOL_PARSER="${GRANITE_TOOL_PARSER:-qwen3_coder}"
+export GRANITE_EXTRA_BODY='{"chat_template_kwargs": {"enable_thinking": false}}'
 
 # Hugging Face token for gated repositories (Llama). Set it in your shell, never in this file.
 : "${HF_TOKEN:=}"

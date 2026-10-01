@@ -104,28 +104,28 @@ kill $SAMPLER
 
 ---
 
-## 4. Swap to candidate 3: Ministral-3-8B-Instruct
+## 4. Swap to candidate 3: Granite-4.2-8B
 
-Same size class as the other two. The checkpoint is FP8; the RTX 3090 (Ampere) has no FP8 math, so
-vLLM loads the weights as FP8 and runs them weight-only (W8A16) with its Marlin kernels. Point out the
-warning in the startup log: the format is supported, but not on its fast path for this GPU.
+The checkpoint is FP8; the RTX 3090 (Ampere) has no FP8 math, so vLLM runs the FP8 weights
+weight-only (W8A16) with its Marlin kernels. Point out the warning in the startup log: the format is
+supported, but not on its fast path for this GPU.
 
 ```bash
-./m1/serve.sh ministral
+./m1/serve.sh granite
 podman compose logs -f vllm
 
-./m1/tools/sample_vram.sh "$RESULTS_DIR/vram-${MINISTRAL_SERVED_NAME}.csv" & SAMPLER=$!
-podman compose run --rm tools tools/screen_models.py --model "$MINISTRAL_SERVED_NAME" \
-    --extra-body "$MINISTRAL_EXTRA_BODY" --label baseline \
-    --vram-log "/app/results/vram-${MINISTRAL_SERVED_NAME}.csv" --include-full-responses
+./m1/tools/sample_vram.sh "$RESULTS_DIR/vram-${GRANITE_SERVED_NAME}.csv" & SAMPLER=$!
+podman compose run --rm tools tools/screen_models.py --model "$GRANITE_SERVED_NAME" \
+    --extra-body "$GRANITE_EXTRA_BODY" --label baseline \
+    --vram-log "/app/results/vram-${GRANITE_SERVED_NAME}.csv" --include-full-responses
 kill $SAMPLER
 ```
 
-Ministral 3 uses vLLM's `Mistral3ForConditionalGeneration` class. Some vLLM images ship a
-`transformers` version that breaks that import (`cannot import name 'PixtralRotaryEmbedding'`), so
-check the pinned image first:
-`podman run --rm --entrypoint python3 "$VLLM_IMAGE" -c "import vllm.model_executor.models.mistral3"`.
-If tool calls come back as raw text, retry with `MINISTRAL_TOKENIZER_MODE=auto ./m1/serve.sh ministral`.
+Worth telling on camera: an earlier attempt with the MXFP4 build of the same model scored 0%. Its chat
+template turns thinking on by default, so every answer was reasoning text that ran out of tokens
+before any JSON, and MXFP4 (4-bit weights *and* activations) has no hardware path on Ampere. With an
+FP8 build and `enable_thinking: false` in `GRANITE_EXTRA_BODY`, the same model is competitive. Read
+`finish_reason` and the raw response before blaming the model.
 
 If a candidate fails to start (unsupported architecture, quantization, or parser name), that is a
 Demo 1.1-style compatibility result: record it in the comparison as "not loadable on this
@@ -163,7 +163,7 @@ Note the selection is provisional until module 2 confirms tool calling with the 
 
 ```bash
 # Put the chosen candidate back and leave it running for Demo 1.3
-./m1/serve.sh qwen        # or llama / ministral
+./m1/serve.sh qwen        # or llama / granite
 podman compose logs -f vllm
 ```
 

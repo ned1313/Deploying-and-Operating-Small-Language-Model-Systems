@@ -14,6 +14,7 @@ Run everything on the GPU host over SSH. Keep `nvtop` open in a second terminal.
 cd ~/Deploying-and-Operating-Small-Language-Model-Systems   # adjust to your clone path
 source m1/env.sh
 chmod a+x m1/tools/*.sh
+chmod a+x m1/*.sh
 
 # Podman and the compose provider
 podman version --format 'client={{.Client.Version}} server={{.Server.Version}}'
