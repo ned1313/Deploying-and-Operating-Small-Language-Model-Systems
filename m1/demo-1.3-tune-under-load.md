@@ -6,12 +6,12 @@ memory-pressure case, and a hard out-of-memory failure. Finish with a baseline c
 has measured headroom.
 
 Prerequisites: Demo 1.2 state (selected candidate running via `serve.sh`, `gateway` up,
-`source m1/env.sh`). The examples below use Llama; substitute the winner from Demo 1.2.
+`source m1/env.sh`). The examples below use Qwen; substitute the winner from Demo 1.2.
 
 ```bash
-CAND=llama                       # llama | qwen | granite
-SERVED="$LLAMA_SERVED_NAME"      # QWEN_SERVED_NAME | GRANITE_SERVED_NAME
-EXTRA="$LLAMA_EXTRA_BODY"        # QWEN_EXTRA_BODY  | GRANITE_EXTRA_BODY
+CAND=qwen                       # llama | qwen | granite
+SERVED="$QWEN_SERVED_NAME"      #  LLAMA_SERVED_NAME | GRANITE_SERVED_NAME
+EXTRA="$QWEN_EXTRA_BODY"        #  LLAMA_EXTRA_BODY | GRANITE_EXTRA_BODY
 ```
 
 ---
@@ -232,9 +232,9 @@ podman compose run --rm tools tools/compare_screening.py \
 
 # Refresh the deployment record with the final arguments (serve.sh saved them)
 podman compose run --rm tools tools/smoke_test.py --model "$SERVED" --extra-body "$EXTRA" \
-    --hf-repo "$LLAMA_REPO" --revision "$LLAMA_REVISION" --quantization "$LLAMA_QUANT_LABEL" \
-    --chat-template "tokenizer default" --reasoning-parser "$LLAMA_REASONING_PARSER" \
-    --tool-call-parser "$LLAMA_TOOL_PARSER" --serving-image "$VLLM_IMAGE" \
+    --hf-repo "$QWEN_REPO" --revision "$QWEN_REVISION" --quantization "$QWEN_QUANT_LABEL" \
+    --chat-template "tokenizer default" --reasoning-parser "$QWEN_REASONING_PARSER" \
+    --tool-call-parser "$QWEN_TOOL_PARSER" --serving-image "$VLLM_IMAGE" \
     --serving-args "$(cat "$RESULTS_DIR/last-serving-args.txt")" \
     --notes "module 1 tuned baseline"
 ```
