@@ -1,0 +1,46 @@
+# Module 4 model-host exporters (GPU host). Independent of taco-m1: starting or stopping these never
+# touches vLLM or the gateway.
+#
+#   source m1/env.sh                                   # exports MODEL_HOST (the LAN address to bind)
+#   podman compose -f m4/model-host/compose.yaml up -d node-exporter dcgm-exporter
+#
+# Fallback when dcgm-exporter cannot read the GPU: start nvidia-smi-exporter instead of dcgm-exporter.
+# Prometheus recording rules (m4/prometheus/rules/taco.yml) normalize both to the same series.
+# Exporters have no authentication in modules 4-5: they bind to MODEL_HOST only, and the desktop is
+# the only intended client. Module 6 revisits this.
+
+name: taco-model-exporters
+
+services:
+  node-exporter:
+    container_name: node-exporter
+    image: quay.io/prometheus/node-exporter:v1.12.1
+    command:
+      - --path.rootfs=/host
+      - --web.listen-address=${MODEL_HOST:?source m1/env.sh first}:${NODE_EXPORTER_PORT:-9100}
+    network_mode: host      # host network and PID namespace so CPU, memory, and NIC metrics are the host's
+    pid: host
+    volumes:
+      - /:/host:ro
+    restart: unless-stopped
+
+  dcgm-exporter:
+    container_name: dcgm-exporter
+    image: nvcr.io/nvidia/k8s/dcgm-exporter:4.5.2-4.8.1-ubuntu22.04
+    command: ["-f", "/etc/dcgm-exporter/taco-counters.csv"]
+    devices:
+      - nvidia.com/gpu=0
+    volumes:
+      - ./dcgm-counters.csv:/etc/dcgm-exporter/taco-counters.csv:ro
+    ports:
+      - "${MODEL_HOST:?source m1/env.sh first}:${GPU_EXPORTER_PORT:-9400}:9400"
+    restart: unless-stopped
+
+  nvidia-smi-exporter:
+    container_name: nvidia-smi-exporter
+    image: docker.io/utkuozdemir/nvidia_gpu_exporter:1.15.1
+    devices:
+      - nvidia.com/gpu=0
+    ports:
+      - "${MODEL_HOST:?source m1/env.sh first}:${GPU_EXPORTER_PORT:-9400}:9835"
+    restart: unless-stopped

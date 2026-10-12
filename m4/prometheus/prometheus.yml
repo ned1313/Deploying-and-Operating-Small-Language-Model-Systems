@@ -1,0 +1,38 @@
+# Prometheus for the Taco Alley deployment (module 4). Model-host targets come from file_sd files that
+# start.sh writes from MODEL_HOST at container start; Prometheus does not expand environment variables.
+# Job and instance labels are fixed so module 6 can move the vllm job behind authentication without
+# breaking dashboards.
+
+global:
+  scrape_interval: 5s        # short for the demo; 15-30s is typical in production
+  evaluation_interval: 5s
+  external_labels:
+    deployment: taco-alley
+
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+        labels: {instance: prometheus, host: desktop}
+
+  # Desktop application, over the shared taco-telemetry network.
+  - job_name: complaint-api
+    static_configs:
+      - targets: ["complaint-api:8090"]
+        labels: {instance: complaint-api, host: desktop}
+
+  # vLLM /metrics through the module 1 gateway, unauthenticated until module 6.
+  - job_name: vllm
+    file_sd_configs:
+      - files: ["/tmp/targets/vllm.json"]
+
+  - job_name: node
+    file_sd_configs:
+      - files: ["/tmp/targets/node.json"]
+
+  - job_name: gpu
+    file_sd_configs:
+      - files: ["/tmp/targets/gpu.json"]

@@ -35,7 +35,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10161"
       }
@@ -73,7 +74,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10062"
       }
@@ -111,7 +113,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10068"
       }
@@ -146,7 +149,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10115"
       }
@@ -187,7 +191,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10294"
       }
@@ -222,7 +227,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10674"
       }
@@ -257,7 +263,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10327"
       }
@@ -292,7 +299,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10130"
       }
@@ -327,7 +335,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10050"
       }
@@ -369,7 +378,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10082"
       }
@@ -411,7 +421,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10087"
       }
@@ -452,7 +463,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10091"
       }
@@ -488,7 +500,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10148"
       }
@@ -529,7 +542,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10167"
       }
@@ -570,7 +584,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10274"
       }
@@ -610,7 +625,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10647"
       }
@@ -650,7 +666,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10016"
       }
@@ -685,7 +702,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10428"
       }
@@ -720,7 +738,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10411"
       }
@@ -760,7 +779,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10144"
       }
@@ -795,7 +815,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10045"
       }
@@ -835,7 +856,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10064"
       }
@@ -872,7 +894,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10431"
       }
@@ -912,7 +935,8 @@
         "required": [
           "get_order",
           "get_prior_resolutions",
-          "get_resolution_policy"
+          "get_resolution_policy",
+          "get_case_status"
         ],
         "order_id": "TA-10849"
       }

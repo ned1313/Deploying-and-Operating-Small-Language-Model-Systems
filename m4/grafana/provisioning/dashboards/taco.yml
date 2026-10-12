@@ -1,0 +1,10 @@
+apiVersion: 1
+
+providers:
+  - name: taco-alley
+    folder: Taco Alley
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/dashboards

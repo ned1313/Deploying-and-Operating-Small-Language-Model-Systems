@@ -5,8 +5,8 @@ their compose files, entry-point scripts, runbooks, and results.
 
 ```
 shared/
-  pyproject.toml              package `taco_shared`; extras: agent (LangChain), service (FastAPI), dev (pytest)
-  requirements/               exact pins per extra, used by every Containerfile (core, agent, service, dev)
+  pyproject.toml              package `taco_shared`; extras: agent (LangChain, LangGraph SQLite checkpointer), service (FastAPI, Prometheus client), dev (pytest), load (Locust)
+  requirements/               exact pins per extra, used by every Containerfile (core, agent, service, dev, load)
   taco_shared/
     cli.py, errors.py, jsonutil.py, metrics.py, reporting.py   helpers used by the module tools
     screening.py              module 1 prompts with order, prior-resolution, and policy facts inlined
@@ -14,9 +14,13 @@ shared/
     policy.py                 versioned policy (JSON source, rendered text)
     policy_engine.py          reference outcomes from structured facts; labels the dataset
     proposal.py               proposal schemas v1/v2 and the evidence-based validator
-    config.py, context.py     inference settings (+ secret file) and the trusted agent context
-    db.py, case_api_client.py read-only scoped SQLite queries; mock case API client
-    agent/                    LangChain model factory, investigation tools, prompts
+    config.py, context.py     inference settings (+ secret file), the trusted agent context, actors and roles
+    db.py, case_api_client.py read-only scoped SQLite queries; case API client (retry budget, idempotent record_action)
+    agent/                    LangChain model factory, investigation tools, prompts, the proposal call, fault injection
+    workflow/                 module 3 LangGraph workflow: state, nodes, routes, budgets, approval interrupt
+    testing.py                scripted chat model and in-process case API for the module test suites
+    load.py                   module 4 workloads: the load-v1 case selection and direct-inference request bodies
+    healthcheck.py            container healthcheck (`python -m taco_shared.healthcheck URL`)
     dataset/build.py          CSV -> generated data and scenario renderings
     dataset/seed.py           generated data -> SQLite (idempotent; --reset is explicit)
     data/
@@ -25,8 +29,10 @@ shared/
       policy/2026.09.json     rules R1-R14 (2026.09.txt is rendered from it)
       schemas/                proposal.v1.json (module 1), proposal.v2.json (module 2, generated)
       scenarios/curated.json  S01-S22 and A01-A02 on top of CSV rows
-      generated/              committed build output; do not edit by hand
-  services/mock_case_api/     FastAPI mock case-management service and its Containerfile
+      scenarios/workflow.json module 3 variants of A01 (clarification, prompt injection, fault profiles), each with its own case
+      generated/              committed build output; do not edit by hand (agent_scenarios.v2.json = agent-v2)
+  services/mock_case_api/     FastAPI mock case-management service: scoped reads, idempotent approved actions,
+                              admin fault injection and fixture reset (only when TACO_ADMIN_TOKEN is set)
   tests/                      pytest; no GPU or network
 ```
 

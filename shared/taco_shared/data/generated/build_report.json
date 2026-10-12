@@ -5,6 +5,7 @@
   "policy_version": "2026.09",
   "screening_version": "screening-v2",
   "agent_version": "agent-v1",
+  "agent_v2_version": "agent-v2",
   "rates": {
     "filing_window": 0.03,
     "prior_history": 0.2,
@@ -131,6 +132,8 @@
   "curated_scenarios": 24,
   "screening_scenarios": 22,
   "agent_scenarios": 24,
+  "workflow_scenarios": 11,
   "orders": 980,
+  "cases": 991,
   "prior_resolutions": 414
 }

@@ -44,6 +44,27 @@ def intake_message(intake: dict[str, Any]) -> str:
     return json.dumps({"intake": intake}, indent=2, ensure_ascii=False)
 
 
+def missing_evidence_nudge(missing: list[str]) -> str:
+    return (f"You have not called {', '.join(missing)} yet. Call the missing tools now, then reply with your "
+            "plain-text summary.")
+
+
+def correction_feedback(problems: list[str]) -> str:
+    return ("Your previous proposal was rejected by the application's validator for these reasons:\n- "
+            + "\n- ".join(problems) + "\nProduce a corrected proposal that uses only facts from the tool results.")
+
+
+def revision_feedback(note: str) -> str:
+    # The reviewer's note is trusted staff input, unlike complaint text and tool results.
+    return f"A service reviewer asked for a revised proposal. Reviewer note: {note}"
+
+
+CLARIFY_MISSING_ORDER = ("Thanks for reaching out. Could you share your order number? It starts with TA- and "
+                         "appears on your receipt or order confirmation.")
+CLARIFY_ORDER_NOT_FOUND = ("Thanks for reaching out. We could not find that order number on your account. Could you "
+                           "double-check it? It starts with TA- and appears on your receipt or order confirmation.")
+
+
 def finalize_instruction(schema: dict[str, Any] | None) -> str:
     if schema is None:
         return "Produce the resolution proposal now."

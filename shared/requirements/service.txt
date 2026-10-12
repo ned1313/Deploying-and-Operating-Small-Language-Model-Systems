@@ -50,6 +50,8 @@ openai==3.22.1
     # via taco-shared (shared/pyproject.toml)
 opentelemetry-api==1.45.0
     # via fastapi
+prometheus-client==0.26.0
+    # via taco-shared (shared/pyproject.toml)
 pydantic==2.13.5
     # via
     #   taco-shared (shared/pyproject.toml)

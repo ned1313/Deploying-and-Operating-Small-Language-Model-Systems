@@ -1,0 +1,87 @@
+# Recording rules give dashboards stable names (and hide which GPU exporter is running); alerting rules
+# are the module 4 thresholds. Alerts show in the Prometheus and Grafana UIs; there is no Alertmanager.
+# Thresholds start from planning.md decision 8 and are revised from the documented baseline.
+
+groups:
+  - name: taco-recording
+    rules:
+      # GPU: dcgm-exporter first, nvidia_gpu_exporter as fallback.
+      - record: taco:gpu_utilization:ratio
+        expr: avg by (instance) (DCGM_FI_DEV_GPU_UTIL) / 100 or avg by (instance) (nvidia_smi_utilization_gpu_ratio)
+      - record: taco:gpu_memory_used:bytes
+        expr: sum by (instance) (DCGM_FI_DEV_FB_USED) * 1048576 or sum by (instance) (nvidia_smi_memory_used_bytes)
+      - record: taco:gpu_memory_total:bytes
+        expr: sum by (instance) (DCGM_FI_DEV_FB_USED + DCGM_FI_DEV_FB_FREE) * 1048576 or sum by (instance) (nvidia_smi_memory_total_bytes)
+      - record: taco:gpu_power:watts
+        expr: sum by (instance) (DCGM_FI_DEV_POWER_USAGE) or sum by (instance) (nvidia_smi_power_draw_watts)
+      - record: taco:gpu_temperature:celsius
+        expr: max by (instance) (DCGM_FI_DEV_GPU_TEMP) or max by (instance) (nvidia_smi_temperature_gpu)
+
+      # Model host CPU and memory.
+      - record: taco:host_cpu_utilization:ratio
+        expr: 1 - avg by (instance) (rate(node_cpu_seconds_total{job="node", mode="idle"}[1m]))
+      - record: taco:host_memory_used:ratio
+        expr: 1 - node_memory_MemAvailable_bytes{job="node"} / node_memory_MemTotal_bytes{job="node"}
+
+      # Workflow latency (excludes approval wait) and infrastructure tool errors.
+      - record: taco:workflow_run_seconds:p95_5m
+        expr: histogram_quantile(0.95, sum by (le) (rate(taco_workflow_run_seconds_bucket[5m])))
+      - record: taco:tool_infra_errors:ratio_5m
+        expr: >
+          sum(rate(taco_tool_calls_total{error_kind="unavailable"}[5m]))
+          / clamp_min(sum(rate(taco_tool_calls_total[5m])), 1e-9)
+
+      # Server-side inference latency.
+      - record: taco:vllm_e2e_seconds:p95_5m
+        expr: histogram_quantile(0.95, sum by (le) (rate(vllm:e2e_request_latency_seconds_bucket[5m])))
+      - record: taco:vllm_ttft_seconds:p95_5m
+        expr: histogram_quantile(0.95, sum by (le) (rate(vllm:time_to_first_token_seconds_bucket[5m])))
+
+  - name: taco-alerts
+    rules:
+      - alert: TargetDown
+        expr: up == 0
+        for: 1m
+        labels: {severity: page}
+        annotations:
+          summary: "{{ $labels.job }} on {{ $labels.instance }} is not being scraped"
+      - alert: InferenceQueueing
+        expr: sum(vllm:num_requests_waiting) > 0
+        for: 2m
+        labels: {severity: warn}
+        annotations:
+          summary: "vLLM has had requests waiting for 2 minutes: the server is saturated"
+      - alert: KvCacheHigh
+        expr: max(vllm:kv_cache_usage_perc) > 0.9
+        for: 2m
+        labels: {severity: warn}
+        annotations:
+          summary: "KV cache above 90% for 2 minutes: preemptions and queueing follow"
+      - alert: WorkflowSlow
+        expr: taco:workflow_run_seconds:p95_5m > 20
+        for: 1m
+        labels: {severity: warn}
+        annotations:
+          summary: "Workflow run p95 is {{ $value | humanizeDuration }} (threshold 20s)"
+      - alert: WorkflowQueueRejected
+        expr: increase(taco_workflow_queue_rejected_total[5m]) > 0
+        labels: {severity: warn}
+        annotations:
+          summary: "The complaint API rejected requests because every run slot was busy"
+      - alert: ToolErrors
+        expr: taco:tool_infra_errors:ratio_5m > 0.05
+        for: 1m
+        labels: {severity: warn}
+        annotations:
+          summary: "More than 5% of tool calls hit an unavailable dependency"
+      - alert: ModelErrors
+        expr: increase(taco_workflow_runs_total{status="failed_retryable"}[5m]) > 0
+        labels: {severity: page}
+        annotations:
+          summary: "Workflow runs failed on an unavailable dependency (inference or case API)"
+      - alert: GpuMemoryHigh
+        expr: taco:gpu_memory_used:bytes / taco:gpu_memory_total:bytes > 0.95
+        for: 5m
+        labels: {severity: info}
+        annotations:
+          summary: "VRAM above 95%; vLLM preallocates most of it, so watch KV-cache usage for load"

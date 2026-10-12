@@ -87,5 +87,5 @@
      "facts": {"category": "missing_items", "affected": [{"name": "Breakfast Burrito", "quantity": 1}]},
      "prior_resolutions": [{"days_before": 1, "order_id": "same", "resolution_type": "partial_refund", "amount": 8.95, "reason": "missing item"}]}
   ],
-  "review": {"by": null, "on": null, "note": "Set after a person checks every curated expected block against policy 2026.09."}
+  "review": {"by": "Ned", "on": "10/9/2026", "note": "Set after a person checks every curated expected block against policy 2026.09."}
 }

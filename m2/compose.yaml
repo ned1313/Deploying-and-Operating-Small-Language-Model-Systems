@@ -44,7 +44,7 @@ services:
     ports:
       - "127.0.0.1:${CASE_API_PORT:-8081}:8081"   # loopback only, for on-camera curl
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8081/healthz', timeout=2).status == 200 else 1)"]
+      test: ["CMD", "python", "-m", "taco_shared.healthcheck", "http://127.0.0.1:8081/healthz"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -53,7 +53,6 @@ services:
   seed:
     # One-shot: podman-compose run --rm seed [--reset]
     <<: *agent-image
-    profiles: ["setup"]
     entrypoint: ["python", "-m", "taco_shared.dataset.seed"]
     command: []
     environment:
@@ -64,7 +63,6 @@ services:
   basic-agent:
     # One-shot teaching script: podman-compose run --rm basic-agent --mode tools --scenario A01
     <<: *agent-image
-    profiles: ["demo"]
     entrypoint: ["python", "examples/basic_agent.py"]
     command: ["--check"]
     environment: *inference-env
@@ -77,7 +75,6 @@ services:
   agent-eval:
     # One-shot evaluation: podman-compose run --rm agent-eval --label agent-baseline
     <<: *agent-image
-    profiles: ["demo"]
     entrypoint: ["python", "eval/run_agent_scenarios.py"]
     command: []
     environment: *inference-env
@@ -90,7 +87,6 @@ services:
   agent-compare:
     # podman-compose run --rm agent-compare '/m1-results/screening-<model>-*.json' 'results/agent-<model>-*.json'
     <<: *agent-image
-    profiles: ["demo"]
     entrypoint: ["python", "eval/compare_agent_vs_screening.py"]
     command: []
     volumes:
@@ -100,7 +96,6 @@ services:
   tests:
     # podman-compose run --rm tests   (no network or GPU needed)
     <<: *agent-image
-    profiles: ["test"]
     entrypoint: ["sh", "-c"]
     command: ["pytest -q -p no:cacheprovider /opt/shared/tests && pytest -q -p no:cacheprovider /app/tests"]
     network_mode: none

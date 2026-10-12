@@ -9,8 +9,8 @@ shared components change.
 | --- | --- | --- |
 | [1](#module-1-hosting-a-small-language-model) | Implemented | vLLM model server, nginx gateway, screening and load tools |
 | [2](#module-2-building-an-slm-agent-with-tools) | Implemented | Shared dataset and package, mock case API, LangChain agent with typed tools, structured proposal and validator, agent evaluation |
-| [3](#module-3-orchestrating-and-hardening-the-agent-workflow-planned) | Planned | LangGraph workflow in a complaint API, durable checkpoints, human approval, idempotent actions, failure handling |
-| [4](#module-4-monitoring-and-tracing-planned) | Planned | Prometheus, Grafana, GPU/host exporters, structured logs, LangSmith tracing, Locust |
+| [3](#module-3-orchestrating-and-hardening-the-agent-workflow) | Implemented | LangGraph workflow in a complaint API, durable checkpoints, human approval, idempotent actions, failure handling |
+| [4](#module-4-monitoring-and-tracing) | Implemented | Prometheus, Grafana, GPU/host exporters, structured logs, LangSmith tracing, Locust, performance baseline |
 | [5](#module-5-quality-releases-and-cost-planned) | Planned | Quality sampling and scoring, model release and rollback, cost per successful resolution |
 | [6](#module-6-security-and-auditing-planned) | Planned | TLS and service keys at the gateway, rate limits, authenticated metrics, user roles, audit store |
 
@@ -213,51 +213,123 @@ clarification and escalation, retry budgets, and a human-approval pause before a
 
 ---
 
-## Module 3: Orchestrating and Hardening the Agent Workflow (planned)
+## Module 3: Orchestrating and Hardening the Agent Workflow
 
-From the outline: a complaint API in `taco-app` runs a LangGraph workflow with a durable SQLite
-checkpointer, deterministic routing around a bounded investigation loop, validation with a bounded
-correction attempt, a human-approval interrupt bound to the exact proposal version, and an idempotent
-`record_approved_resolution` operation against the case API. Reuses the module 2 model factory,
-tools, prompts, and validator from `shared/`.
+The complaint API joins the `taco-app` project (now run from `m3/`). It runs an explicit LangGraph
+`StateGraph` from `shared/taco_shared/workflow`, checkpointed with `SqliteSaver`, and reuses the module
+2 model factory, tools, prompts, proposal call, and validator. The model chooses tools; application
+code chooses every route.
+
+### Deployment
 
 ```mermaid
 flowchart LR
-    Intake["intake + authz"] --> Investigate["investigate<br/>(bounded tool loop)"]
-    Investigate -->|missing order id| Clarify["request clarification"]
-    Investigate -->|dependency failed| Escalate["escalate"]
-    Investigate --> Propose["structured proposal"]
-    Propose --> Validate{"valid?"}
-    Validate -->|no, retry budget left| Propose
-    Validate -->|no, budget spent| Escalate
-    Validate -->|yes| Approve["human approval<br/>(interrupt, checkpointed)"]
-    Approve -->|approved| Record["record_approved_resolution<br/>(idempotency key)"]
-    Approve -->|rejected / revise| Propose
-    Record --> Done["case outcome"]
+    subgraph Desktop["Desktop: compose project taco-app (network taco-app-private)"]
+        CLI["cli / failure-tests / e2e-eval<br/>(one-shot)"]
+        UI["browser: /ui<br/>(127.0.0.1:8090)"]
+        API["complaint-api<br/>FastAPI :8090, one worker"]
+        Case["case-api :8081<br/>actions + admin faults"]
+        AppVol[("taco-app-data<br/>taco_app.db (read-only)")]
+        StateVol[("taco-app-state<br/>checkpoints.db, app.db")]
+        CaseVol[("taco-case-data<br/>cases.db")]
+        Secret["secrets/inference_api_key"]
+    end
+    subgraph GPU["GPU host: taco-m1"]
+        GW["gateway :8080"] --> VLLM["vllm"]
+    end
+    CLI -- "X-Actor-Id" --> API
+    UI -- "?actor=" --> API
+    API -- read --> AppVol
+    API --- StateVol
+    API -- "X-Store-Scope,<br/>Idempotency-Key" --> Case
+    Case --- CaseVol
+    API -- "service key (LAN)" --> GW
+    Secret -.-> API
+    CLI -. "admin token" .-> Case
 ```
 
-## Module 4: Monitoring and Tracing (planned)
+Two identities: the service key authenticates the application to the inference gateway (module 6
+enforces it); `X-Actor-Id` names the person using the complaint API, from which the API derives role
+(service_rep, reviewer, area_manager) and store scope. The header is an unauthenticated claim, so the
+API is published on loopback only.
 
-Adds an independent `taco-observe` project on the desktop (Prometheus, Grafana), host and GPU
-exporters on the model host, structured operational logs, LangSmith traces for the agent, and Locust
-load generation. Prometheus first scrapes vLLM `/metrics` without authentication; module 6 moves that
-scrape behind the gateway.
+### Workflow
+
+```mermaid
+flowchart TB
+    Start((submit)) --> Intake["intake<br/>order-id precheck"]
+    Intake -->|no order id| Clarify["clarify (end)"]
+    Intake --> Inv["investigate<br/>model + bound tools"]
+    Inv -->|tool calls| Tools["tools<br/>repeat guard, budget,<br/>case API retries"]
+    Tools --> Inv
+    Inv --> Check["check_evidence"]
+    Tools -->|budget spent| Check
+    Check -->|order not_found| Clarify
+    Check -->|case API unavailable| Esc["escalate (end)"]
+    Check -->|tool missing, 1 nudge| Inv
+    Check -->|still missing| Esc
+    Check --> Propose["propose<br/>json_schema, no tools"]
+    Propose --> Val["validate"]
+    Val -->|invalid, 1 correction| Propose
+    Val -->|invalid again| Esc
+    Val -->|accepted| Review["human_review<br/>interrupt(), checkpointed"]
+    Review -->|approve, current version| Record["record<br/>Idempotency-Key case:vN"]
+    Review -->|revise + note| Propose
+    Review -->|reject| Rejected["rejected (end)"]
+    Record --> Done((recorded))
+```
+
+An unreachable inference endpoint (after the client's retries) or case API at record time raises out
+of the graph: the case becomes `failed_retryable` and keeps its checkpoint, and `retry` resumes the
+failed node. On startup the API resumes runs that were cut off mid-investigation.
+
+## Module 4: Monitoring and Tracing
+
+An independent `taco-observe` project on the desktop (Prometheus, Grafana, one-shot Locust and
+baseline runs) and a `taco-model-exporters` project on the GPU host (node-exporter, dcgm-exporter or
+the nvidia-smi fallback). The application keeps running from `m3/`; its metrics, JSON logs, and
+LangSmith hooks ship in the module 3 code. Prometheus scrapes vLLM's `/metrics` through the gateway
+without authentication; module 6 moves that job behind a credential with the same job and instance
+labels.
 
 ```mermaid
 flowchart LR
-    subgraph Desktop
-        App["taco-app"] -->|metrics| Prom["Prometheus"]
-        Prom --> Graf["Grafana"]
-        Locust["Locust (one-shot)"] --> App
+    subgraph Desktop["Desktop"]
+        subgraph App["taco-app (m3/)"]
+            API["complaint-api<br/>/metrics, JSON logs,<br/>run slots (4)"]
+            Case["case-api"]
+        end
+        subgraph Obs["taco-observe (m4/)"]
+            Prom["prometheus :9090<br/>rules + alerts"]
+            Graf["grafana :3000<br/>3 dashboards"]
+            Load["load (one-shot)<br/>Locust direct | app"]
+            Base["baseline (one-shot)"]
+        end
+        Tel{{"network taco-telemetry"}}
     end
     subgraph GPU["GPU host"]
-        VLLM["vLLM /metrics"]
-        Exp["GPU + host exporters"]
+        GW["gateway :8080<br/>JSON log, X-Request-ID"] --> VLLM["vllm"]
+        Node["node-exporter :9100"]
+        Dcgm["dcgm-exporter :9400"]
     end
-    Prom -.-> VLLM
-    Prom -.-> Exp
-    App -.->|traces| LS["LangSmith (hosted)"]
+    API --- Tel --- Prom
+    Prom --> Graf
+    Base --> Prom
+    Load -- "taco-app-private" --> API
+    Load -- "direct mode (LAN)" --> GW
+    API -- "X-Request-ID (LAN)" --> GW
+    API --> Case
+    Prom -. "vllm job" .-> GW
+    Prom -.-> Node
+    Prom -.-> Dcgm
+    API -. "traces" .-> LS["LangSmith (hosted)"]
 ```
+
+Correlation: the complaint API accepts or generates a request id, returns it, logs it on every JSON
+line (`model_call`, `tool_call`, `workflow_run`, `http_request`), forwards it to the gateway on every
+model call, and records it as LangSmith metadata next to `case_id`, `thread_id`, and the deployment
+versions (`taco_build_info`). A case produces one trace per graph invocation (`submit`, `decision`,
+`clarify`, `retry`), grouped by `thread_id`; approval wait is a metric, not a span.
 
 ## Module 5: Quality, Releases, and Cost (planned)
 

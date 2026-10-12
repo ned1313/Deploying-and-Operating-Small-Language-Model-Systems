@@ -1,0 +1,18 @@
+FROM docker.io/library/python:3.12-slim
+
+# Build context is the repository root (see m4/compose.yaml). One image runs the Locust workloads and
+# the baseline report; no application code is included.
+WORKDIR /app
+COPY shared/requirements/load.txt /tmp/load.txt
+RUN pip install --no-cache-dir -r /tmp/load.txt
+COPY shared/ /opt/shared/
+RUN pip install --no-cache-dir --no-deps /opt/shared
+
+COPY m4/load/ /app/load/
+COPY m4/eval/ /app/eval/
+
+ENV PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1 \
+    RESULTS_DIR=/app/results
+RUN mkdir -p /app/results
+ENTRYPOINT ["python", "/app/load/run.py"]

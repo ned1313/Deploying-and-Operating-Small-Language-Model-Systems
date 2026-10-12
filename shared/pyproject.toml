@@ -19,13 +19,18 @@ agent = [
     "langchain>=1.4,<2",
     "langchain-core>=1.6,<2",
     "langchain-openai>=1.6,<2",
+    "langgraph-checkpoint-sqlite>=3,<5",
 ]
 service = [
     "fastapi>=0.115,<1",
     "uvicorn>=0.30,<1",
+    "prometheus-client>=0.20,<1",
 ]
 dev = [
     "pytest>=8,<10",
+]
+load = [
+    "locust>=2.46,<3",
 ]
 
 [tool.setuptools.packages.find]

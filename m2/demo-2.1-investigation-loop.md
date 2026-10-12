@@ -9,8 +9,56 @@ Prerequisites: module 1 final state (`vllm` + `gateway` running with the selecte
 rerun on `screening-v2`), and the setup in [README.md](README.md) (`.env`, secret, `seed`, `case-api`).
 Commands run from `m2/`.
 
-Expected-output excerpts below were captured against `llama-3.1-8b`; numbers and wording will differ
-with another model.
+## Prerequisite commands
+
+If you don't already have the module 1 final state running, run the following commands to start the necessary components:
+
+```bash
+# Set environment variables
+source ./m1/env.sh
+```
+
+### Gateway
+
+First check to see if the gateway is already running.
+
+```bash
+podman ps -a
+```
+
+If the gateway is not running, you can start it up with the following command:
+
+```bash
+cd m1
+podman compose up -d gateway
+```
+
+### Model
+
+First check to see if the model is already running:
+
+```bash
+podman ps -a
+```
+
+If the model is not running, or you want to change the configuration, proceed with the following command:
+
+```bash
+# Set the candidate model
+CAND=qwen                       # llama | qwen | granite
+SERVED="$QWEN_SERVED_NAME"      #  LLAMA_SERVED_NAME | GRANITE_SERVED_NAME
+EXTRA="$QWEN_EXTRA_BODY"        #  LLAMA_EXTRA_BODY | GRANITE_EXTRA_BODY
+
+# Set additional environment variables from 1.3
+export MAX_MODEL_LEN=4096 MAX_NUM_SEQS=64 GPU_MEMORY_UTILIZATION=0.90
+
+# Serve the model
+# Run from the root of the repository
+./m1/serve.sh $CAND --kv-cache-dtype fp8
+podman compose logs -f vllm
+```
+
+Wait until the model is ready to serve requests.
 
 ---
 
@@ -29,14 +77,21 @@ model to another host is a configuration change. The key file is a placeholder u
 
 ### 2. Validate connectivity from a container
 
+Start up the Case API
+
+```bash
+podman-compose up -d case-api
+podman-compose logs -f case-api
+```
+
 ```bash
 podman-compose run --rm basic-agent --check
 ```
 
-```
-Inference endpoint: http://192.168.1.251:8080/v1   model: llama-3.1-8b   key: secret file /run/secrets/inference_api_key
-  served: llama-3.1-8b  max_model_len=4096  root=RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8
-  chat ok in 0.09s: 'Ready'
+```text
+Inference endpoint: http://192.168.1.251:8080/v1   model: qwen3-14b   key: secret file /run/secrets/inference_api_key
+  served: qwen3-14b  max_model_len=4096  root=Qwen/Qwen3-14B-AWQ
+  chat ok in 0.26s: ''
 Application database: /data/app/taco_app.db (policy 2026.09, dataset agent-v1)
 Case API: http://case-api:8081 healthy
 ```
@@ -193,20 +248,32 @@ podman-compose run --rm agent-eval --label agent-baseline
 ```
 
 Per scenario: `parsed` (backend parsed every tool call), `args` (get_order called with the quoted
-order id), `required` (order, history, and policy looked up), `budget`, `valid` (validator accepted),
-then the same grounding and policy grades as module 1.
+order id), `required` (order, history, policy, and case status all looked up), `budget`, `valid`
+(validator accepted), then the same grounding and policy grades as module 1. The case lookup is
+required because it is the only place an already recorded action shows up (R13).
+
+Run captured with Qwen3-14B (thinking disabled) on clean case fixtures:
 
 ```
 Agent evaluation summary
   tool_calls_parsed:      1.00
   tool_args_valid:        1.00
-  required_tools_called:  1.00
+  required_tools_called:  0.50
   args_correct:           1.00
   within_budget:          1.00
-  proposal_accepted:      0.79
+  proposal_accepted:      0.96
   ...
-  passed:                 0.21
+  policy_compliant:       0.75
+  passed:                 0.75
 ```
+
+Qwen calls tools reliably but skips `get_case_status` in about half the scenarios, so it misses the
+required-tools gate. Keep it as the selection and point forward: module 3's workflow checks the
+evidence deterministically and sends the model back once for any missing lookup.
+
+If module 3 has been run against the same `case-api`, its harnesses restore the cases they touched.
+A leftover recorded action makes this eval see the order as already compensated (R13); restore the
+fixtures from `m3/` with `podman-compose run --rm cli reset <case ids>`.
 
 Compare with the module 1 screening for the same model (same dataset build):
 
@@ -220,7 +287,8 @@ Discussion: tool calling can be perfectly reliable while decisions get worse, be
 now find and combine facts that module 1 handed it. Selection gate (planning section 6.7): tool calls
 parsed 100%, required tools >= 90%, arguments correct >= 95%, schema valid 100%, and an agent pass rate
 no more than 10 points below the screening pass rate. If the selected model misses the gate, swap to
-the runner-up on the GPU host (`m1/serve.sh`) and rerun.
+the runner-up on the GPU host (`m1/serve.sh`) and rerun, or (as with Qwen3-14B and the case lookup)
+record the gap and show module 3 closing it.
 
 ---
 

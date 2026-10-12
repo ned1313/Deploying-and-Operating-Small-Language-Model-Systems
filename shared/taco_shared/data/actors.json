@@ -1,8 +1,12 @@
 {
-  "description": "Synthetic service representatives. store_ids is the trusted scope the application applies to every tool call.",
+  "description": "Synthetic staff. store_ids is the trusted scope the application applies to every tool call. service_rep submits complaints; reviewer approves proposals for its stores; area_manager approves any proposal.",
   "actors": [
     {"actor_id": "rep-kop-01", "role": "service_rep", "store_ids": ["KOP"]},
     {"actor_id": "rep-wg-01", "role": "service_rep", "store_ids": ["WG"]},
-    {"actor_id": "rep-multi-01", "role": "service_rep", "store_ids": ["ALN", "CHL", "DOY", "KOP", "LAN", "NBR", "PHL", "PRN", "WAR", "WG"]}
+    {"actor_id": "rep-multi-01", "role": "service_rep", "store_ids": ["ALN", "CHL", "DOY", "KOP", "LAN", "NBR", "PHL", "PRN", "WAR", "WG"]},
+    {"actor_id": "sup-kop-01", "role": "reviewer", "store_ids": ["KOP"]},
+    {"actor_id": "sup-wg-01", "role": "reviewer", "store_ids": ["WG"]},
+    {"actor_id": "sup-area-01", "role": "area_manager", "store_ids": ["ALN", "CHL", "DOY", "KOP", "LAN", "NBR", "PHL", "PRN", "WAR", "WG"]},
+    {"actor_id": "load-reviewer-01", "role": "reviewer", "store_ids": ["KOP", "WG"], "synthetic": true, "note": "Used only by the module 4 Locust workload to approve load-test cases."}
   ]
 }

@@ -18,9 +18,9 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.tools import BaseTool
 
-from taco_shared.agent.prompts import CHAT_PROMPT, FINALIZE_PROMPT, INVESTIGATE_PROMPT, finalize_instruction, intake_message
+from taco_shared.agent.prompts import CHAT_PROMPT, INVESTIGATE_PROMPT, intake_message
+from taco_shared.agent.propose import generate_proposal, usage_of
 from taco_shared.config import InferenceSettings
-from taco_shared.jsonutil import parse_json_output
 from taco_shared.proposal import Evidence, ValidationReport, load_schema_v2, validate_proposal
 
 TOOL_MARKUP = re.compile(r"<tool_call>|<\|python_tag\|>|^\s*\{\s*\"(name|function)\"\s*:", re.MULTILINE)
@@ -67,8 +67,7 @@ class InvestigationResult:
 
 
 def _usage(message: AIMessage) -> dict[str, Any]:
-    usage = message.usage_metadata or {}
-    return {"input_tokens": usage.get("input_tokens"), "output_tokens": usage.get("output_tokens")}
+    return usage_of(message)
 
 
 def _model_step(message: AIMessage, elapsed: float) -> dict[str, Any]:
@@ -154,32 +153,11 @@ def run_investigation(model: BaseChatModel, tools: list[BaseTool], intake: dict[
 
 def finalize(model: BaseChatModel, intake: dict[str, Any], settings: InferenceSettings,
              result: InvestigationResult, on_step: StepCallback | None = None) -> None:
-    schema = load_schema_v2()
-    guided = settings.structured_output == "json_schema"
-    messages = [SystemMessage(FINALIZE_PROMPT), HumanMessage(intake_message(intake)), *result.transcript.messages,
-                HumanMessage(finalize_instruction(None if guided else schema))]
-    started = time.perf_counter()
-    if guided:
-        structured = model.with_structured_output(schema, method="json_schema", strict=True, include_raw=True)
-        output = structured.invoke(messages)
-        raw: AIMessage = output["raw"]
-        result.proposal_raw = str(raw.content)
-        if output.get("parsing_error") is not None:
-            result.proposal_error = f"{type(output['parsing_error']).__name__}: {output['parsing_error']}"
-        else:
-            result.proposal = output["parsed"]
-    else:
-        raw = model.invoke(messages)
-        result.proposal_raw = str(raw.content)
-        try:
-            result.proposal, _ = parse_json_output(result.proposal_raw)
-        except ValueError as error:
-            result.proposal_error = str(error)
-    result.finalize_step = {"kind": "finalize", "mode": settings.structured_output,
-                            "elapsed_seconds": time.perf_counter() - started,
-                            "finish_reason": (raw.response_metadata or {}).get("finish_reason"), **_usage(raw)}
+    attempt = generate_proposal(model, intake, result.transcript.messages, settings.structured_output)
+    result.proposal, result.proposal_raw, result.proposal_error = attempt.proposal, attempt.raw, attempt.error
+    result.finalize_step = attempt.step
     result.report = validate_proposal(result.proposal if result.proposal is not None else result.proposal_raw,
-                                      result.transcript.evidence, intake["complaint_date"], schema)
+                                      result.transcript.evidence, intake["complaint_date"], load_schema_v2())
     if result.proposal_error:
         result.report.schema_errors.insert(0, f"could not parse proposal: {result.proposal_error}")
     if on_step:

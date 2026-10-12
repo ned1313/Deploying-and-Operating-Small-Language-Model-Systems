@@ -18,6 +18,8 @@ from pydantic import BaseModel
 from .paths import DEFAULT_SCHEMA, PROPOSAL_SCHEMA_V2, load_json
 
 TOOL_NAMES = ["get_order", "get_prior_resolutions", "get_resolution_policy", "get_case_status"]
+# Every investigation must use all four; the case lookup is what reveals an already recorded action (R13).
+REQUIRED_TOOLS = tuple(TOOL_NAMES)
 MONETARY_TYPES = {"store_credit", "partial_refund", "full_refund"}
 ESCALATION_CATEGORIES = {"food_safety", "other"}
 APPROVAL_THRESHOLD = 25.00

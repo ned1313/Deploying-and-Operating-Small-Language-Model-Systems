@@ -1,0 +1,28 @@
+FROM docker.io/library/python:3.12-slim
+
+# Build context is the repository root (see m3/compose.yaml). One image runs the complaint API, the
+# CLI client, the evaluation and failure harnesses, and the tests.
+WORKDIR /app
+COPY shared/requirements/dev.txt /tmp/dev.txt
+RUN pip install --no-cache-dir -r /tmp/dev.txt
+COPY shared/ /opt/shared/
+RUN pip install --no-cache-dir --no-deps /opt/shared
+
+COPY m3/app/ /app/app/
+COPY m3/clients/ /app/clients/
+COPY m3/eval/ /app/eval/
+COPY m3/tests/ /app/tests/
+
+# Set at build time (APP_VERSION=$(git rev-parse --short HEAD)); reported as taco_build_info{app_version}.
+ARG APP_VERSION=dev
+ENV PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1 \
+    TACO_APP_VERSION=${APP_VERSION} \
+    RESULTS_DIR=/app/results \
+    TACO_STATE_DIR=/data/state
+RUN mkdir -p /app/results /data/state
+
+EXPOSE 8090
+HEALTHCHECK --interval=10s --timeout=5s --retries=6 \
+  CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8090/healthz?remote=false', timeout=4).status == 200 else 1)"
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8090", "--workers", "1"]

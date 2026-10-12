@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any
+from typing import Any, Callable
 
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
@@ -13,13 +13,25 @@ from ..config import InferenceSettings
 from ..errors import describe_error
 
 
-def build_chat_model(settings: InferenceSettings, max_tokens: int | None = None) -> ChatOpenAI:
-    return ChatOpenAI(
+def request_id_hook(request_id: Callable[[], str | None]) -> Callable[[Any], None]:
+    """httpx request hook that forwards the caller's request id so gateway logs join application logs."""
+
+    def add_header(request: Any) -> None:
+        value = request_id()
+        if value and value != "-":
+            request.headers["X-Request-ID"] = value
+
+    return add_header
+
+
+def build_chat_model(settings: InferenceSettings, max_tokens: int | None = None, max_retries: int = 0,
+                     request_id: Callable[[], str | None] | None = None) -> ChatOpenAI:
+    model = ChatOpenAI(
         base_url=settings.base_url,
         api_key=settings.api_key,
         model=settings.model,
         timeout=settings.timeout_seconds,
-        max_retries=0,
+        max_retries=max_retries,
         temperature=0,
         seed=42,
         max_tokens=max_tokens or settings.max_output_tokens,
@@ -27,6 +39,10 @@ def build_chat_model(settings: InferenceSettings, max_tokens: int | None = None)
         # vLLM is used through Chat Completions; the Responses API is not part of the contract.
         use_responses_api=False,
     )
+    if request_id:
+        # Hook into langchain-openai's own client to keep its TCP keepalive and timeout socket options.
+        model.root_client._client.event_hooks["request"].append(request_id_hook(request_id))
+    return model
 
 
 def check_endpoint(settings: InferenceSettings) -> dict[str, Any]:
