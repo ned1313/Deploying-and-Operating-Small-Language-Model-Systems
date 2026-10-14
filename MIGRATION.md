@@ -436,8 +436,9 @@ tools run --rm python -c 'import os, urllib.request as u; b = os.environ["BASE_U
 tools run --rm smoke --skip-structured --extra-body "$QWEN_EXTRA_BODY"
 ```
 
-If the `host.containers.internal` check fails, upgrade Podman or set `INFERENCE_BASE_URL` in
-`tools/.env` on the GPU host to `http://$MODEL_HOST:8080/v1`. Also confirm that `tools run` does not
+Verified (2026-10-14): from a tools container on the GPU host, both
+`http://host.containers.internal:8080/v1` (the default) and `http://$MODEL_HOST:8080/v1` return 200,
+so `tools/.env` is optional there. Also confirm that `tools run` does not
 complain about the missing `secrets/inference_api_key` or the desktop-only external networks
 (`taco-app-private`, `taco-telemetry`, `taco-app-data`); if it does, create an empty
 `secrets/inference_api_key` on the GPU host and tell me which check failed.
