@@ -1,22 +1,23 @@
-# Module 1 Podman Compose project: model server, gateway, and disposable evaluation tools.
+# Model host project (GPU host): model server, gateway, and host/GPU exporters.
 #
-#   source m1/env.sh                      # exports COMPOSE_FILE and all ${VARS} used below
-#   ./m1/serve.sh qwen                    # sets VLLM_ARGS for a candidate and (re)creates the vllm service
+#   source model-host/env.sh              # exports COMPOSE_FILE and all ${VARS} used below
+#   ./model-host/serve.sh qwen            # sets VLLM_ARGS for a candidate and (re)creates the vllm service
 #   podman compose up -d gateway
-#   podman compose run --rm tools tools/smoke_test.py ...
+#   podman compose up -d node-exporter dcgm-exporter          # module 4
 #
 # GPU access uses CDI: `sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml` once on the host.
 # Always name the service you want (`up -d gateway`, `up -d vllm`); `vllm` requires VLLM_ARGS.
+# Exporters start and stop independently of vLLM and the gateway. Evaluation and load tools live in tools/.
 
-name: taco-m1
+name: taco-model
 
 services:
   vllm:
     container_name: vllm
-    image: ${VLLM_IMAGE:?source m1/env.sh first}
+    image: ${VLLM_IMAGE:?source model-host/env.sh first}
     # podman-compose shell-splits string commands before interpolating, so the argument string is
     # passed as an env var and split (with serve.sh's %q quoting honored) by bash in the container.
-    entrypoint: ["/bin/bash", "-c", ": \"$${VLLM_ARGS:?empty - start this service with m1/serve.sh}\"; eval exec vllm serve \"$$VLLM_ARGS\""]
+    entrypoint: ["/bin/bash", "-c", ": \"$${VLLM_ARGS:?empty - start this service with model-host/serve.sh}\"; eval exec vllm serve \"$$VLLM_ARGS\""]
     ipc: host
     devices:
       - nvidia.com/gpu=0
@@ -48,24 +49,46 @@ services:
         aliases: [gateway]
     restart: unless-stopped
 
-  tools:
-    # Disposable evaluation/load client. Use `podman compose run --rm tools <script> [args]`.
-    image: localhost/taco-m1-tools:latest
-    build:
-      context: ..
-      dockerfile: m1/tools/Containerfile
+  # Exporters (module 4). No authentication in modules 4-5: they bind to MODEL_HOST only, and the
+  # desktop is the only intended client. Module 6 revisits this.
+  node-exporter:
+    container_name: node-exporter
+    image: quay.io/prometheus/node-exporter:v1.12.1
+    command:
+      - --path.rootfs=/host
+      - --web.listen-address=${MODEL_HOST:?source model-host/env.sh first}:${NODE_EXPORTER_PORT:-9100}
+    network_mode: host      # host network and PID namespace so CPU, memory, and NIC metrics are the host's
+    pid: host
     volumes:
-      - ${RESULTS_DIR:-./results}:/app/results
-    environment:
-      BASE_URL: ${BASE_URL:-http://gateway:8080/v1}
-      MODEL: ${MODEL:-}
-      EXTRA_BODY: ${EXTRA_BODY:-}
-    networks:
-      - inference
-    command: ["tools/smoke_test.py", "--help"]
+      - /:/host:ro
+    restart: unless-stopped
+
+  dcgm-exporter:
+    container_name: dcgm-exporter
+    image: nvcr.io/nvidia/k8s/dcgm-exporter:4.5.2-4.8.1-ubuntu22.04
+    command: ["-f", "/etc/dcgm-exporter/taco-counters.csv"]
+    devices:
+      - nvidia.com/gpu=0
+    volumes:
+      - ./exporters/dcgm-counters.csv:/etc/dcgm-exporter/taco-counters.csv:ro
+    ports:
+      - "${MODEL_HOST:?source model-host/env.sh first}:${GPU_EXPORTER_PORT:-9400}:9400"
+    restart: unless-stopped
+
+  # Fallback when dcgm-exporter cannot read the GPU: start this instead of dcgm-exporter (same port).
+  # The Prometheus recording rules normalize both to the same series.
+  nvidia-smi-exporter:
+    container_name: nvidia-smi-exporter
+    image: docker.io/utkuozdemir/nvidia_gpu_exporter:1.15.1
+    devices:
+      - nvidia.com/gpu=0
+    ports:
+      - "${MODEL_HOST:?source model-host/env.sh first}:${GPU_EXPORTER_PORT:-9400}:9835"
+    restart: unless-stopped
 
 networks:
   inference:
+    name: taco-model-inference
     driver: bridge
     ipam:
       config:

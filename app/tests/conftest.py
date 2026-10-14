@@ -1,4 +1,4 @@
-"""Module 3 test wiring: the complaint API with a scripted model, real checkpoints, and the in-process case API."""
+"""App test wiring: the complaint API with a scripted model, real checkpoints, and the in-process case API."""
 
 from __future__ import annotations
 
@@ -68,8 +68,8 @@ def case_api(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 @pytest.fixture
 def make_api(tmp_path: Path, app_db: AppDatabase, case_api: TestClient) -> Callable[[ScriptedChatModel], TestClient]:
     """Builds a complaint API around a model; calling it again with the same tmp_path simulates a restart."""
-    from app import main
-    from app.service import ComplaintService, ServiceSettings
+    from complaint_api import main
+    from complaint_api.service import ComplaintService, ServiceSettings
 
     clients: list[TestClient] = []
 

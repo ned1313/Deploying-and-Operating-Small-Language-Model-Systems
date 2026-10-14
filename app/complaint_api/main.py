@@ -1,6 +1,6 @@
 """Taco Alley complaint API (module 3): runs the LangGraph workflow with durable approval checkpoints.
 
-Run: uvicorn app.main:app --host 0.0.0.0 --port 8090 --workers 1
+Run: uvicorn complaint_api.main:app --host 0.0.0.0 --port 8090 --workers 1
 """
 
 from __future__ import annotations

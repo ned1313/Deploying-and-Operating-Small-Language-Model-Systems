@@ -4,8 +4,8 @@ Goal: trace the complaint workflow in LangSmith, then inject a slow and a failin
 the bottleneck in the trace, the structured logs, and the dashboards. Conclude that it is an
 infrastructure failure, not a model-quality issue.
 
-Prerequisites: Demo 4.1 setup; LangSmith settings in `m4/.env` and `TRACING_ENV_FILE=../m4/.env` in
-`m3/.env`. Commands run from `m3/` unless noted. All data is synthetic.
+Prerequisites: Demo 4.1 setup; LangSmith settings in `app/.env`. Commands run from `app/` unless
+noted. All data is synthetic.
 
 Before each take:
 
@@ -20,7 +20,7 @@ podman-compose run --rm cli case-fault clear
 
 ### 1. Configure tracing
 
-Show `m4/.env` with the key hidden (`grep LANGSMITH ../m4/.env | grep -v API_KEY`):
+Show `app/.env` with the key hidden (`grep LANGSMITH .env | grep -v API_KEY`):
 
 ```
 LANGSMITH_TRACING=true
@@ -32,7 +32,6 @@ LANGSMITH_HIDE_OUTPUTS=false
 ```
 
 ```bash
-cd ../m3
 podman-compose up -d --force-recreate complaint-api
 podman logs taco-app_complaint-api_1 2>&1 | grep complaint_api_ready | jq -c '{tracing, trace_project, app_version, model, prompt_version}'
 ```
@@ -42,7 +41,7 @@ Talking points:
 - No tracing code in the workflow: LangGraph and LangChain emit spans when `LANGSMITH_TRACING=true`.
   The service adds the run name (`submit`, `decision`, `clarify`, `retry`), tags (`scenario:<id>`,
   `injected_fault:<mode>`), and metadata (`request_id`, `case_id`, `thread_id`, `store_id`, `actor_id`,
-  and the deployment versions) in `_run_config()` in `m3/app/service.py`.
+  and the deployment versions) in `_run_config()` in `app/complaint_api/service.py`.
 - Export runs on a background thread. If LangSmith is unreachable, requests still succeed; the SDK
   logs a warning (covered by `test_unreachable_trace_endpoint_does_not_fail_requests`).
 - `LANGSMITH_TRACING_SAMPLING_RATE` controls how many runs are exported; production usually samples.
@@ -115,7 +114,7 @@ the prompt or the model.
 
 ### 5. Redaction before export
 
-To show what leaves the deployment, turn on the redaction switches in `m4/.env`:
+To show what leaves the deployment, turn on the redaction switches in `app/.env`:
 
 ```
 LANGSMITH_HIDE_INPUTS=true

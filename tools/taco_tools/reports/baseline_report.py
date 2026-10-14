@@ -1,10 +1,10 @@
 """Documented performance baseline for one Locust run (module 4).
 
-    podman-compose run --rm baseline                        # newest load-*-meta.json in results/
-    podman-compose run --rm baseline results/load-app-steady-<ts>-meta.json --label app-baseline
+    podman-compose run --rm baseline                        # newest load-*-meta.json in results/load/
+    podman-compose run --rm baseline results/load/load-app-steady-<ts>-meta.json --label app-baseline
 
 Queries Prometheus over the run window and combines it with Locust's client-side numbers. Writes
-results/baseline-<label>-<ts>.json and .md. Module 5 compares later runs against these files.
+results/baseline/baseline-<label>-<ts>.json and .md. Module 5 compares later runs against these files.
 """
 
 from __future__ import annotations
@@ -22,7 +22,8 @@ import httpx
 
 from taco_shared.reporting import safe_slug, timestamp_slug
 
-RESULTS = Path(os.environ.get("RESULTS_DIR", "/app/results"))
+RESULTS = Path(os.environ.get("RESULTS_DIR", "/app/results/baseline"))
+LOAD_RESULTS = Path(os.environ.get("LOAD_RESULTS_DIR", "/app/results/load"))
 
 
 def quantile(metric: str, q: float, window: str, by: str = "") -> str:
@@ -131,17 +132,17 @@ def markdown(report: dict[str, Any]) -> str:
     lines += ["", "## Reading the numbers", "",
               "- Locust latency includes the network and the gateway; `vllm.*` is measured inside the model server.",
               "- `app.workflow_run_*` excludes approval wait, which is reported separately.",
-              "- Revisit the alert thresholds in `m4/prometheus/rules/taco.yml` against these values.", ""]
+              "- Revisit the alert thresholds in `observability/prometheus/rules/taco.yml` against these values.", ""]
     return "\n".join(lines)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("meta", nargs="?", help="load metadata file (default: newest results/load-*-meta.json)")
+    parser.add_argument("meta", nargs="?", help="load metadata file (default: newest results/load/load-*-meta.json)")
     parser.add_argument("--label", help="baseline name (default: the run label)")
     parser.add_argument("--prometheus-url", default=os.environ.get("PROMETHEUS_URL", "http://prometheus:9090"))
     args = parser.parse_args()
-    candidates = [Path(args.meta)] if args.meta else sorted(RESULTS.glob("load-*-meta.json"), key=lambda p: p.stat().st_mtime)
+    candidates = [Path(args.meta)] if args.meta else sorted(LOAD_RESULTS.glob("load-*-meta.json"), key=lambda p: p.stat().st_mtime)
     if not candidates or not candidates[-1].exists():
         sys.exit("no load metadata found; run the load service first")
     meta_path = candidates[-1]
@@ -166,6 +167,7 @@ def main() -> int:
               "locust": locust_stats(meta_path.with_name(meta["files"]["stats_csv"])),
               "metrics": metrics, "grouped": grouped}
     out = RESULTS / f"baseline-{label}-{timestamp_slug()}"
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     out.with_suffix(".md").write_text(markdown(report), encoding="utf-8")
     print(markdown(report))

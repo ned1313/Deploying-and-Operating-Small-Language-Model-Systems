@@ -4,9 +4,9 @@ Goal: run the module 2 complaint through a LangGraph workflow inside the complai
 proposal, pause at a durable approval checkpoint, restart the API container, approve as an authorized
 reviewer, record the action once, and show that retries do not duplicate it.
 
-Prerequisites: module 1 model and gateway running on the GPU host, module 2 setup done, and the
-module 3 setup in [README.md](README.md) (`.env`, secret, `build`, `seed`, `case-api` and
-`complaint-api` up). Commands run from `m3/`.
+Prerequisites: module 1 model and gateway running on the GPU host, and the setup in
+[app/README.md](../app/README.md#setup) (`.env`, secret, `build`, `seed`, `case-api` and
+`complaint-api` up). Commands run from `app/`.
 
 Before each take, return the demo case to its fixture:
 
@@ -41,7 +41,7 @@ podman-compose run --rm cli graph
 
 Paste the Mermaid output into the slide. Mapping:
 
-| Module 2 (`m2/agent/loop.py`) | Module 3 node |
+| Module 2 (`shared/taco_shared/teaching_agent/loop.py`) | Module 3 node |
 | --- | --- |
 | `create_agent` model turn | `investigate` |
 | `create_agent` tool node | `tools` (adds a repeated-call guard and the tool-call budget) |
@@ -106,7 +106,7 @@ Alternative for the camera: the review page at `http://127.0.0.1:8090/ui?actor=s
 same proposal, validation, and Approve / Request revision / Reject buttons, plus a **Workflow steps**
 table that is easier to narrate than `cli show --steps`. After approval, the case moves to the
 "recorded" tab of the list. With Podman in WSL and the
-browser on Windows, see "Browser on Windows, Podman in WSL" in [README.md](README.md) if the page does
+browser on Windows, see "Browser on Windows, Podman in WSL" in [app/README.md](../app/README.md#browser-on-windows-podman-in-wsl) if the page does
 not open.
 
 ### 6. Retries do not duplicate the action
@@ -141,5 +141,5 @@ decision.
 ## Wrap-up state for Demo 3.2
 
 `case-api` and `complaint-api` running; `CASE-10431` recorded. Demo 3.2 resets the cases it uses.
-Before rerunning anything from `m2/`, restore A01's fixture: `podman-compose run --rm cli reset CASE-10431`
+Before rerunning the module 2 demo, restore A01's fixture: `podman-compose run --rm cli reset CASE-10431`
 (a recorded action makes module 2 see the order as already compensated).

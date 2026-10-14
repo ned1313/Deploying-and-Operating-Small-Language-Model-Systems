@@ -1,12 +1,11 @@
-"""The Demo 3.2 harnesses against the in-process complaint API with a scripted model."""
+"""The e2e and failure harnesses against the in-process complaint API with a scripted model."""
 
 from __future__ import annotations
 
+from taco_shared.api_client import Api
 from taco_shared.paths import AGENT_SCENARIOS_V2, GENERATED_DIR, load_json
 from taco_shared.testing import InProcessTransport
-
-from clients.api import Api
-from eval import failure_tests, run_e2e_scenarios
+from taco_tools.e2e import failure_tests, run_e2e_scenarios
 
 from .conftest import scripted
 

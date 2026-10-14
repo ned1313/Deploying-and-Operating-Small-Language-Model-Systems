@@ -20,16 +20,14 @@ from typing import Any
 
 from openai import APIError
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from agent.loop import InvestigationResult, run_investigation  # noqa: E402
-from agent.scenarios import build_tools, context_for, load_scenarios  # noqa: E402
-from taco_shared.agent.model import build_chat_model  # noqa: E402
-from taco_shared.config import InferenceSettings  # noqa: E402
-from taco_shared.errors import describe_error  # noqa: E402
-from taco_shared.grading import grade  # noqa: E402
-from taco_shared.paths import AGENT_SCENARIOS, GENERATED_DIR, load_json  # noqa: E402
-from taco_shared.reporting import safe_slug, summarize_latency, timestamp_slug  # noqa: E402
+from taco_shared.agent.model import build_chat_model
+from taco_shared.config import InferenceSettings
+from taco_shared.errors import describe_error
+from taco_shared.grading import grade
+from taco_shared.paths import AGENT_SCENARIOS, GENERATED_DIR, load_json
+from taco_shared.reporting import safe_slug, summarize_latency, timestamp_slug
+from taco_shared.teaching_agent.loop import InvestigationResult, run_investigation
+from taco_shared.teaching_agent.scenarios import build_tools, context_for, load_scenarios
 
 TOOL_FLAGS = ("tool_calls_parsed", "tool_args_valid", "required_tools_called", "args_correct", "within_budget")
 GRADE_FLAGS = ("schema_valid", "grounded", "policy_compliant", "category_correct", "passed")

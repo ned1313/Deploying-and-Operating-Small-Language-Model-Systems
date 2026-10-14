@@ -1,8 +1,8 @@
 """Generates the provisioned Grafana dashboards. Edit the panel lists here, then run:
 
-    python m4/grafana/build_dashboards.py
+    python observability/grafana/build_dashboards.py
 
-and commit the regenerated JSON files in m4/grafana/dashboards/.
+and commit the regenerated JSON files in observability/grafana/dashboards/.
 """
 
 from __future__ import annotations

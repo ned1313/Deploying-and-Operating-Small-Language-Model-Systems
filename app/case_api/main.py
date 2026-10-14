@@ -1,6 +1,6 @@
 """Mock case-management API. Owns its own SQLite file; seeds it from the generated cases on start.
 
-Run: uvicorn main:app --host 0.0.0.0 --port 8081
+Run: uvicorn case_api.main:app --host 0.0.0.0 --port 8081
 
 Module 3 adds idempotent approved actions (POST /cases/{case_id}/actions) and admin routes for fault
 injection and fixture reset. Admin routes exist only when TACO_ADMIN_TOKEN is set.

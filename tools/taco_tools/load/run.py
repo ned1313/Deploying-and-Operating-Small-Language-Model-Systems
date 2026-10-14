@@ -3,7 +3,7 @@
     podman-compose run --rm load --mode direct --shape burst --label direct-burst
     podman-compose run --rm load --mode app --shape steady --label app-steady
 
-Writes results/load-<label>-<ts>_stats.csv (and the other Locust CSVs), an HTML report, an outcomes
+Writes results/load/load-<label>-<ts>_stats.csv (and the other Locust CSVs), an HTML report, an outcomes
 file, and a metadata file (-meta.json) that the baseline report reads for the run window.
 """
 
@@ -109,7 +109,7 @@ def main() -> int:
     meta_path = Path(f"{prefix}-meta.json")
     meta_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
     print(f"outcomes: {metadata['outcomes']}")
-    print(f"wrote {meta_path.relative_to(RESULTS.parent)}")
+    print(f"wrote {meta_path}")
     return code
 
 

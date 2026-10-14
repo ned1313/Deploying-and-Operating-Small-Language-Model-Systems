@@ -6,16 +6,17 @@ mock case-management API. Follow a missing-items complaint to a structured resol
 validate it, and confirm tool-calling reliability for the model chosen in module 1.
 
 Prerequisites: module 1 final state (`vllm` + `gateway` running with the selected model, screening
-rerun on `screening-v2`), and the setup in [README.md](README.md) (`.env`, secret, `seed`, `case-api`).
-Commands run from `m2/`.
+rerun on `screening-v2`), and the setup in [app/README.md](../app/README.md#setup) (`.env`, secret,
+`seed`, `case-api`) plus `tools/.env`. Commands run from `app/` unless noted.
 
 ## Prerequisite commands
 
-If you don't already have the module 1 final state running, run the following commands to start the necessary components:
+If you don't already have the module 1 final state running, run the following commands on the GPU
+host to start the necessary components:
 
 ```bash
-# Set environment variables
-source ./m1/env.sh
+# Set environment variables (from the repository root)
+source model-host/env.sh
 ```
 
 ### Gateway
@@ -29,7 +30,6 @@ podman ps -a
 If the gateway is not running, you can start it up with the following command:
 
 ```bash
-cd m1
 podman compose up -d gateway
 ```
 
@@ -54,7 +54,7 @@ export MAX_MODEL_LEN=4096 MAX_NUM_SEQS=64 GPU_MEMORY_UTILIZATION=0.90
 
 # Serve the model
 # Run from the root of the repository
-./m1/serve.sh $CAND --kv-cache-dtype fp8
+./model-host/serve.sh $CAND --kv-cache-dtype fp8
 podman compose logs -f vllm
 ```
 
@@ -68,8 +68,8 @@ Wait until the model is ready to serve requests.
 
 ```bash
 cat .env.example          # inference contract: base URL, model id, per-model extras, limits
-cat secrets/README.md     # the credential is a mounted file, never an env var or a command-line flag
-sed -n '/x-inference-env/,/RESULTS_DIR/p' compose.yaml
+cat ../secrets/README.md  # the credential is a mounted file, never an env var or a command-line flag
+sed -n '/x-inference-env/,/CASE_API_URL/p' compose.yaml
 ```
 
 Talking points: the application only needs `INFERENCE_BASE_URL` and `INFERENCE_MODEL`; moving the
@@ -104,7 +104,7 @@ mismatch (wrong model id); neither is a model-quality signal.
 - `shared/taco_shared/agent/model.py`: `build_chat_model()` is `ChatOpenAI` pointed at vLLM:
   `base_url`, the mounted key, `temperature=0`, `seed=42`, `extra_body` for per-model switches, and
   `use_responses_api=False` because vLLM is used through Chat Completions.
-- `m2/agent/loop.py`, `run_chat()`: one system prompt, one complaint, one call. No tools, no history.
+- `shared/taco_shared/teaching_agent/loop.py`, `run_chat()`: one system prompt, one complaint, one call. No tools, no history.
 
 ### 4. Submit a complaint with no tools
 
@@ -139,7 +139,7 @@ schema used for the finalize call. Points to make:
   `complaint_category`. The customer, store scope, and case come from the application and never
   appear in the schema.
 - Tool calling needs server support: module 1 started vLLM with `--enable-auto-tool-choice
-  --tool-call-parser <parser>` (`m1/serve.sh`), recorded in the module 1 deployment record.
+  --tool-call-parser <parser>` (`model-host/serve.sh`), recorded in the module 1 deployment record.
 - `create_agent` runs the model/tool cycle; the script still owns the loop around it (streaming each
   step, limits, the finalize call, validation). Module 3 adds durable state, routing, and approval.
 - Structured output is a separate, tool-free call with `response_format: json_schema`. Sending the
@@ -156,7 +156,7 @@ schema used for the finalize call. Points to make:
 - `shared/taco_shared/db.py`: narrow, read-only, scoped queries (the order must belong to the
   customer and to one of the actor's stores). No arbitrary SQL.
 - `shared/taco_shared/case_api_client.py` and the mock API: the store scope travels as a header.
-- `m2/agent/loop.py`, `run_investigation()`: `create_agent(...)` with `ToolCallLimitMiddleware`, the
+- `shared/taco_shared/teaching_agent/loop.py`, `run_investigation()`: `create_agent(...)` with `ToolCallLimitMiddleware`, the
   `stream_mode="updates"` loop, then `finalize()` with `with_structured_output(..., method="json_schema")`.
 - `shared/taco_shared/proposal.py`, `validate_proposal()`: schema plus business rules checked only
   against evidence the tools returned.
@@ -203,7 +203,7 @@ captured with Llama 3.1 8B proposed a full refund of 27.84 under R4 without the 
 ```
 
 Valid JSON, wrong decision. Keep a saved transcript of both outcomes as recording fallbacks
-(`--save-transcript` writes to `results/`).
+(`--save-transcript` writes to `results/agent/`).
 
 ### 4. Scope: the same complaint from a representative at another store
 
@@ -235,7 +235,7 @@ guaranteed on every run; use a saved transcript if the live run happens to be cl
 
 ### 7. What this loop lacks
 
-Close on the comments in `m2/agent/loop.py`: no checkpointer (a restart loses the run), no custom
+Close on the comments in `shared/taco_shared/teaching_agent/loop.py`: no checkpointer (a restart loses the run), no custom
 routing (clarification, escalation), only a tool-call cap rather than retry budgets, and no approval
 pause before anything affects the customer. Module 3 adds these with LangGraph.
 
@@ -243,7 +243,10 @@ pause before anything affects the customer. Module 3 adds these with LangGraph.
 
 ## Demo 2.1: confirm the model selection for tool calling
 
+The evaluation runs from the tools project; it reads the app's seeded data and calls its `case-api`.
+
 ```bash
+cd ../tools
 podman-compose run --rm agent-eval --label agent-baseline
 ```
 
@@ -273,13 +276,13 @@ evidence deterministically and sends the model back once for any missing lookup.
 
 If module 3 has been run against the same `case-api`, its harnesses restore the cases they touched.
 A leftover recorded action makes this eval see the order as already compensated (R13); restore the
-fixtures from `m3/` with `podman-compose run --rm cli reset <case ids>`.
+fixtures from `app/` with `podman-compose run --rm cli reset <case ids>`.
 
 Compare with the module 1 screening for the same model (same dataset build):
 
 ```bash
 podman-compose run --rm agent-compare \
-    '/m1-results/screening-<model>-baseline-*.json' 'results/agent-<model>-agent-baseline-*.json'
+    'results/screening/screening-<model>-baseline-*.json' 'results/agent/agent-<model>-agent-baseline-*.json'
 ```
 
 The grid shows each scenario's module 1 result next to the agent result and its tool checks.
@@ -287,16 +290,16 @@ Discussion: tool calling can be perfectly reliable while decisions get worse, be
 now find and combine facts that module 1 handed it. Selection gate (planning section 6.7): tool calls
 parsed 100%, required tools >= 90%, arguments correct >= 95%, schema valid 100%, and an agent pass rate
 no more than 10 points below the screening pass rate. If the selected model misses the gate, swap to
-the runner-up on the GPU host (`m1/serve.sh`) and rerun, or (as with Qwen3-14B and the case lookup)
+the runner-up on the GPU host (`model-host/serve.sh`) and rerun, or (as with Qwen3-14B and the case lookup)
 record the gap and show module 3 closing it.
 
 ---
 
 ## Wrap-up state for module 3
 
-`case-api` running; `taco-app-data` and `taco-case-data` seeded; `.env` and the secret in place;
-model host untouched.
+`case-api` running; `taco-app-data` and `taco-case-data` seeded; `app/.env`, `tools/.env`, and the
+secret in place; model host untouched.
 
 ```bash
-podman-compose ps
+cd ../app && podman-compose ps
 ```

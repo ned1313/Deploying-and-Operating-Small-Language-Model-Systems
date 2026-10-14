@@ -3,16 +3,12 @@ __pycache__/
 .venv/
 *.egg-info/
 build/
-planning.md
-m2/.env
-m2/secrets/*
-!m2/secrets/README.md
-m3/.env
-m3/secrets/*
-!m3/secrets/README.md
-m4/.env
-m4/secrets/*
-!m4/secrets/README.md
+# Local settings and credentials (app/.env, observability/.env, tools/.env, secrets/*)
+.env
+secrets/*
+!secrets/README.md
+# Pre-migration local copies, kept ignored until deleted
+m[1-6]/secrets/
 
 Outline.md
 planning.md

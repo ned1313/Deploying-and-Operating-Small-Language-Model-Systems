@@ -7,7 +7,7 @@ latency, token use, and peak VRAM. Pick one model to carry into the tuning demo.
 Not graded here: tool selection or tool arguments. That is module 2, using the same scenarios.
 This is a screening pass (22 prompts, one run each), not a production benchmark.
 
-Prerequisites: Demo 1.1 state (`gateway` running, tools image built, `source m1/env.sh`).
+Prerequisites: Demo 1.1 state (`gateway` running, tools image built, `source model-host/env.sh`).
 
 ---
 
@@ -27,7 +27,7 @@ cat shared/taco_shared/data/policy/2026.09.txt
 python3 -m json.tool shared/taco_shared/data/schemas/proposal.v1.json | head -40
 
 # One full prompt as the model sees it
-podman compose run --rm tools -c '
+tools run --rm python -c '
 from taco_shared.paths import DEFAULT_POLICY, DEFAULT_SCENARIOS, DEFAULT_SCHEMA, load_json
 from taco_shared.screening import build_system_prompt, build_user_prompt
 s = load_json(DEFAULT_SCENARIOS)["scenarios"][12]           # S13: wrong address, recovered late
@@ -46,16 +46,16 @@ Every fact needed is in the prompt, so a miss is a reasoning or compliance miss.
 ## 2. Screen candidate 1: Qwen (already running from Demo 1.1)
 
 Start the VRAM sampler on the host first, then run the screening container against the gateway
-(the `tools` service defaults `BASE_URL` to `http://gateway:8080/v1` and mounts `$RESULTS_DIR`).
+(the `screen` tool reads the gateway URL from `tools/.env` and writes to `results/screening/`).
 
 ```bash
-./m1/tools/sample_vram.sh "$RESULTS_DIR/vram-${QWEN_SERVED_NAME}.csv" & SAMPLER=$!
+./model-host/sample_vram.sh "$RESULTS_DIR/vram-${QWEN_SERVED_NAME}.csv" & SAMPLER=$!
 
-podman compose run --rm tools tools/screen_models.py \
+tools run --rm screen \
     --model "$QWEN_SERVED_NAME" \
     --extra-body "$QWEN_EXTRA_BODY" \
     --label baseline \
-    --vram-log "/app/results/vram-${QWEN_SERVED_NAME}.csv" \
+    --vram-log "/app/results/serving/vram-${QWEN_SERVED_NAME}.csv" \
     --include-full-responses
 
 kill $SAMPLER
@@ -68,7 +68,7 @@ Follow-ups worth showing for the first model only:
 
 ```bash
 # Inspect one failure in detail (replace S13 with whatever failed)
-RESULT=$(ls -t "$RESULTS_DIR"/screening-${QWEN_SERVED_NAME}-baseline-*.json | head -1)
+RESULT=$(ls -t "$RESULTS_ROOT"/screening/screening-${QWEN_SERVED_NAME}-baseline-*.json | head -1)
 python3 -c '
 import json,sys; r=json.load(open(sys.argv[1]))
 row=[x for x in r["rows"] if x["scenario_id"]=="S13"][0]
@@ -76,7 +76,7 @@ print(json.dumps(row["prediction"], indent=2)); print(row["grades"]["issues"])' 
 
 # Same model with server-side guided decoding: schema validity becomes the backend's job.
 # Compare grounded/policy rates: constrained decoding fixes shape, not reasoning.
-podman compose run --rm tools tools/screen_models.py --model "$QWEN_SERVED_NAME" \
+tools run --rm screen --model "$QWEN_SERVED_NAME" \
     --extra-body "$QWEN_EXTRA_BODY" --structured-output json_schema --label guided
 ```
 
@@ -92,13 +92,13 @@ gateway keeps working because the service always gets the same upstream address.
 
 ```bash
 export HF_TOKEN=hf_...            # gated repo; set in the shell, not in a file
-./m1/serve.sh llama
+./model-host/serve.sh llama
 podman compose logs -f vllm       # wait for "Application startup complete"; watch VRAM in nvtop
 
-./m1/tools/sample_vram.sh "$RESULTS_DIR/vram-${LLAMA_SERVED_NAME}.csv" & SAMPLER=$!
-podman compose run --rm tools tools/screen_models.py --model "$LLAMA_SERVED_NAME" \
+./model-host/sample_vram.sh "$RESULTS_DIR/vram-${LLAMA_SERVED_NAME}.csv" & SAMPLER=$!
+tools run --rm screen --model "$LLAMA_SERVED_NAME" \
     --extra-body "$LLAMA_EXTRA_BODY" --label baseline \
-    --vram-log "/app/results/vram-${LLAMA_SERVED_NAME}.csv" --include-full-responses
+    --vram-log "/app/results/serving/vram-${LLAMA_SERVED_NAME}.csv" --include-full-responses
 kill $SAMPLER
 ```
 
@@ -111,13 +111,13 @@ weight-only (W8A16) with its Marlin kernels. Point out the warning in the startu
 supported, but not on its fast path for this GPU.
 
 ```bash
-./m1/serve.sh granite
+./model-host/serve.sh granite
 podman compose logs -f vllm
 
-./m1/tools/sample_vram.sh "$RESULTS_DIR/vram-${GRANITE_SERVED_NAME}.csv" & SAMPLER=$!
-podman compose run --rm tools tools/screen_models.py --model "$GRANITE_SERVED_NAME" \
+./model-host/sample_vram.sh "$RESULTS_DIR/vram-${GRANITE_SERVED_NAME}.csv" & SAMPLER=$!
+tools run --rm screen --model "$GRANITE_SERVED_NAME" \
     --extra-body "$GRANITE_EXTRA_BODY" --label baseline \
-    --vram-log "/app/results/vram-${GRANITE_SERVED_NAME}.csv" --include-full-responses
+    --vram-log "/app/results/serving/vram-${GRANITE_SERVED_NAME}.csv" --include-full-responses
 kill $SAMPLER
 ```
 
@@ -136,7 +136,7 @@ backend/version" rather than scoring it zero on quality.
 ## 5. Compare
 
 ```bash
-podman compose run --rm tools tools/compare_screening.py --by-scenario 'results/screening-*-baseline-*.json'
+tools run --rm compare-screening --by-scenario 'results/screening/screening-*-baseline-*.json'
 ```
 
 Columns to discuss:
@@ -163,9 +163,9 @@ Note the selection is provisional until module 2 confirms tool calling with the 
 
 ```bash
 # Put the chosen candidate back and leave it running for Demo 1.3
-./m1/serve.sh qwen        # or llama / granite
+./model-host/serve.sh qwen        # or llama / granite
 podman compose logs -f vllm
 ```
 
-Deliverables now in `m1/results/`: three `screening-*-baseline-*.json` files, three `vram-*.csv`
-logs, and the deployment record for the chosen model.
+Deliverables now in `results/`: three `screening/screening-*-baseline-*.json` files, three
+`serving/vram-*.csv` logs, and the deployment record for the chosen model.

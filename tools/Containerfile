@@ -1,17 +1,20 @@
 FROM docker.io/library/python:3.12-slim
 
-# Build context is the repository root (see m1/compose.yaml).
+# Build context is the repository root (see tools/compose.yaml). One image runs every disposable
+# evaluation, load, and report command, and the test suites. CPU only; runs on either host.
 WORKDIR /app
-COPY shared/requirements/core.txt /tmp/core.txt
-RUN pip install --no-cache-dir -r /tmp/core.txt
+COPY shared/requirements/tools.txt /tmp/tools.txt
+RUN pip install --no-cache-dir -r /tmp/tools.txt
 COPY shared/ /opt/shared/
 RUN pip install --no-cache-dir --no-deps /opt/shared
 
-COPY m1/tools/*.py /app/tools/
+COPY tools/taco_tools/ /app/taco_tools/
 
-# The compose `tools` service mounts ${RESULTS_DIR} here.
-ENV RESULTS_DIR=/app/results
+# tools/compose.yaml mounts the repository's results/ at /app/results and sets RESULTS_DIR per service.
+ENV PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1 \
+    RESULTS_DIR=/app/results
 RUN mkdir -p /app/results
 
-ENTRYPOINT ["python"]
-CMD ["tools/smoke_test.py", "--help"]
+ENTRYPOINT ["python", "-m"]
+CMD ["taco_tools.serving.smoke_test", "--help"]

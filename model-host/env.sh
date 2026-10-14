@@ -1,17 +1,18 @@
-# Source this on the GPU host before running the module 1 demos:  source m1/env.sh
+# Source this on the GPU host before any model-host command:  source model-host/env.sh
 #
 # VERIFY BEFORE RECORDING: the Hugging Face repository ids, revisions, and vLLM parser names below
 # are placeholders for the three course candidates. Confirm each artifact exists, is a vLLM-loadable
 # 4-bit/8-bit format (AWQ, GPTQ, FP8, compressed-tensors), and pin its commit sha in *_REVISION.
 # Check parser names against the running image:  podman run --rm "$VLLM_IMAGE" --help | grep -A3 parser
 
-M1_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export M1_DIR
+MODEL_HOST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(dirname "${MODEL_HOST_DIR}")"
+export MODEL_HOST_DIR REPO_DIR
 
 # ----- podman compose --------------------------------------------------------------------------
 # With these exported, `podman compose <cmd>` works from any directory.
-export COMPOSE_FILE="${M1_DIR}/compose.yaml"
-export COMPOSE_PROJECT_NAME="taco-m1"
+export COMPOSE_FILE="${MODEL_HOST_DIR}/compose.yaml"
+export COMPOSE_PROJECT_NAME="taco-model"
 
 # ----- host / networking ---------------------------------------------------------------------
 export MODEL_HOST="${MODEL_HOST:-$(hostname -I 2>/dev/null | awk '{print $1}')}"   # LAN address the desktop will use
@@ -20,7 +21,8 @@ export VLLM_UPSTREAM_IP="${VLLM_UPSTREAM_IP:-10.89.7.10}"      # fixed address n
 export MODEL_CACHE_VOLUME="${MODEL_CACHE_VOLUME:-hf-cache}"    # named volume holding downloaded weights
 export VLLM_PORT="${VLLM_PORT:-8000}"                          # bound to 127.0.0.1 only
 export GATEWAY_PORT="${GATEWAY_PORT:-8080}"                    # nginx, reachable from the desktop
-export RESULTS_DIR="${RESULTS_DIR:-${M1_DIR}/results}"
+export RESULTS_ROOT="${RESULTS_ROOT:-${REPO_DIR}/results}"     # one subfolder per kind of result
+export RESULTS_DIR="${RESULTS_DIR:-${RESULTS_ROOT}/serving}"   # deployment records, serving args, VRAM logs
 
 # ----- images (fully qualified; podman does not assume docker.io) -------------------------------
 # Pin VLLM_IMAGE to a specific tag before recording and put the same value in the deployment record.
@@ -72,4 +74,9 @@ export BASE_URL_DIRECT="http://127.0.0.1:${VLLM_PORT}/v1"       # from the GPU h
 export BASE_URL_REMOTE="http://${MODEL_HOST}:${GATEWAY_PORT}/v1" # from the desktop
 
 mkdir -p "$RESULTS_DIR"
-echo "m1 environment loaded. compose=${COMPOSE_FILE}  gateway=${BASE_URL_REMOTE}  results=${RESULTS_DIR}"
+
+# Run tools/ compose commands from any directory:  tools build;  tools run --rm smoke --skip-structured
+# The COMPOSE_* variables above select this project, so they are cleared for the tools project.
+tools() { (cd "${REPO_DIR}/tools" && env -u COMPOSE_FILE -u COMPOSE_PROJECT_NAME podman compose "$@"); }
+
+echo "model-host environment loaded. compose=${COMPOSE_FILE}  gateway=${BASE_URL_REMOTE}  results=${RESULTS_ROOT}"

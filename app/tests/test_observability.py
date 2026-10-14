@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from app.observability import deployment_versions
+from complaint_api.observability import deployment_versions
 
 from .conftest import scripted
 
@@ -10,7 +10,7 @@ REP = {"X-Actor-Id": "rep-kop-01"}
 
 
 def service():
-    from app import main
+    from complaint_api import main
     return main.STATE["service"]
 
 

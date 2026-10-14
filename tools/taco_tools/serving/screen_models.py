@@ -50,7 +50,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--concurrency", type=int, default=1,
                         help="Parallel requests. Keep 1 for clean per-request latency; raise it in Demo 1.3.")
     parser.add_argument("--label", default=None, help="Free-text label for this configuration (e.g. baseline, kv-fp8).")
-    parser.add_argument("--vram-log", type=Path, default=None, help="CSV written by tools/sample_vram.sh for peak VRAM.")
+    parser.add_argument("--vram-log", type=Path, default=None, help="CSV written by model-host/sample_vram.sh for peak VRAM.")
     parser.add_argument("--include-full-responses", action="store_true", help="Store raw model text in the results file.")
     parser.add_argument("--output", type=Path, default=None,
                         help="Results path (default: results/screening-<model>[-label]-<timestamp>.json).")

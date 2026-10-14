@@ -16,11 +16,9 @@ import time
 from pathlib import Path
 from typing import Any
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from clients.api import Api  # noqa: E402
-from taco_shared.paths import AGENT_SCENARIOS_V2, load_json  # noqa: E402
-from taco_shared.reporting import print_table, timestamp_slug  # noqa: E402
+from taco_shared.api_client import Api
+from taco_shared.paths import AGENT_SCENARIOS_V2, DEFAULT_RESULTS_DIR, load_json
+from taco_shared.reporting import print_table, timestamp_slug
 
 REVIEWER, OTHER_STORE_REVIEWER = "sup-kop-01", "sup-wg-01"
 
@@ -153,7 +151,7 @@ def main() -> int:
             print(f"  {r['id']}: {r['notes']}")
     failed = [r["id"] for r in rows if not r["passed"]]
     print(f"\n{len(rows) - len(failed)}/{len(rows)} passed" + (f"; failed: {', '.join(failed)}" if failed else ""))
-    output = args.output or Path("results") / f"failure-tests{'-' + args.label if args.label else ''}-{timestamp_slug()}.json"
+    output = args.output or DEFAULT_RESULTS_DIR / f"failure-tests{'-' + args.label if args.label else ''}-{timestamp_slug()}.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps({"kind": "failure-tests", "label": args.label, "rows": rows}, indent=2), encoding="utf-8")
     print(f"Results written to: {output}")

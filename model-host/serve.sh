@@ -2,11 +2,11 @@
 # Build the vLLM argument string for one course candidate and (re)create the `vllm` compose service.
 #
 # Usage:
-#   source m1/env.sh
-#   ./m1/serve.sh qwen                              # baseline settings from env.sh
-#   ./m1/serve.sh llama --max-model-len 4096        # extra args are appended to vLLM
-#   ./m1/serve.sh granite --kv-cache-dtype fp8 --max-num-seqs 64
-#   ./m1/serve.sh qwen --dry-run                    # print VLLM_ARGS and the compose command only
+#   source model-host/env.sh
+#   ./model-host/serve.sh qwen                              # baseline settings from env.sh
+#   ./model-host/serve.sh llama --max-model-len 4096        # extra args are appended to vLLM
+#   ./model-host/serve.sh granite --kv-cache-dtype fp8 --max-num-seqs 64
+#   ./model-host/serve.sh qwen --dry-run                    # print VLLM_ARGS and the compose command only
 #
 # Equivalent by hand:  VLLM_ARGS="--model ..." podman compose up -d --force-recreate vllm
 set -euo pipefail
@@ -14,7 +14,7 @@ set -euo pipefail
 candidate="${1:?usage: serve.sh <qwen|llama|granite> [extra vllm args...]}"
 shift
 
-: "${COMPOSE_FILE:?source m1/env.sh first}"
+: "${COMPOSE_FILE:?source model-host/env.sh first}"
 dry_run=0
 extra_args=()
 for arg in "$@"; do
@@ -55,7 +55,7 @@ export VLLM_ARGS
 echo "vLLM launch arguments for ${candidate} (${repo}@${revision}):"
 printf '  %s\n' "$VLLM_ARGS"
 echo
-# Persist the exact argument string so smoke_test.py --serving-args can record it verbatim.
+# Persist the exact argument string so the smoke test's --serving-args can record it verbatim.
 printf '%s\n' "$VLLM_ARGS" > "${RESULTS_DIR:-.}/last-serving-args.txt"
 
 echo "podman compose up -d --force-recreate vllm    # image: ${VLLM_IMAGE}"

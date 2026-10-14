@@ -3,7 +3,7 @@
 
 Usage:
   compare_agent_vs_screening.py SCREENING_JSON AGENT_JSON
-  compare_agent_vs_screening.py '/m1-results/screening-llama-3.1-8b-*.json' 'results/agent-llama-3.1-8b-*.json'
+  compare_agent_vs_screening.py 'results/screening/screening-llama-3.1-8b-*.json' 'results/agent/agent-llama-3.1-8b-*.json'
 
 Quoted globs are expanded here; the newest match is used.
 """
@@ -21,8 +21,8 @@ from taco_shared.reporting import expand_globs, print_table
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("screening", type=Path, help="screening-*.json written by m1 screen_models.py")
-    parser.add_argument("agent", type=Path, help="agent-*.json written by m2 run_agent_scenarios.py")
+    parser.add_argument("screening", type=Path, help="screening-*.json written by the screen tool")
+    parser.add_argument("agent", type=Path, help="agent-*.json written by agent-eval")
     return parser.parse_args()
 
 

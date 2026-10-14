@@ -1,23 +1,35 @@
-"""Driver loop, teaching script, and evaluation, run against a scripted chat model."""
+"""The module 2 teaching agent's driver loop, run against a scripted chat model."""
 
 from __future__ import annotations
 
 import json
-import subprocess
-import sys
 from dataclasses import replace
-from pathlib import Path
 
+import pytest
 from langchain_core.messages import AIMessage
 
-from agent.loop import run_chat, run_investigation
-from agent.render import StepPrinter
-from agent.scenarios import build_tools, context_for, find_scenario
-from eval import run_agent_scenarios
+from taco_shared.config import InferenceSettings
+from taco_shared.db import AppDatabase
+from taco_shared.teaching_agent.loop import run_chat, run_investigation
+from taco_shared.teaching_agent.render import StepPrinter
+from taco_shared.teaching_agent.scenarios import build_tools, context_for, find_scenario
+from taco_shared.testing import ScriptedChatModel
+from taco_shared.testing import tool_call as call
 
-from .conftest import A01_PROPOSAL, ScriptedChatModel, call
+A01_PROPOSAL = {
+    "case_id": "CASE-10431", "order_id": "TA-10431", "complaint_category": "missing_items",
+    "resolution_type": "partial_refund", "refund_amount": 8.5, "affected_items": ["Carnitas Taco"],
+    "policy_rule_ids": ["R1"], "requires_human_approval": False, "customer_message": "Sorry about the tacos.",
+    "justification": "Two of three Carnitas Tacos missing; R1.", "policy_version": "2026.09",
+    "evidence_refs": [{"tool": "get_order", "record_id": "order:TA-10431"},
+                      {"tool": "get_resolution_policy", "record_id": "policy:2026.09#R1"}],
+    "clarification_or_escalation_reason": "",
+}
 
-M2 = Path(__file__).resolve().parents[1]
+
+@pytest.fixture
+def settings(app_db: AppDatabase) -> InferenceSettings:
+    return InferenceSettings(base_url="http://unused/v1", model="scripted", app_db=str(app_db.path), max_tool_calls=8)
 
 
 def a01_tools(settings, app_db, case_client, actor: str = "rep-kop-01"):
@@ -104,23 +116,3 @@ def test_chat_mode_has_no_tools() -> None:
     model = ScriptedChatModel(responses=[AIMessage(content="Offer a $10 credit.")])
     result = run_chat(model, find_scenario("A01")["intake"])
     assert result.answer == "Offer a $10 credit." and result.transcript.tool_calls == []
-
-
-def test_eval_grades_a_scenario(settings, app_db, case_client, monkeypatch) -> None:
-    scenario = find_scenario("A01")
-    monkeypatch.setattr(run_agent_scenarios, "build_chat_model",
-                        lambda s: ScriptedChatModel(responses=full_investigation(), proposals=[dict(A01_PROPOSAL)]))
-    monkeypatch.setattr(run_agent_scenarios, "build_tools", lambda s, ctx: build_tools(s, ctx, app_db, case_client))
-    orders = {o["order_id"]: o for o in json.loads((Path(run_agent_scenarios.GENERATED_DIR) / "orders.json").read_text())}
-    row = run_agent_scenarios.run_scenario(settings, scenario, orders, None, False)
-    assert all(row["tools"][key] for key in run_agent_scenarios.TOOL_FLAGS)
-    assert row["grades"]["passed"], row["grades"]["issues"]
-
-
-def test_script_reports_unreachable_endpoint(tmp_path: Path) -> None:
-    env = {"INFERENCE_BASE_URL": "http://127.0.0.1:9/v1", "INFERENCE_MODEL": "x", "INFERENCE_TIMEOUT_SECONDS": "5",
-           "INFERENCE_API_KEY_FILE": str(tmp_path / "none"), "SYSTEMROOT": __import__("os").environ.get("SYSTEMROOT", "")}
-    completed = subprocess.run([sys.executable, str(M2 / "examples" / "basic_agent.py"), "--mode", "chat",
-                                "--scenario", "A01"], capture_output=True, text=True, env=env, timeout=120)
-    assert completed.returncode == 1
-    assert "not a model-quality problem" in completed.stdout

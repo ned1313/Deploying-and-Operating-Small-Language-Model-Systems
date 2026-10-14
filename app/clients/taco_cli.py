@@ -13,7 +13,7 @@
   taco_cli.py reset CASE-10431 [...]           forget a case and restore its fixture (admin token)
   taco_cli.py case-fault latency --ms 2500     slow the case API (module 4); also: timeout, clear
 
---actor sets X-Actor-Id (an unauthenticated identity claim; see m3/README.md).
+--actor sets X-Actor-Id (an unauthenticated identity claim; see app/README.md).
 """
 
 from __future__ import annotations
@@ -22,12 +22,9 @@ import argparse
 import json
 import os
 import sys
-from pathlib import Path
 from typing import Any
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from clients.api import Api  # noqa: E402
+from taco_shared.api_client import Api
 
 REP = os.environ.get("TACO_ACTOR") or "rep-kop-01"
 REVIEWER = os.environ.get("REVIEW_ACTOR") or "sup-kop-01"

@@ -1,90 +1,36 @@
 # Module 1: Hosting a Small Language Model
 
-Commands and helper scripts for the three module 1 demonstrations. Everything runs on the GPU host
-over SSH; the model server, gateway, and evaluation tools are services in one Podman Compose
-project ([compose.yaml](compose.yaml)).
+Runbooks for the three module 1 demonstrations. Everything runs on the GPU host over SSH, with one
+check from the desktop.
 
 | Demo | File | Outcome |
 | --- | --- | --- |
-| 1.1 | [demo-1.1-deploy-and-validate.md](demo-1.1-deploy-and-validate.md) | vLLM serving a quantized candidate behind nginx, validated with `smoke_test.py`, deployment record written |
-| 1.2 | [demo-1.2-compare-models.md](demo-1.2-compare-models.md) | 22-scenario screening of Qwen, Llama, and Granite with `screen_models.py`; comparison table; model selected |
-| 1.3 | [demo-1.3-tune-under-load.md](demo-1.3-tune-under-load.md) | Concurrency sweeps with `load_sweep.py`, memory-pressure and OOM cases, tuned baseline confirmed |
+| 1.1 | [demo-1.1-deploy-and-validate.md](demo-1.1-deploy-and-validate.md) | vLLM serving a quantized candidate behind nginx, validated with the `smoke` tool, deployment record written |
+| 1.2 | [demo-1.2-compare-models.md](demo-1.2-compare-models.md) | 22-scenario screening of Qwen, Llama, and Granite with the `screen` tool; comparison table; model selected |
+| 1.3 | [demo-1.3-tune-under-load.md](demo-1.3-tune-under-load.md) | Concurrency sweeps with the `load-sweep` tool, memory-pressure and OOM cases, tuned baseline confirmed |
 
-## Layout
+## Components used
 
-```
-m1/
-  compose.yaml              Podman Compose project: vllm (GPU via CDI), gateway (nginx), tools (disposable client)
-  env.sh                    host settings, image tags, COMPOSE_FILE, and the three candidate definitions (edit before recording)
-  serve.sh                  build VLLM_ARGS for a candidate and `podman compose up -d --force-recreate vllm`
-  gateway/nginx.conf        unauthenticated reverse proxy on :8080 -> fixed vllm upstream address (module 6 hardens it)
-  tools/
-    Containerfile             tools image (python:3.12-slim + the shared package), built from the repository root
-    smoke_test.py             Demo 1.1 endpoint validation + deployment record
-    screen_models.py          Demo 1.2 screening with schema/grounding/policy grading
-    compare_screening.py      Demo 1.2 side-by-side table and per-scenario pass/fail grid
-    load_sweep.py             Demo 1.3 concurrency sweep with TTFT, throughput, queue and KV-cache metrics
-    compare_load.py           Demo 1.3 side-by-side table of load sweeps plus a CSV export of every field
-    sample_vram.sh            host-side nvidia-smi sampler; feeds --vram-log for peak VRAM
-  results/                  generated JSON/CSV output (git-ignored)
-```
+| Folder | Used for |
+| --- | --- |
+| [model-host/](../model-host/README.md) | `vllm` and `gateway` (project `taco-model`), `env.sh`, `serve.sh`, `sample_vram.sh`; one-time GPU host setup |
+| [tools/](../tools/README.md) | `smoke`, `screen`, `compare-screening`, `load-sweep`, `compare-load`, `python` one-shots |
+| [shared/](../shared/README.md) | screening prompts, grading, policy 2026.09, proposal schema v1, the 22 screening scenarios |
+| `results/` | `serving/` (deployment records, serving args, VRAM logs), `screening/`, `sweep/` |
 
-Scenarios, policy, schema, grading, and the shared helpers live in [`shared/`](../shared/README.md)
-because module 2 uses the same ones:
+On the GPU host, `source model-host/env.sh` in every shell. It exports `COMPOSE_FILE` so plain
+`podman compose ...` targets the model host project, and it defines `tools`, which runs tools-project
+commands from any directory (`tools run --rm smoke ...`).
 
-```
-shared/taco_shared/
-  screening.py, grading.py, cli.py, ...           prompt construction, grading, connection flags, /metrics scraping
-  data/policy/2026.09.txt                         resolution policy inlined into the system prompt (rules R1-R14)
-  data/schemas/proposal.v1.json                   required JSON output schema
-  data/generated/screening_scenarios.json         22 synthetic complaints with order, prior-resolution facts, and expected outcomes
-```
-
-## One-time setup on the GPU host
-
-Requirements: Podman 4.x+ with `podman compose` (the `podman-compose` package or the docker-compose
-provider), the NVIDIA driver, and the NVIDIA Container Toolkit for CDI device injection.
-
-```bash
-git clone https://github.com/ned1313/Deploying-and-Operating-Small-Language-Model-Systems && cd Deploying-and-Operating-Small-Language-Model-Systems
-chmod +x m1/serve.sh m1/tools/sample_vram.sh
-sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml     # expose the GPU to podman as nvidia.com/gpu=all
-source m1/env.sh                                                # exports COMPOSE_FILE so `podman compose` works anywhere
-podman compose build tools
-```
-
-Before recording, open [env.sh](env.sh) and:
-
-1. Replace the placeholder Hugging Face repository ids with verified vLLM-loadable quantized
-   artifacts, and pin `*_REVISION` to a commit sha.
-2. Pin `VLLM_IMAGE` to a specific tag; confirm the `--reasoning-parser` / `--tool-call-parser`
-   names exist in that tag (`podman run --rm "$VLLM_IMAGE" --help | grep -A5 parser`).
-3. Export `HF_TOKEN` in the shell for gated repositories. Compose passes it to the container by
-   name; nothing in this folder writes it to disk.
-4. If `10.89.7.0/24` overlaps your LAN, change `INFERENCE_SUBNET` / `VLLM_UPSTREAM_IP` and the
-   `server` line in [gateway/nginx.conf](gateway/nginx.conf).
-
-## Running the tools
-
-All tools accept `--base-url`, `--model`, `--extra-body`, and `--metrics-url`, or the equivalent
-`BASE_URL`, `MODEL`, `EXTRA_BODY`, `METRICS_URL` environment variables. The `tools` service defaults
-`BASE_URL` to `http://gateway:8080/v1` and mounts `$RESULTS_DIR` at `/app/results`.
-
-```bash
-# On the GPU host, over the compose network
-podman compose run --rm tools tools/<script>.py ...
-
-# From the desktop, through the LAN (same compose file; only the tools service is used)
-BASE_URL=http://<MODEL_HOST>:8080/v1 podman compose run --rm tools tools/<script>.py ...
-
-# Without containers (any machine with Python 3.12+)
-pip install -r shared/requirements/core.txt && pip install --no-deps ./shared
-cd m1 && python tools/<script>.py --base-url http://<MODEL_HOST>:8080/v1 ...
-```
+The serving tools accept `--base-url`, `--model`, `--extra-body`, and `--metrics-url`. The base URL
+defaults to `INFERENCE_BASE_URL` from `tools/.env` (on the GPU host without that file:
+`http://host.containers.internal:8080/v1`, the gateway's published port). With no `--model`, the tools
+use the model the server lists.
 
 ## What the screening grades
 
-`screen_models.py` scores each scenario on four independent checks and reports the rate of each:
+`screen_models.py` (the `screen` tool) scores each scenario on four independent checks and reports the
+rate of each:
 
 - **schema_valid**: strict JSON that validates against `proposal.v1.json` (with
   `--structured-output none` this measures the model; with `json_schema` it measures the backend).
@@ -100,7 +46,5 @@ scenarios before the model choice is final.
 
 ## Teardown
 
-```bash
-podman compose down                        # stops vllm and gateway, removes the compose network
-podman volume rm "$MODEL_CACHE_VOLUME"     # only if you want to re-download weights
-```
+On the GPU host, see [model-host/README.md](../model-host/README.md#teardown). To re-download weights,
+`podman volume rm "$MODEL_CACHE_VOLUME"` after stopping `vllm`.

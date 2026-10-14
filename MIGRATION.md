@@ -1,7 +1,8 @@
 # Repository layout migration plan
 
-Status: draft v1, open questions (2026-10-14). Nothing has been moved yet. Module 5 work stops until
-this migration is done, so module 5 is built in the new layout.
+Status: applied on the desktop (2026-10-14), not committed. The GPU host steps are still to run (section
+6). Decisions are recorded in section 3; what was built and how it differs from the plan is in
+section 6.
 
 Goal: move every runnable component out of the module folders into top-level folders, one per
 deployment unit, each with the same set of files. Module folders keep only their README and
@@ -308,7 +309,7 @@ no data is migrated; only containers and images are recreated.
 | `cd m4 && podman-compose run --rm load --mode app --shape burst` | `cd tools && podman-compose run --rm load --mode app --shape burst` |
 | `cd m4 && podman-compose up -d prometheus grafana` | `cd observability && podman-compose up -d prometheus grafana` |
 | `source m1/env.sh && ./m1/serve.sh qwen` | `source model-host/env.sh && ./model-host/serve.sh qwen` |
-| `podman compose run --rm tools tools/smoke_test.py ...` (GPU host) | `cd tools && podman compose run --rm smoke ...` |
+| `podman compose run --rm tools tools/smoke_test.py ...` (GPU host) | `tools run --rm smoke ...` (the `tools` function from `model-host/env.sh`) |
 | `podman compose -f m4/model-host/compose.yaml up -d node-exporter dcgm-exporter` | `podman compose up -d node-exporter dcgm-exporter` (with `model-host/env.sh` sourced) |
 
 ---
@@ -331,6 +332,126 @@ no data is migrated; only containers and images are recreated.
   compose entry points, so phase 5 runs each one-shot once.
 - **APP_VERSION and `taco_build_info`**: the image name changes; Grafana panels filter on labels,
   not image names, so no dashboard change is expected.
-- **Learners following old recordings**: if modules 1-4 are already recorded, the on-screen paths
-  (`cd m3`) will differ from the repository. Tags (Q11) or a short note in each module README
-  mapping old to new commands would cover that. Have any modules been recorded yet?
+- **Learners following old recordings**: nothing has been recorded yet, so no old-to-new mapping is
+  kept in the module READMEs.
+
+---
+
+## 6. As built (2026-10-14)
+
+### Done
+
+| Phase | Result |
+| --- | --- |
+| 0. Baseline | `shared/tests` 114, `m2/tests` 9, `m3/tests` 15 passed before any move. No tag was created (you commit). |
+| 1-5. Moves | Done with `git mv`, so history follows the files. Layout as in section 2, with the deviations below. |
+| 6. Documentation | Unit READMEs (`model-host/`, `app/`, `observability/`, `tools/`), module READMEs reduced to "components used", every runbook in `m1/`-`m4/`, root README, ARCHITECTURE.md (new "Deployment units" section and module diagrams), `shared/README.md`, `secrets/README.md`, `.gitignore`, Outline.md deployment-unit table and command flow, `m5/planning.md` decisions 1-2 and layout. |
+| 7. Cleanup (partial) | Empty module subfolders removed. Old images, old `.env` files, and old secret files are left for you (below). |
+
+Tests after the move: 119 + 16 + 3 = 138 passed, the same 138 tests as before, regrouped (locally and
+in the `tools` container with `podman-compose run --rm tests`).
+
+Live checks on the desktop (WSL, Podman 4.9.3, podman-compose 1.0.6) against the running Qwen3-14B:
+
+| Check | Result |
+| --- | --- |
+| `app/`: build, recreate `case-api` and `complaint-api` | both healthy on the new `localhost/taco-app` image; existing volumes and cases kept; `tracing: true` read from `app/.env` |
+| `../secrets/inference_api_key` as a compose secret | works with podman-compose 1.0.6 |
+| `cli reset` + `cli submit A01` | `pending_review`, partial refund 8.50, 4 tool calls |
+| `basic-agent --check` | endpoint, database, and case API OK |
+| `tools/`: `smoke --skip-structured` | deployment record written to `results/serving/` |
+| `failure-tests --only F01` | PASS, written to `results/failure/` |
+| `e2e-eval --only A01` | passed 1.00, written to `results/e2e/` (see the note on a stalled model call below) |
+| `agent-eval --only A01` | written to `results/agent/` |
+| `observability/`: recreate `prometheus`, `grafana` | all five targets up; samples from 24 h earlier still queryable |
+| `load --mode app --shape steady --duration 60` + `baseline` | 10 proposals reached review, 9 approved and recorded, 0 failures; baseline `.json`/`.md` written to `results/baseline/` |
+
+The verification result files were deleted afterwards.
+
+### Deviations from the plan
+
+1. **The teaching loop and the API client are in `shared/`**, as `taco_shared.teaching_agent` and
+   `taco_shared.api_client`, not in `app/`. Both are used by `app/` (teaching script, CLI) and by
+   `tools/` (agent-eval, harnesses); `shared/` avoids one unit importing another's code.
+2. **The case API runs from the app image** (`uvicorn case_api.main:app`), so `localhost/taco-case-api`
+   and its Containerfile are gone. Health checks are defined per service in `app/compose.yaml`.
+3. **Tests**: one `tests` service in `tools/` runs `shared/tests`, `app/tests`, and `tools/tests`
+   against the mounted source. The module 2 tests were split: loop tests to
+   `shared/tests/test_teaching_agent.py`, the script test to `app/tests/test_basic_agent.py`, the eval
+   test to `tools/tests/test_agent_eval.py`. The case API tests moved from `shared/tests` to
+   `app/tests/test_case_api.py`. The harness tests drive the real complaint API, so
+   `tools/tests/conftest.py` re-exports the app test fixtures.
+4. **Lock files**: `app.txt` (agent + service) and `tools.txt` (all extras) replace `core.txt`,
+   `agent.txt`, `service.txt`, and `load.txt`; both are constrained to `dev.txt` and pin identical
+   versions. `dev.txt` stays for local development.
+5. **Results subfolders**: `serving/`, `screening/`, `sweep/` (m1 load sweeps), `agent/`, `e2e/`,
+   `failure/`, `load/`, `baseline/`. Each tools service sets `RESULTS_DIR` to its subfolder. The e2e
+   and failure harnesses now honor `RESULTS_DIR` (they wrote to a fixed `results/`), and the baseline
+   report reads load runs from `LOAD_RESULTS_DIR`.
+6. **GPU host `tools` function** in `model-host/env.sh`: `env.sh` exports `COMPOSE_FILE` and
+   `COMPOSE_PROJECT_NAME` for the model host project, which would otherwise capture tools commands.
+   `tools build` / `tools run --rm smoke ...` work from any directory. `env.sh` also exports
+   `RESULTS_ROOT`; `RESULTS_DIR` is now `results/serving`.
+7. **LangSmith settings** are passed to `complaint-api` by `${VAR}` interpolation from `app/.env`;
+   `tracing-off.env` and `TRACING_ENV_FILE` are gone, and quoting is no longer an issue.
+8. **Serving tools discover the model** when `--model` is not given (as module 1 did); `tools/.env`'s
+   `INFERENCE_MODEL` applies only to `agent-eval` and direct `load`.
+9. **`python` service** in `tools/` replaces `podman compose run --rm tools -c '...'` (Demo 1.2 step 1).
+
+### Local files I created or moved (not in git)
+
+- `app/.env`, `observability/.env`, `tools/.env` built from the templates with the values from
+  `m3/.env` and `m4/.env` (LangSmith settings included).
+- `secrets/inference_api_key` and `secrets/grafana_admin_password` copied from `m3/secrets/` and
+  `m4/secrets/`.
+- Desktop result files moved from `m1/`-`m4/results/` into `results/<kind>/`.
+
+One file was lost: while deleting my verification results with a `*migration-check*` pattern, I also
+deleted `results/screening/screening-llama-3.1-8b-migration-check-20261001-103916.json`, a desktop
+result from 2026-10-01 that happened to use the same label. It was untracked, so git cannot restore
+it. If the GPU host has the same file in its `m1/results/`, that copy is intact.
+
+### Remaining steps for you
+
+**GPU host** (after you commit and pull there):
+
+```bash
+cd ~/Deploying-and-Operating-Small-Language-Model-Systems
+# 1. Remove the old projects' containers (fixed names) and network; the hf-cache volume stays.
+podman rm -f vllm gateway node-exporter dcgm-exporter nvidia-smi-exporter 2>/dev/null
+podman network rm taco-m1_inference
+# 2. Move the old results into the new layout (git leaves untracked files in m1/results).
+mkdir -p results/serving results/screening results/sweep
+mv m1/results/deployment-record-* m1/results/last-serving-args.txt m1/results/vram-* results/serving/ 2>/dev/null
+mv m1/results/screening-* results/screening/ 2>/dev/null
+mv m1/results/load-* results/sweep/ 2>/dev/null
+# 3. Start the model host project
+source model-host/env.sh
+podman compose up -d gateway
+./model-host/serve.sh qwen            # with the module 1.3 tuned settings you use, e.g. --kv-cache-dtype fp8
+podman compose up -d node-exporter dcgm-exporter
+# 4. Tools on this host: build, then check that host.containers.internal reaches the gateway
+tools build
+tools run --rm python -c 'import urllib.request; print(urllib.request.urlopen("http://host.containers.internal:8080/v1/models").status)'
+tools run --rm smoke --skip-structured --extra-body "$QWEN_EXTRA_BODY"
+```
+
+If the `host.containers.internal` check fails, upgrade Podman or set `INFERENCE_BASE_URL` in
+`tools/.env` on the GPU host to `http://$MODEL_HOST:8080/v1`. Also confirm that `tools run` does not
+complain about the missing `secrets/inference_api_key` or the desktop-only external networks
+(`taco-app-private`, `taco-telemetry`, `taco-app-data`); if it does, create an empty
+`secrets/inference_api_key` on the GPU host and tell me which check failed.
+
+**Desktop** (optional cleanup, once you are happy with the new layout):
+
+```bash
+podman rmi localhost/taco-m2-agent localhost/taco-m3-app localhost/taco-m4-load localhost/taco-case-api localhost/taco-m1-tools
+rm -r m2/.env m3/.env m4/.env m2/secrets m3/secrets m4/secrets   # old local config; values are in the new files
+```
+
+### Observed during verification (not caused by the migration)
+
+The first `e2e-eval --only A01` run ended `escalated (timeout)` because a single model call took 109 s
+without an error; a rerun passed in 7.7 s. The app image pins the same package versions as before, so
+the migration is an unlikely cause. It resembles the hang in m4 deviation 1 (fixed there), and the
+cause here is unknown. It is worth a look before recording, since an e2e or load run can hit it.

@@ -1,0 +1,231 @@
+# Tools project (either host): disposable evaluation, load, and report commands, plus the test suites.
+# Run every command from tools/ (on the GPU host, use the `tools` shell function from model-host/env.sh).
+#
+#   cp .env.example .env                                  # target URLs; see the GPU host notes inside
+#   podman-compose build
+#   podman-compose run --rm smoke --skip-structured       # module 1, against INFERENCE_BASE_URL
+#   podman-compose run --rm e2e-eval --label e2e-baseline # module 3, against the running complaint API
+#   podman-compose run --rm load --mode app --shape burst # module 4
+#   podman-compose run --rm tests                         # all test suites, no network
+#
+# Results go to ../results/<kind>/ on the machine that runs the command. Services that call the
+# complaint API join taco-app-private, and `baseline` joins taco-telemetry, so those run on the desktop
+# after app/ (and observability/) are up. Serving services only need the gateway URL and run anywhere.
+
+name: taco-tools
+
+x-tools-image: &tools-image
+  image: localhost/taco-tools:latest
+  build:
+    context: ..
+    dockerfile: tools/Containerfile
+
+x-serving-env: &serving-env
+  BASE_URL: ${INFERENCE_BASE_URL:-http://host.containers.internal:8080/v1}
+  MODEL: ${MODEL:-}                  # empty: use the model the server lists
+  EXTRA_BODY: ${EXTRA_BODY:-}
+
+x-inference-env: &inference-env
+  INFERENCE_BASE_URL: ${INFERENCE_BASE_URL:-http://host.containers.internal:8080/v1}
+  INFERENCE_MODEL: ${INFERENCE_MODEL:-}
+  INFERENCE_TIMEOUT_SECONDS: ${INFERENCE_TIMEOUT_SECONDS:-120}
+  INFERENCE_EXTRA_BODY: ${INFERENCE_EXTRA_BODY:-}
+  INFERENCE_TOOL_CALLING: ${INFERENCE_TOOL_CALLING:-native}
+  INFERENCE_STRUCTURED_OUTPUT: ${INFERENCE_STRUCTURED_OUTPUT:-json_schema}
+  INFERENCE_API_KEY_FILE: /run/secrets/inference_api_key
+
+x-client-env: &client-env
+  COMPLAINT_API_URL: http://complaint-api:8090
+  CASE_API_URL: http://case-api:8081
+  TACO_ADMIN_TOKEN: ${TACO_ADMIN_TOKEN:-}
+
+services:
+  # ----- model serving (module 1): gateway URL only ------------------------------------------------
+  smoke:
+    # podman-compose run --rm smoke [--skip-structured] [--extra-body '{...}'] [record flags]
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.serving.smoke_test"]
+    command: []
+    environment:
+      <<: *serving-env
+      RESULTS_DIR: /app/results/serving
+    volumes:
+      - ../results:/app/results
+
+  screen:
+    # podman-compose run --rm screen --model <served-name> --extra-body '{...}' --label baseline
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.serving.screen_models"]
+    command: []
+    environment:
+      <<: *serving-env
+      RESULTS_DIR: /app/results/screening
+    volumes:
+      - ../results:/app/results
+
+  compare-screening:
+    # podman-compose run --rm compare-screening 'results/screening/screening-*-baseline-*.json'
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.serving.compare_screening"]
+    command: []
+    volumes:
+      - ../results:/app/results:ro
+
+  load-sweep:
+    # podman-compose run --rm load-sweep --concurrency 1,4,8,16,32 --requests-per-level 32 --label baseline
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.serving.load_sweep"]
+    command: []
+    environment:
+      <<: *serving-env
+      RESULTS_DIR: /app/results/sweep
+    volumes:
+      - ../results:/app/results
+
+  compare-load:
+    # podman-compose run --rm compare-load 'results/sweep/load-*.json'
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.serving.compare_load"]
+    command: []
+    environment:
+      RESULTS_DIR: /app/results/sweep
+    volumes:
+      - ../results:/app/results
+
+  python:
+    # podman-compose run --rm python -c '<code using taco_shared>'
+    <<: *tools-image
+    entrypoint: ["python"]
+    command: ["--version"]
+    network_mode: none
+
+  # ----- agent and application evaluation (modules 2-3): desktop, app project running ------------
+  agent-eval:
+    # podman-compose run --rm agent-eval --label agent-baseline
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.agent_eval.run_agent_scenarios"]
+    command: []
+    environment:
+      <<: *inference-env
+      AGENT_MAX_TOOL_CALLS: ${AGENT_MAX_TOOL_CALLS:-8}
+      AGENT_MAX_OUTPUT_TOKENS: ${AGENT_MAX_OUTPUT_TOKENS:-800}
+      TACO_POLICY_VERSION: ${TACO_POLICY_VERSION:-2026.09}
+      TACO_APP_DB: /data/app/taco_app.db
+      CASE_API_URL: http://case-api:8081
+      RESULTS_DIR: /app/results/agent
+    secrets:
+      - inference_api_key
+    volumes:
+      - taco-app-data:/data/app:ro    # the app project's seeded database; never written here
+      - ../results:/app/results
+    networks:
+      - app
+
+  agent-compare:
+    # podman-compose run --rm agent-compare 'results/screening/screening-<model>-*.json' 'results/agent/agent-<model>-*.json'
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.agent_eval.compare_agent_vs_screening"]
+    command: []
+    volumes:
+      - ../results:/app/results:ro
+
+  failure-tests:
+    # podman-compose run --rm failure-tests [--only C01,F03]
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.e2e.failure_tests"]
+    command: []
+    environment:
+      <<: *client-env
+      RESULTS_DIR: /app/results/failure
+    volumes:
+      - ../results:/app/results
+    networks:
+      - app
+
+  e2e-eval:
+    # podman-compose run --rm e2e-eval --label e2e-baseline
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.e2e.run_e2e_scenarios"]
+    command: []
+    environment:
+      <<: *client-env
+      RESULTS_DIR: /app/results/e2e
+    volumes:
+      - ../results:/app/results
+    networks:
+      - app
+
+  e2e-compare:
+    # podman-compose run --rm e2e-compare 'results/screening/screening-<model>-*.json' 'results/agent/agent-<model>-*.json' 'results/e2e/e2e-<model>-*.json'
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.e2e.compare_e2e"]
+    command: []
+    volumes:
+      - ../results:/app/results:ro
+
+  # ----- load and baseline (module 4 onward): desktop -------------------------------------------
+  load:
+    # podman-compose run --rm load --mode direct|app --shape steady|burst [--users 2 --burst-users 8]
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.load.run"]
+    command: ["--help"]
+    environment:
+      <<: [*inference-env, *client-env]
+      EXECUTION_HOST: ${EXECUTION_HOST:-desktop}
+      RESULTS_DIR: /app/results/load
+    secrets:
+      - inference_api_key
+    volumes:
+      - ../results:/app/results
+    networks:
+      - app        # a client of the complaint API, like the CLI
+
+  baseline:
+    # podman-compose run --rm baseline [results/load/load-<label>-<ts>-meta.json] [--label name]
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.reports.baseline_report"]
+    command: []
+    environment:
+      PROMETHEUS_URL: http://prometheus:9090
+      RESULTS_DIR: /app/results/baseline
+      LOAD_RESULTS_DIR: /app/results/load
+    volumes:
+      - ../results:/app/results
+    networks:
+      - telemetry  # reaches the observability project's Prometheus by name
+
+  # ----- tests: every suite against the mounted source, no network or GPU -----------------------
+  tests:
+    # podman-compose run --rm tests
+    <<: *tools-image
+    entrypoint: ["sh", "-c"]
+    command:
+      - >-
+        pytest -q -p no:cacheprovider /src/shared/tests
+        && cd /src/app && pytest -q -p no:cacheprovider tests
+        && cd /src/tools && pytest -q -p no:cacheprovider tests
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+      TACO_CASE_API_MAIN: /src/app/case_api/main.py
+    volumes:
+      - ..:/src:ro
+    network_mode: none
+
+secrets:
+  inference_api_key:
+    file: ../secrets/inference_api_key
+
+volumes:
+  taco-app-data:
+    external: true
+    name: taco-app-data
+
+networks:
+  default:
+    name: taco-tools-private
+  app:
+    external: true
+    name: taco-app-private
+  telemetry:
+    external: true
+    name: taco-telemetry

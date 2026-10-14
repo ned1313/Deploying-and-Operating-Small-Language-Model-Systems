@@ -1,7 +1,7 @@
 #!/bin/sh
 # Writes the model-host scrape targets from the environment, then starts Prometheus.
 set -eu
-: "${MODEL_HOST:?set MODEL_HOST in m4/.env}"
+: "${MODEL_HOST:?set MODEL_HOST in observability/.env}"
 mkdir -p /tmp/targets
 
 target() {  # file, port, path label

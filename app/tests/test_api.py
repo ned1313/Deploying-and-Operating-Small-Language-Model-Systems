@@ -59,7 +59,7 @@ def test_crash_mid_run_resumes_on_startup(make_api) -> None:
         api.post("/complaints", json={"scenario_id": "A01"}, headers=REP)
     remaining = investigation()[2:]
     api = make_api(ScriptedChatModel(responses=remaining, proposals=[proposal()]))
-    from app import main
+    from complaint_api import main
     main.STATE["service"].resume_incomplete()
     view = api.get("/cases/CASE-10431", headers=SUP).json()
     assert view["status"] == "pending_review" and view["counters"]["tool_calls"] == 4

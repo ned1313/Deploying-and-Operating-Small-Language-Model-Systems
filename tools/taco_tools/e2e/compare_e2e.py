@@ -3,7 +3,7 @@
 
 Usage:
   compare_e2e.py SCREENING_JSON AGENT_JSON E2E_JSON
-  compare_e2e.py '/m1-results/screening-qwen3-14b-*.json' '/m2-results/agent-qwen3-14b-*.json' 'results/e2e-qwen3-14b-*.json'
+  compare_e2e.py 'results/screening/screening-qwen3-14b-*.json' 'results/agent/agent-qwen3-14b-*.json' 'results/e2e/e2e-qwen3-14b-*.json'
 
 Quoted globs are expanded here; the newest match is used.
 """

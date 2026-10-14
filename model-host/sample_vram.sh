@@ -3,7 +3,7 @@
 # with --vram-log. Run this on the GPU host (needs nvidia-smi), not inside the tools container.
 #
 # Usage:
-#   ./m1/tools/sample_vram.sh "$RESULTS_DIR/vram-qwen.csv" [interval_seconds] &
+#   ./model-host/sample_vram.sh "$RESULTS_DIR/vram-qwen.csv" [interval_seconds] &
 #   SAMPLER=$!
 #   ...run the evaluation...
 #   kill "$SAMPLER"

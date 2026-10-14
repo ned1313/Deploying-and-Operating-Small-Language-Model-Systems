@@ -6,7 +6,7 @@ memory-pressure case, and a hard out-of-memory failure. Finish with a baseline c
 has measured headroom.
 
 Prerequisites: Demo 1.2 state (selected candidate running via `serve.sh`, `gateway` up,
-`source m1/env.sh`). The examples below use Qwen; substitute the winner from Demo 1.2.
+`source model-host/env.sh`). The examples below use Qwen; substitute the winner from Demo 1.2.
 
 ```bash
 CAND=qwen                       # llama | qwen | granite
@@ -40,7 +40,7 @@ Streamed requests give time-to-first-token (prefill) separately from total laten
 The script samples `/metrics` every second to catch queueing and preemptions.
 
 ```bash
-podman compose run --rm tools tools/load_sweep.py \
+tools run --rm load-sweep \
     --model "$SERVED" --extra-body "$EXTRA" \
     --concurrency 1,4,8,16,32 --requests-per-level 32 --max-tokens 300 \
     --label baseline
@@ -86,7 +86,7 @@ Rules of thumb for reading a sweep:
 - **Memory pressure:** `kv %` near 100 together with `preempt` > 0.
 
 `peak_running`, token means, and the raw per-level numbers are also in
-`results/load-<model>-<label>-<timestamp>.json` for later comparison (step 5).
+`results/sweep/load-<model>-<label>-<timestamp>.json` for later comparison (step 5).
 
 Narration while it runs (keep nvtop visible):
 
@@ -105,7 +105,7 @@ Narration while it runs (keep nvtop visible):
 Pad each prompt by ~3000 tokens (the agent in module 2 will carry tool results, so this is realistic).
 
 ```bash
-podman compose run --rm tools tools/load_sweep.py \
+tools run --rm load-sweep \
     --model "$SERVED" --extra-body "$EXTRA" \
     --concurrency 8,16,32 --requests-per-level 32 --max-tokens 300 --pad-prompt-tokens 3000 \
     --label ctx-pressure
@@ -125,7 +125,7 @@ podman compose logs vllm 2>&1 | grep -iE 'preempt|recompute' | tail -5
 ### 4a. Startup failure: context length the KV cache cannot hold
 
 ```bash
-./m1/serve.sh $CAND --max-model-len 131072 --gpu-memory-utilization 0.85
+./model-host/serve.sh $CAND --max-model-len 131072 --gpu-memory-utilization 0.85
 podman compose logs -f vllm    # ValueError: the model's max seq len is larger than the KV cache can store ...
 ```
 
@@ -138,7 +138,7 @@ traffic.
 Give vLLM nearly the whole card, then take some of it away with a second process.
 
 ```bash
-./m1/serve.sh $CAND --gpu-memory-utilization 0.97
+./model-host/serve.sh $CAND --gpu-memory-utilization 0.97
 podman compose logs -f vllm    # wait for startup; nvtop shows ~23 GB in use
 
 # Try to occupy ~1.5 GB of VRAM alongside the server (reuses the vLLM image for torch):
@@ -163,26 +163,26 @@ Change one thing at a time and rerun the baseline sweep with a new `--label`.
 
 ```bash
 # (a) Smaller context, more sequences: fits the screening workload, more KV blocks per request.
-./m1/serve.sh $CAND --max-model-len 4096 --max-num-seqs 64
+./model-host/serve.sh $CAND --max-model-len 4096 --max-num-seqs 64
 podman compose logs -f vllm
-podman compose run --rm tools tools/load_sweep.py --model "$SERVED" --extra-body "$EXTRA" \
+tools run --rm load-sweep --model "$SERVED" --extra-body "$EXTRA" \
     --concurrency 8,16,32,64 --requests-per-level 64 --max-tokens 300 --label ctx4k-seq64
 
 # (b) FP8 KV cache: roughly doubles KV capacity; check the "GPU KV cache size" log line.
-./m1/serve.sh $CAND --kv-cache-dtype fp8
+./model-host/serve.sh $CAND --kv-cache-dtype fp8
 podman compose logs vllm 2>&1 | grep -E 'GPU KV cache size|Maximum concurrency'
-podman compose run --rm tools tools/load_sweep.py --model "$SERVED" --extra-body "$EXTRA" \
+tools run --rm load-sweep --model "$SERVED" --extra-body "$EXTRA" \
     --concurrency 8,16,32 --requests-per-level 32 --max-tokens 300 --pad-prompt-tokens 3000 --label kv-fp8
 
 # (c) Batching control: cap tokens scheduled per step. Lower = smoother TTFT for new arrivals,
 #     lower peak throughput; higher = the opposite.
-./m1/serve.sh $CAND --max-num-batched-tokens 2048
+./model-host/serve.sh $CAND --max-num-batched-tokens 2048
 podman compose logs -f vllm
-podman compose run --rm tools tools/load_sweep.py --model "$SERVED" --extra-body "$EXTRA" \
+tools run --rm load-sweep --model "$SERVED" --extra-body "$EXTRA" \
     --concurrency 8,16,32 --requests-per-level 32 --max-tokens 300 --label batched-2048
 
 # (d) Guided decoding overhead under load (the application will use json_schema in module 2).
-podman compose run --rm tools tools/load_sweep.py --model "$SERVED" --extra-body "$EXTRA" \
+tools run --rm load-sweep --model "$SERVED" --extra-body "$EXTRA" \
     --concurrency 8,16 --requests-per-level 32 --max-tokens 300 --structured-output json_schema --label guided
 ```
 
@@ -190,11 +190,11 @@ Compare runs side by side from the saved JSON. The quotes keep the host shell fr
 glob; the tool expands it inside the container.
 
 ```bash
-podman compose run --rm tools tools/compare_load.py 'results/load-*.json'
+tools run --rm compare-load 'results/sweep/load-*.json'
 
 # Or pick specific runs and name the CSV
-podman compose run --rm tools tools/compare_load.py --csv results/tuning.csv \
-    'results/load-*-baseline-*.json' 'results/load-*-kv-fp8-*.json'
+tools run --rm compare-load --csv results/sweep/tuning.csv \
+    'results/sweep/load-*-baseline-*.json' 'results/sweep/load-*-kv-fp8-*.json'
 ```
 
 The tool prints two tables. **Runs** shows the settings for each sweep. **Levels** has one row per
@@ -202,12 +202,12 @@ concurrency level, with every column from step 2 plus `lat avg`/`lat max`, `ttft
 `run` (peak running), `in tok`/`out tok` (mean tokens per request), and `samples` (number of
 `/metrics` scrapes).
 
-It also writes `results/load-comparison-<timestamp>.csv` with one row per run and level and every
+It also writes `results/sweep/load-comparison-<timestamp>.csv` with one row per run and level and every
 recorded field: run settings, the source file and timestamp, and the first error message. Copy it
 to the desktop for Excel:
 
 ```bash
-scp <user>@<MODEL_HOST>:<clone-path>/m1/results/load-comparison-*.csv .
+scp <user>@<MODEL_HOST>:<clone-path>/results/sweep/load-comparison-*.csv .
 ```
 
 ---
@@ -219,19 +219,19 @@ concurrent requests, no preemptions, KV usage under ~80% at that load). Then rer
 once to confirm the serving change did not alter answers.
 
 ```bash
-# Example baseline; write the real values into m1/env.sh so serve.sh reproduces them
+# Example baseline; write the real values into model-host/env.sh so serve.sh reproduces them
 export MAX_MODEL_LEN=4096 MAX_NUM_SEQS=64 GPU_MEMORY_UTILIZATION=0.90
-./m1/serve.sh $CAND --kv-cache-dtype fp8
+./model-host/serve.sh $CAND --kv-cache-dtype fp8
 podman compose logs -f vllm
 
-podman compose run --rm tools tools/screen_models.py --model "$SERVED" --extra-body "$EXTRA" \
+tools run --rm screen --model "$SERVED" --extra-body "$EXTRA" \
     --label tuned-baseline 
 
-podman compose run --rm tools tools/compare_screening.py \
-    "results/screening-${SERVED}-baseline-*.json" "results/screening-${SERVED}-tuned-baseline-*.json"
+tools run --rm compare-screening \
+    "results/screening/screening-${SERVED}-baseline-*.json" "results/screening/screening-${SERVED}-tuned-baseline-*.json"
 
 # Refresh the deployment record with the final arguments (serve.sh saved them)
-podman compose run --rm tools tools/smoke_test.py --model "$SERVED" --extra-body "$EXTRA" \
+tools run --rm smoke --model "$SERVED" --extra-body "$EXTRA" \
     --hf-repo "$QWEN_REPO" --revision "$QWEN_REVISION" --quantization "$QWEN_QUANT_LABEL" \
     --chat-template "tokenizer default" --reasoning-parser "$QWEN_REASONING_PARSER" \
     --tool-call-parser "$QWEN_TOOL_PARSER" --serving-image "$VLLM_IMAGE" \

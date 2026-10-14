@@ -8,7 +8,7 @@
     basic_agent.py --mode tools --scenario S01 --actor rep-wg-01     scope demo: order outside the actor's stores
     basic_agent.py --mode tools --complaint "... Order TA-10431." --customer-id CUST-14159 --case-id CASE-10431
 
-Settings come from the environment (.env in compose) and the secret file; see m2/.env.example.
+Settings come from the environment (.env in compose) and the secret file; see app/.env.example.
 Exit codes: 0 ok/accepted, 1 connectivity or API error, 2 proposal rejected by validation, 3 tool-call limit hit.
 """
 
@@ -24,21 +24,19 @@ from pathlib import Path
 from langchain_core.utils.function_calling import convert_to_openai_tool
 from openai import APIError
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from agent.loop import run_chat, run_investigation  # noqa: E402
-from agent.render import StepPrinter  # noqa: E402
-from agent.scenarios import build_tools, context_for, find_scenario  # noqa: E402
-from taco_shared.agent.model import build_chat_model, check_endpoint  # noqa: E402
-from taco_shared.case_api_client import CaseApiClient  # noqa: E402
-from taco_shared.config import InferenceSettings  # noqa: E402
-from taco_shared.context import build_context  # noqa: E402
-from taco_shared.db import AppDatabase  # noqa: E402
-from taco_shared.errors import describe_error  # noqa: E402
-from taco_shared.policy import load_policy  # noqa: E402
-from taco_shared.agent.tools import build_investigation_tools  # noqa: E402
-from taco_shared.proposal import load_schema_v2  # noqa: E402
-from taco_shared.reporting import timestamp_slug  # noqa: E402
+from taco_shared.agent.model import build_chat_model, check_endpoint
+from taco_shared.case_api_client import CaseApiClient
+from taco_shared.config import InferenceSettings
+from taco_shared.context import build_context
+from taco_shared.db import AppDatabase
+from taco_shared.errors import describe_error
+from taco_shared.policy import load_policy
+from taco_shared.agent.tools import build_investigation_tools
+from taco_shared.proposal import load_schema_v2
+from taco_shared.reporting import timestamp_slug
+from taco_shared.teaching_agent.loop import run_chat, run_investigation
+from taco_shared.teaching_agent.render import StepPrinter
+from taco_shared.teaching_agent.scenarios import build_tools, context_for, find_scenario
 
 
 def parse_arguments() -> argparse.Namespace:

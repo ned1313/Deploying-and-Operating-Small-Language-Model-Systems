@@ -16,10 +16,10 @@ from langchain_core.messages import AIMessage, BaseMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 from langchain_core.runnables import RunnableLambda
 
-# Source checkout first, then the copy of shared/ in the course images.
+# Source checkout first, then the app image, where app/ is copied to /app.
 CASE_API_CANDIDATES = [Path(os.environ.get("TACO_CASE_API_MAIN", "")),
-                       Path(__file__).resolve().parents[1] / "services" / "mock_case_api" / "main.py",
-                       Path("/opt/shared/services/mock_case_api/main.py")]
+                       Path(__file__).resolve().parents[2] / "app" / "case_api" / "main.py",
+                       Path("/app/case_api/main.py")]
 
 
 class ScriptedChatModel(BaseChatModel):

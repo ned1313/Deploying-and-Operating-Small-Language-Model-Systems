@@ -17,12 +17,10 @@ import time
 from pathlib import Path
 from typing import Any
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
-from clients.api import Api  # noqa: E402
-from taco_shared.grading import grade  # noqa: E402
-from taco_shared.paths import AGENT_SCENARIOS_V2, GENERATED_DIR, load_json  # noqa: E402
-from taco_shared.reporting import safe_slug, summarize_latency, timestamp_slug  # noqa: E402
+from taco_shared.api_client import Api
+from taco_shared.grading import grade
+from taco_shared.paths import AGENT_SCENARIOS_V2, DEFAULT_RESULTS_DIR, GENERATED_DIR, load_json
+from taco_shared.reporting import safe_slug, summarize_latency, timestamp_slug
 
 APPROVER = "sup-area-01"
 GRADE_FLAGS = ("schema_valid", "grounded", "policy_compliant", "category_correct", "passed")
@@ -114,7 +112,7 @@ def main() -> int:
                "rates": rates, "outcomes": outcomes,
                "latency_seconds": summarize_latency([r["latency_seconds"] for r in scored]),
                "wall_seconds": time.perf_counter() - started, "rows": rows}
-    output = args.output or (Path("results") / f"e2e-{safe_slug(model)}{'-' + safe_slug(args.label) if args.label else ''}"
+    output = args.output or (DEFAULT_RESULTS_DIR / f"e2e-{safe_slug(model)}{'-' + safe_slug(args.label) if args.label else ''}"
                                                f"-{timestamp_slug()}.json")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")

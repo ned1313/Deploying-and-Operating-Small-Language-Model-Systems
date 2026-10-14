@@ -1,24 +1,15 @@
-# Module 4 observability project (desktop): Prometheus, Grafana, and disposable load and baseline runs.
+# Observability project (desktop): Prometheus and Grafana. Run every command from observability/.
 # Independent of taco-app: stopping this project never stops complaint processing.
 #
-#   cp .env.example .env                                   # MODEL_HOST, LangSmith, load settings
-#   printf '%s' "$(openssl rand -hex 16)" > secrets/grafana_admin_password
-#   podman network create taco-telemetry                   # once; module 3 setup may have done it
-#   podman-compose build load
+#   cp .env.example .env                                   # MODEL_HOST, ports
+#   printf '%s' "$(openssl rand -hex 16)" > ../secrets/grafana_admin_password
+#   podman network create taco-telemetry                   # once; the app setup may have done it
 #   podman-compose up -d prometheus grafana
-#   podman-compose run --rm load --mode app --shape burst
-#   podman-compose run --rm baseline
 #
-# No `profiles:` and no `depends_on` on one-shot services (podman-compose 1.0.6). Avoid `down`;
-# use `stop` and `up -d <service>`. Model-host exporters run on the GPU host (model-host/compose.yaml).
+# Load generation and the baseline report are one-shots in tools/. Model-host exporters run on the GPU
+# host (model-host/compose.yaml). Avoid `down`; use `stop` and `up -d <service>`.
 
 name: taco-observe
-
-x-load-image: &load-image
-  image: localhost/taco-m4-load:latest
-  build:
-    context: ..
-    dockerfile: m4/load/Containerfile
 
 services:
   prometheus:
@@ -61,41 +52,9 @@ services:
       - "${PUBLISH_ADDRESS:-127.0.0.1}:${GRAFANA_PORT:-3000}:3000"
     restart: unless-stopped
 
-  load:
-    # podman-compose run --rm load --mode direct|app --shape steady|burst [--users 2 --burst-users 8]
-    <<: *load-image
-    command: ["--help"]
-    environment:
-      INFERENCE_BASE_URL: http://${MODEL_HOST}:${GATEWAY_PORT:-8080}/v1
-      INFERENCE_MODEL: ${INFERENCE_MODEL:?set INFERENCE_MODEL in .env}
-      INFERENCE_EXTRA_BODY: ${INFERENCE_EXTRA_BODY:-}
-      INFERENCE_API_KEY_FILE: /run/secrets/inference_api_key
-      COMPLAINT_API_URL: http://complaint-api:8090
-      CASE_API_URL: http://case-api:8081
-      TACO_ADMIN_TOKEN: ${TACO_ADMIN_TOKEN:-}
-      EXECUTION_HOST: ${EXECUTION_HOST:-desktop}
-    secrets:
-      - inference_api_key
-    volumes:
-      - ${RESULTS_DIR:-./results}:/app/results
-    networks:
-      - app        # a client of the complaint API, like the module 3 CLI
-
-  baseline:
-    # podman-compose run --rm baseline [results/load-<label>-<ts>-meta.json] [--label name]
-    <<: *load-image
-    entrypoint: ["python", "/app/eval/baseline_report.py"]
-    command: []
-    environment:
-      PROMETHEUS_URL: http://prometheus:9090
-    volumes:
-      - ${RESULTS_DIR:-./results}:/app/results
-
 secrets:
   grafana_admin_password:
-    file: ./secrets/grafana_admin_password
-  inference_api_key:
-    file: ../m3/secrets/inference_api_key
+    file: ../secrets/grafana_admin_password
 
 volumes:
   taco-observe-prometheus:
@@ -109,6 +68,3 @@ networks:
   telemetry:
     external: true
     name: taco-telemetry
-  app:
-    external: true
-    name: taco-app-private

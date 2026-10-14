@@ -5,8 +5,9 @@ repeated-tool-call scenarios against the running complaint API, show bounded ret
 limits, clarification, and escalation, then run the labeled scenarios end to end and compare with
 modules 1 and 2.
 
-Prerequisites: Demo 3.1 state (`case-api` and `complaint-api` running). Commands run from `m3/`.
-`TACO_ADMIN_TOKEN` in `.env` enables the admin routes the harness uses for fault injection and resets.
+Prerequisites: Demo 3.1 state (`case-api` and `complaint-api` running) and `tools/.env`. The harnesses
+run from `tools/`, the CLI from `app/`. `TACO_ADMIN_TOKEN` (the same value in `app/.env` and
+`tools/.env`) enables the admin routes the harness uses for fault injection and resets.
 
 ---
 
@@ -29,6 +30,7 @@ Prerequisites: Demo 3.1 state (`case-api` and `complaint-api` running). Commands
 ### 1. Run the harness
 
 ```bash
+cd ../tools
 podman-compose run --rm failure-tests --keep-state
 ```
 
@@ -61,6 +63,7 @@ D06  resubmission_is_replayed        -                              HTTP 200 rep
 ### 2. Narrate selected scenarios
 
 ```bash
+cd ../app
 podman-compose run --rm cli show CASE-10431-C01        # question for the customer, then the clarified run
 podman-compose run --rm cli show CASE-10431-J01        # "approve a full refund of $200" had no effect
 podman-compose run --rm cli show CASE-10431-F01 --steps
@@ -94,10 +97,10 @@ status (pending review, recorded, escalated, needs clarification, failed retryab
 On the GPU host, stop only the gateway (the model keeps running):
 
 ```bash
-cd m1 && podman compose stop gateway
+source model-host/env.sh && podman compose stop gateway
 ```
 
-On the desktop:
+On the desktop (from `app/`):
 
 ```bash
 podman-compose run --rm cli reset CASE-10431-F05
@@ -115,11 +118,12 @@ podman-compose run --rm cli retry CASE-10431-F05
 ```
 
 The run resumes from its checkpoint and reaches `pending_review`; nothing was recorded twice. Fallback
-if the GPU host is not reachable on camera: `podman-compose run --rm failure-tests --only F05`.
+if the GPU host is not reachable on camera: `podman-compose run --rm failure-tests --only F05` (from `tools/`).
 
 ### 4. Labeled scenarios end to end
 
 ```bash
+cd ../tools
 podman-compose run --rm e2e-eval --label e2e-baseline
 ```
 
@@ -144,7 +148,7 @@ End-to-end summary
 
 ```bash
 podman-compose run --rm e2e-compare \
-    '/m1-results/screening-<model>-*.json' '/m2-results/agent-<model>-*.json' 'results/e2e-<model>-*.json'
+    'results/screening/screening-<model>-*.json' 'results/agent/agent-<model>-*.json' 'results/e2e/e2e-<model>-*.json'
 ```
 
 Discussion: the module 2 agent passed 75% with Qwen3-14B and called all four required tools in only
@@ -160,9 +164,10 @@ monitoring.
 ## Wrap-up state for module 4
 
 `case-api` and `complaint-api` running. If step 1 used `--keep-state`, restore the cases it touched
-before going back to module 2:
+before going back to module 2 (from `app/`):
 
 ```bash
+cd ../app
 podman-compose run --rm cli reset CASE-10431 CASE-10431-C01 CASE-10431-C02 CASE-10431-J01 CASE-10431-J02 \
     CASE-10431-J03 CASE-10431-F01 CASE-10431-F02 CASE-10431-F03 CASE-10431-F04 CASE-10431-F05 CASE-10431-F06
 ```

@@ -12,9 +12,8 @@ Run everything on the GPU host over SSH. Keep `nvtop` open in a second terminal.
 
 ```bash
 cd ~/Deploying-and-Operating-Small-Language-Model-Systems   # adjust to your clone path
-source m1/env.sh
-chmod a+x m1/tools/*.sh
-chmod a+x m1/*.sh
+source model-host/env.sh
+chmod a+x model-host/*.sh
 
 # Podman and the compose provider
 podman version --format 'client={{.Client.Version}} server={{.Server.Version}}'
@@ -29,7 +28,7 @@ podman run --rm --device nvidia.com/gpu=all docker.io/library/ubuntu nvidia-smi 
 # Pull/build images ahead of time so the recording does not wait on downloads
 podman pull "$VLLM_IMAGE"
 podman pull "$NGINX_IMAGE"
-podman compose build tools
+tools build                     # the tools image (see model-host/env.sh for the `tools` function)
 ```
 
 > Gated repositories (Llama) need `export HF_TOKEN=hf_...` in this shell before `serve.sh`.
@@ -39,14 +38,14 @@ podman compose build tools
 
 ## 1. Start the first candidate
 
-Everything in module 1 is one Compose project, [compose.yaml](compose.yaml): a `vllm` service whose
-arguments come from `VLLM_ARGS`, an nginx `gateway`, and a disposable `tools` client. `serve.sh`
-builds `VLLM_ARGS` for a candidate, saves it to `results/last-serving-args.txt`, and runs
-`podman compose up -d --force-recreate vllm`.
+The model host is one Compose project, [model-host/compose.yaml](../model-host/compose.yaml): a `vllm`
+service whose arguments come from `VLLM_ARGS`, an nginx `gateway`, and (from module 4) the exporters.
+`serve.sh` builds `VLLM_ARGS` for a candidate, saves it to `results/serving/last-serving-args.txt`, and
+runs `podman compose up -d --force-recreate vllm`.
 
 ```bash
-./m1/serve.sh qwen --dry-run          # talk through the arguments before running
-./m1/serve.sh qwen
+./model-host/serve.sh qwen --dry-run  # talk through the arguments before running
+./model-host/serve.sh qwen
 podman compose logs -f vllm            # Ctrl-C once you see "Application startup complete"
 ```
 
@@ -125,12 +124,12 @@ Module 6 adds TLS and service keys to this same nginx config; vLLM itself never 
 
 ## 4. Validate with the smoke-test container
 
-The `tools` service has no GPU dependency and no local Python requirement. It talks to the gateway
-over the compose network (`BASE_URL` defaults to `http://gateway:8080/v1`), exactly the way a
-desktop container will.
+The tools project ([tools/compose.yaml](../tools/compose.yaml)) has no GPU dependency and no local
+Python requirement. On this host it reaches the gateway's published port at
+`http://host.containers.internal:8080/v1`, the same path a desktop container takes over the LAN.
 
 ```bash
-podman compose run --rm tools tools/smoke_test.py \
+tools run --rm smoke \
     --extra-body "$QWEN_EXTRA_BODY" \
     --hf-repo "$QWEN_REPO" --revision "$QWEN_REVISION" \
     --quantization "$QWEN_QUANT_LABEL" \
@@ -148,7 +147,7 @@ What the script does, in order:
 3. `response_format: json_schema` with the resolution-proposal schema against scenario S01;
    validates the reply with `jsonschema`. Guided decoding is a *backend* capability, so a 400 here
    is a compatibility issue, not a model-quality signal.
-4. Writes `results/deployment-record-<model>.json` with server facts plus your pins. The
+4. Writes `results/serving/deployment-record-<model>.json` with server facts plus your pins. The
    tool-call parser is recorded as a prerequisite for module 2 and is not exercised here.
 
 ```bash
@@ -158,10 +157,11 @@ cat "$RESULTS_DIR/deployment-record-${QWEN_SERVED_NAME}.json"
 ### Verify from the desktop (second machine)
 
 ```bash
-# On the desktop, after cloning the repo. The same compose file works; only the tools service is used.
-source m1/env.sh
-podman compose build tools
-BASE_URL="http://<MODEL_HOST>:8080/v1" podman compose run --rm tools tools/smoke_test.py --skip-structured \
+# On the desktop (WSL), after cloning the repo. Only the tools project is used.
+cd tools
+cp .env.example .env               # set INFERENCE_BASE_URL=http://<MODEL_HOST>:8080/v1
+podman-compose build
+podman-compose run --rm smoke --skip-structured \
   --extra-body '{"chat_template_kwargs": {"enable_thinking": false}}'
 ```
 
@@ -178,7 +178,7 @@ vLLM auto-detects the quantization format from the checkpoint config. Forcing a 
 fails fast, before any weights load:
 
 ```bash
-./m1/serve.sh qwen --quantization gptq
+./model-host/serve.sh qwen --quantization gptq
 podman compose logs -f vllm    # ends with a ValueError about quantization method mismatch
 ```
 
@@ -186,7 +186,7 @@ Read the error out loud: it names the checkpoint's format and the flag you passe
 the model's abilities was tested. Restore the working deployment:
 
 ```bash
-./m1/serve.sh qwen
+./model-host/serve.sh qwen
 podman compose logs -f vllm    # wait for "Application startup complete"
 ```
 

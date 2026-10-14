@@ -1,14 +1,15 @@
 # shared
 
-Code, data, and services used by more than one module. Module folders (`m1/`, `m2/`, ...) hold only
-their compose files, entry-point scripts, runbooks, and results.
+Code and data used by more than one deployment unit (`app/`, `tools/`, and the model host's tools).
+The unit folders hold their compose files, Containerfiles, and entry points; module folders (`m1/`,
+`m2/`, ...) hold only runbooks.
 
 ```
 shared/
   pyproject.toml              package `taco_shared`; extras: agent (LangChain, LangGraph SQLite checkpointer), service (FastAPI, Prometheus client), dev (pytest), load (Locust)
-  requirements/               exact pins per extra, used by every Containerfile (core, agent, service, dev, load)
+  requirements/               exact pins: app.txt (app image: agent + service), tools.txt (tools image: all extras), dev.txt (local development)
   taco_shared/
-    cli.py, errors.py, jsonutil.py, metrics.py, reporting.py   helpers used by the module tools
+    cli.py, errors.py, jsonutil.py, metrics.py, reporting.py   helpers used by the tools
     screening.py              module 1 prompts with order, prior-resolution, and policy facts inlined
     grading.py                grade(): schema, grounding, policy, and category checks against a labeled scenario
     policy.py                 versioned policy (JSON source, rendered text)
@@ -17,8 +18,11 @@ shared/
     config.py, context.py     inference settings (+ secret file), the trusted agent context, actors and roles
     db.py, case_api_client.py read-only scoped SQLite queries; case API client (retry budget, idempotent record_action)
     agent/                    LangChain model factory, investigation tools, prompts, the proposal call, fault injection
+    teaching_agent/           module 2 driver loop around create_agent, step rendering, scenario wiring
+                              (used by app/examples/basic_agent.py and the agent-eval tool)
     workflow/                 module 3 LangGraph workflow: state, nodes, routes, budgets, approval interrupt
-    testing.py                scripted chat model and in-process case API for the module test suites
+    api_client.py             HTTP client for the complaint API and case API (used by the CLI and the harnesses)
+    testing.py                scripted chat model and in-process case API (loads app/case_api) for the test suites
     load.py                   module 4 workloads: the load-v1 case selection and direct-inference request bodies
     healthcheck.py            container healthcheck (`python -m taco_shared.healthcheck URL`)
     dataset/build.py          CSV -> generated data and scenario renderings
@@ -31,8 +35,6 @@ shared/
       scenarios/curated.json  S01-S22 and A01-A02 on top of CSV rows
       scenarios/workflow.json module 3 variants of A01 (clarification, prompt injection, fault profiles), each with its own case
       generated/              committed build output; do not edit by hand (agent_scenarios.v2.json = agent-v2)
-  services/mock_case_api/     FastAPI mock case-management service: scoped reads, idempotent approved actions,
-                              admin fault injection and fixture reset (only when TACO_ADMIN_TOKEN is set)
   tests/                      pytest; no GPU or network
 ```
 
@@ -47,6 +49,17 @@ python -m taco_shared.dataset.build --check  # fail if committed data is stale
 pytest -q shared/tests
 ```
 
+The tools image runs every suite without a local Python: `cd tools && podman-compose run --rm tests`.
+
+To change pinned versions, edit `pyproject.toml` and recompile the lock files (dev first; the others
+are constrained to it):
+
+```bash
+uv pip compile shared/pyproject.toml --python-version 3.12 --python-platform x86_64-unknown-linux-gnu --extra agent --extra service --extra dev -o shared/requirements/dev.txt
+uv pip compile shared/pyproject.toml --python-version 3.12 --python-platform x86_64-unknown-linux-gnu --extra agent --extra service -c shared/requirements/dev.txt -o shared/requirements/app.txt
+uv pip compile shared/pyproject.toml --python-version 3.12 --python-platform x86_64-unknown-linux-gnu --extra agent --extra service --extra dev --extra load -c shared/requirements/dev.txt -o shared/requirements/tools.txt
+```
+
 The build drops CSV rows with impossible or future dates, empty fields, or malformed customer ids and
 lists them in `generated/build_report.json`. Every synthesized value uses a per-row random generator,
 so changing one row or one curated scenario does not shift any other row. Rows whose message does not
@@ -55,5 +68,5 @@ name a specific item for an item-level complaint are kept but labeled `ambiguous
 ## Compatibility rule
 
 Once a module is recorded, a change here must not break its runbook. Versioned artifacts (policy,
-schemas, dataset) get a new version instead of an in-place edit, and both `shared/tests` and every
-module's tests must pass before a change is merged.
+schemas, dataset) get a new version instead of an in-place edit, and every test suite (`shared/tests`,
+`app/tests`, `tools/tests`) must pass before a change is merged.

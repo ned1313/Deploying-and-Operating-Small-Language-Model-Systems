@@ -45,29 +45,46 @@ The inference connection contract shared by every client:
 | `INFERENCE_EXTRA_BODY` | `{"chat_template_kwargs": {"enable_thinking": false}}` | `.env` |
 | service credential | file mounted at `/run/secrets/inference_api_key` | `secrets/` (enforced from module 6) |
 
+## Deployment units
+
+Each unit is a top-level folder with one compose project. Modules add services to units; the module
+folders (`m1/` ... `m6/`) hold only runbooks.
+
+| Folder | Compose project | Host | Contents | From module |
+| --- | --- | --- | --- | --- |
+| `model-host/` | `taco-model` | GPU host | `vllm`, `gateway`; exporters | 1; exporters 4 |
+| `app/` | `taco-app` | desktop | `case-api`, `complaint-api`; `seed`, `basic-agent`, `cli` one-shots | 2; `complaint-api` 3 |
+| `observability/` | `taco-observe` | desktop | `prometheus`, `grafana` | 4 |
+| `tools/` | `taco-tools` | either | one-shot evaluation, load, report, and test commands | 1 |
+| `shared/` | - | - | `taco_shared` package and data used by `app/` and `tools/` | 1 |
+
+Credentials are in `secrets/` and results in `results/<kind>/`, both git-ignored and per host.
+
 ---
 
 ## Module 1: Hosting a Small Language Model
 
-One Podman Compose project (`taco-m1`) on the GPU host. vLLM is published only on loopback; the
-gateway is the only path from the LAN. Disposable tool containers run the smoke test, screening, and
-load sweeps from either host.
+The model host project (`taco-model`, `model-host/`) on the GPU host. vLLM is published only on
+loopback; the gateway is the only path from the LAN. Disposable tool containers (`tools/`) run the
+smoke test, screening, and load sweeps from either host through the gateway's published port.
 
 ```mermaid
 flowchart LR
-    subgraph GPU["GPU host: compose project taco-m1"]
+    subgraph GPU["GPU host"]
         direction LR
-        subgraph Net["network inference (10.89.7.0/24)"]
-            GW["gateway<br/>nginx :8080<br/>unauthenticated"]
-            VLLM["vllm<br/>fixed IP 10.89.7.10:8000<br/>--enable-auto-tool-choice<br/>--tool-call-parser"]
-            Tools1["tools (one-shot)<br/>smoke_test, screen_models,<br/>load_sweep, compare_*"]
+        subgraph Model["compose project taco-model"]
+            subgraph Net["network taco-model-inference (10.89.7.0/24)"]
+                GW["gateway<br/>nginx :8080<br/>unauthenticated"]
+                VLLM["vllm<br/>fixed IP 10.89.7.10:8000<br/>--enable-auto-tool-choice<br/>--tool-call-parser"]
+            end
         end
+        Tools1["taco-tools (one-shot)<br/>smoke, screen,<br/>load-sweep, compare-*<br/>host.containers.internal:8080"]
         Cache[("volume hf-cache<br/>model weights")]
         GPUdev["RTX 3090 via CDI"]
-        Results1[("m1/results")]
+        Results1[("results/serving, screening, sweep")]
     end
     subgraph Desktop["Desktop"]
-        Tools1d["tools (one-shot)<br/>BASE_URL=http://MODEL_HOST:8080/v1"]
+        Tools1d["taco-tools (one-shot)<br/>INFERENCE_BASE_URL=http://MODEL_HOST:8080/v1"]
     end
     Tools1 --> GW --> VLLM
     Tools1d -- LAN --> GW
@@ -116,23 +133,29 @@ flowchart TB
 
 ### Deployment
 
-The application project (`taco-app`) runs on the desktop and consumes the module 1 gateway; it never
-starts or stops the model server. Each SQLite file has exactly one owning service.
+The application project (`taco-app`, `app/`) runs on the desktop and consumes the module 1 gateway;
+it never starts or stops the model server. The agent evaluation is a one-shot in the tools project
+(`taco-tools`) that joins the application's network and reads its seeded data. Each SQLite file has
+exactly one owning service.
 
 ```mermaid
 flowchart LR
-    subgraph Desktop["Desktop: compose project taco-app (network taco-app-private)"]
-        Agent["basic-agent (one-shot)<br/>examples/basic_agent.py"]
-        Eval["agent-eval (one-shot)<br/>run_agent_scenarios.py"]
-        Cmp["agent-compare (one-shot)"]
-        SeedJ["seed (one-shot)"]
-        Case["case-api<br/>FastAPI :8081<br/>(127.0.0.1 only)"]
-        AppVol[("volume taco-app-data<br/>taco_app.db")]
-        CaseVol[("volume taco-case-data<br/>cases.db")]
+    subgraph Desktop["Desktop"]
+        subgraph AppP["compose project taco-app (network taco-app-private)"]
+            Agent["basic-agent (one-shot)<br/>examples/basic_agent.py"]
+            SeedJ["seed (one-shot)"]
+            Case["case-api<br/>FastAPI :8081<br/>(127.0.0.1 only)"]
+            AppVol[("volume taco-app-data<br/>taco_app.db")]
+            CaseVol[("volume taco-case-data<br/>cases.db")]
+        end
+        subgraph ToolsP["compose project taco-tools"]
+            Eval["agent-eval (one-shot)"]
+            Cmp["agent-compare (one-shot)"]
+        end
         Secret["secrets/inference_api_key"]
-        Res[("m2/results")]
+        Res[("results/agent, results/screening")]
     end
-    subgraph GPU["GPU host: taco-m1"]
+    subgraph GPU["GPU host: taco-model"]
         GW["gateway :8080"] --> VLLM["vllm"]
     end
     SeedJ -- write --> AppVol
@@ -140,15 +163,14 @@ flowchart LR
     Eval -- read-only --> AppVol
     Case --- CaseVol
     Agent -- "X-Store-Scope" --> Case
-    Eval --> Case
+    Eval -- "taco-app-private" --> Case
     Agent -- LAN --> GW
     Eval -- LAN --> GW
     Secret -.-> Agent
     Secret -.-> Eval
     Agent --> Res
     Eval --> Res
-    Cmp --> Res
-    Cmp -. "reads m1/results" .-> Res
+    Cmp -. "reads" .-> Res
 ```
 
 ### Agent design
@@ -162,7 +184,7 @@ application and never appears in the tool schemas.
 flowchart TB
     Intake["intake: case_id, customer_id,<br/>complaint_date, complaint text<br/>(order id only inside the text)"]
     Ctx["AgentContext (trusted)<br/>actor, store_ids, customer, case"]
-    subgraph Loop["m2/agent/loop.py"]
+    subgraph Loop["shared/taco_shared/teaching_agent/loop.py"]
         CA["create_agent(ChatOpenAI, tools,<br/>ToolCallLimitMiddleware)"]
         Stream["stream_mode=updates<br/>render + transcript"]
         Final["finalize: with_structured_output<br/>(proposal.v2.json, method=json_schema)<br/>no tools in this call"]
@@ -215,7 +237,7 @@ clarification and escalation, retry budgets, and a human-approval pause before a
 
 ## Module 3: Orchestrating and Hardening the Agent Workflow
 
-The complaint API joins the `taco-app` project (now run from `m3/`). It runs an explicit LangGraph
+The complaint API (`app/complaint_api/`) joins the `taco-app` project. It runs an explicit LangGraph
 `StateGraph` from `shared/taco_shared/workflow`, checkpointed with `SqliteSaver`, and reuses the module
 2 model factory, tools, prompts, proposal call, and validator. The model chooses tools; application
 code chooses every route.
@@ -224,8 +246,8 @@ code chooses every route.
 
 ```mermaid
 flowchart LR
-    subgraph Desktop["Desktop: compose project taco-app (network taco-app-private)"]
-        CLI["cli / failure-tests / e2e-eval<br/>(one-shot)"]
+    subgraph Desktop["Desktop: compose projects taco-app (network taco-app-private) and taco-tools"]
+        CLI["cli (taco-app) /<br/>failure-tests, e2e-eval (taco-tools)<br/>(one-shot)"]
         UI["browser: /ui<br/>(127.0.0.1:8090)"]
         API["complaint-api<br/>FastAPI :8090, one worker"]
         Case["case-api :8081<br/>actions + admin faults"]
@@ -234,7 +256,7 @@ flowchart LR
         CaseVol[("taco-case-data<br/>cases.db")]
         Secret["secrets/inference_api_key"]
     end
-    subgraph GPU["GPU host: taco-m1"]
+    subgraph GPU["GPU host: taco-model"]
         GW["gateway :8080"] --> VLLM["vllm"]
     end
     CLI -- "X-Actor-Id" --> API
@@ -285,23 +307,25 @@ failed node. On startup the API resumes runs that were cut off mid-investigation
 
 ## Module 4: Monitoring and Tracing
 
-An independent `taco-observe` project on the desktop (Prometheus, Grafana, one-shot Locust and
-baseline runs) and a `taco-model-exporters` project on the GPU host (node-exporter, dcgm-exporter or
-the nvidia-smi fallback). The application keeps running from `m3/`; its metrics, JSON logs, and
-LangSmith hooks ship in the module 3 code. Prometheus scrapes vLLM's `/metrics` through the gateway
+An independent `taco-observe` project (`observability/`) on the desktop with Prometheus and Grafana,
+one-shot Locust and baseline runs in the tools project, and exporters (node-exporter, dcgm-exporter or
+the nvidia-smi fallback) added to the `taco-model` project on the GPU host. The application's metrics,
+JSON logs, and LangSmith hooks are in `app/complaint_api/`. Prometheus scrapes vLLM's `/metrics` through the gateway
 without authentication; module 6 moves that job behind a credential with the same job and instance
 labels.
 
 ```mermaid
 flowchart LR
     subgraph Desktop["Desktop"]
-        subgraph App["taco-app (m3/)"]
+        subgraph App["taco-app (app/)"]
             API["complaint-api<br/>/metrics, JSON logs,<br/>run slots (4)"]
             Case["case-api"]
         end
-        subgraph Obs["taco-observe (m4/)"]
+        subgraph Obs["taco-observe (observability/)"]
             Prom["prometheus :9090<br/>rules + alerts"]
             Graf["grafana :3000<br/>3 dashboards"]
+        end
+        subgraph ToolsP["taco-tools (tools/)"]
             Load["load (one-shot)<br/>Locust direct | app"]
             Base["baseline (one-shot)"]
         end
@@ -314,7 +338,7 @@ flowchart LR
     end
     API --- Tel --- Prom
     Prom --> Graf
-    Base --> Prom
+    Base -- "taco-telemetry" --> Prom
     Load -- "taco-app-private" --> API
     Load -- "direct mode (LAN)" --> GW
     API -- "X-Request-ID (LAN)" --> GW

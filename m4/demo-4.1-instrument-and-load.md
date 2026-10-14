@@ -4,9 +4,9 @@ Goal: collect metrics from both hosts, drive normal and burst traffic, and read 
 separate the model server from the application: inference latency, tool latency, agent processing
 time, and approval wait. Finish with a documented baseline.
 
-Prerequisites: module 1 model and gateway running on the GPU host; the module 3 application running
-from `m3/`; the module 4 setup in [README.md](README.md) on both hosts. Commands run from `m4/` on the
-desktop unless marked **GPU host**.
+Prerequisites: module 1 model and gateway running on the GPU host; the application (`app/`) running
+with `case-api` and `complaint-api`; the module 4 setup in [README.md](README.md) on both hosts.
+Desktop commands run from `observability/`, `tools/`, or `app/` as shown; **GPU host** marks the rest.
 
 Sample output below comes from the test run on 2026-10-12 (Qwen3-14B AWQ, RTX 3090,
 `max-num-seqs` 64 on the running server, `WORKFLOW_MAX_CONCURRENT_RUNS=4`). Your numbers will differ.
@@ -24,7 +24,7 @@ Use the "Where each signal comes from" table and diagram in [README.md](README.m
   `taco_workflow_run_seconds`), application's view of the model (`taco_model_seconds`), and the server
   (`vllm:e2e_request_latency_seconds`). The gaps between them are network, gateway, tools, and queueing.
 - Approval wait (`taco_approval_wait_seconds`) is human time. It is never part of processing latency.
-- Thresholds live in `prometheus/rules/taco.yml`; the baseline at the end of this demo is what they
+- Thresholds live in `observability/prometheus/rules/taco.yml`; the baseline at the end of this demo is what they
   are tuned against.
 
 ---
@@ -42,6 +42,7 @@ podman ps --format '{{.Names}} {{.Status}}' | grep -E 'gateway|vllm|exporter'
 From the desktop, prove the desktop can read them:
 
 ```bash
+cd observability
 source <(grep -E '^MODEL_HOST=' .env)
 curl -s "http://$MODEL_HOST:9400/metrics" | grep -E '^DCGM_FI_DEV_(GPU_UTIL|FB_USED)'
 curl -s "http://$MODEL_HOST:8080/metrics" | grep -E '^vllm:(num_requests_running|kv_cache_usage_perc)'
@@ -86,6 +87,7 @@ Open Grafana (`http://127.0.0.1:3000`), folder **Taco Alley**:
 ### 4. Saturate the model server directly
 
 ```bash
+cd ../tools
 podman-compose run --rm load --mode direct --shape burst --users 4 --burst-users 96 --label direct-burst
 ```
 
@@ -142,9 +144,9 @@ smaller model, or shorter contexts. Module 5 changes one setting and measures it
 ### 6. Monitoring is optional for the application
 
 ```bash
-podman-compose stop prometheus grafana
-(cd ../m3 && podman-compose run --rm cli reset CASE-10431 && podman-compose run --rm cli submit A01)
-podman-compose up -d prometheus grafana
+(cd ../observability && podman-compose stop prometheus grafana)
+(cd ../app && podman-compose run --rm cli reset CASE-10431 && podman-compose run --rm cli submit A01)
+(cd ../observability && podman-compose up -d prometheus grafana)
 ```
 
 The complaint is processed with monitoring stopped. The counters it incremented were still in the
@@ -157,7 +159,7 @@ API's `/metrics`, so the next scrape picks them up; only the samples in between 
 ### 7. Structured logs for one request
 
 ```bash
-cd ../m3
+cd ../app
 podman-compose run --rm cli reset CASE-10431
 podman-compose run --rm cli submit A01 | head -1          # note the request id
 podman logs taco-app_complaint-api_1 2>&1 | grep '<request id>' | jq -c 'del(.ts, .level, .logger, .request_id)'
@@ -182,8 +184,8 @@ podman logs gateway 2>&1 | grep '<request id>'
 {"ts":"...","request_id":"<request id>","client":"...","method":"POST","route":"/v1/chat/completions","status":200,"request_time":0.346,"upstream_response_time":"0.345","bytes":1234}
 ```
 
-Walk through `m3/app/observability.py` (metric definitions, the JSON formatter, `observe()`), the
-request-id middleware in `m3/app/main.py`, and `request_id_hook` in
+Walk through `app/complaint_api/observability.py` (metric definitions, the JSON formatter, `observe()`), the
+request-id middleware in `app/complaint_api/main.py`, and `request_id_hook` in
 `shared/taco_shared/agent/model.py`. Logs carry ids, timings, counts, and outcomes; they never carry
 complaint text or proposals. Capturing content for review is a separate, restricted store (module 5),
 and the audit record is another (module 6).
@@ -193,7 +195,7 @@ and the audit record is another (module 6).
 Off camera, run the steady workload and generate the report:
 
 ```bash
-cd ../m4
+cd ../tools
 podman-compose run --rm load --mode app --shape steady --label app-baseline
 podman-compose run --rm baseline --label app-baseline
 ```

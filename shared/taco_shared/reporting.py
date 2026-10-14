@@ -32,7 +32,7 @@ def summarize_latency(values: list[float]) -> dict[str, float | None]:
 
 
 def peak_vram_from_log(path: Path | None) -> dict[str, Any] | None:
-    """Read the CSV written by m1/tools/sample_vram.sh and report the peak memory.used value."""
+    """Read the CSV written by model-host/sample_vram.sh and report the peak memory.used value."""
     if path is None or not path.is_file():
         return None
     peak_used = peak_util = 0.0
