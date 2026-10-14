@@ -32,6 +32,7 @@ LANGSMITH_HIDE_OUTPUTS=false
 ```
 
 ```bash
+cd ../m3
 podman-compose up -d --force-recreate complaint-api
 podman logs taco-app_complaint-api_1 2>&1 | grep complaint_api_ready | jq -c '{tracing, trace_project, app_version, model, prompt_version}'
 ```

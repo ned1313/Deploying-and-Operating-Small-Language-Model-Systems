@@ -58,7 +58,7 @@ podman-compose up -d prometheus grafana
 curl -s http://127.0.0.1:9090/api/v1/targets | python3 -c '
 import json, sys
 for t in json.load(sys.stdin)["data"]["activeTargets"]:
-    print(f"{t[\"labels\"][\"job\"]:<14} {t[\"labels\"][\"instance\"]:<14} {t[\"health\"]:<5} {t[\"scrapeUrl\"]}")'
+  print("%-14s %-14s %-5s %s" % (t["labels"]["job"], t["labels"]["instance"], t["health"], t["scrapeUrl"]))'
 ```
 
 ```

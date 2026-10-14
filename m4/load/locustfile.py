@@ -101,7 +101,9 @@ class TacoShape(LoadTestShape):
         users = USERS
         if SHAPE == "burst" and DURATION * 0.25 <= elapsed < DURATION * 0.75:
             users = BURST_USERS
-        return users, max(users, 1), [DirectUser if MODE == "direct" else AppUser]
+        # Change the user count in one step: a gradual ramp-down picks users that are still finishing a
+        # request ("stopping") a second time, which makes Locust raise "unexpected state: stopping".
+        return users, max(USERS, BURST_USERS), [DirectUser if MODE == "direct" else AppUser]
 
 
 @events.test_stop.add_listener
