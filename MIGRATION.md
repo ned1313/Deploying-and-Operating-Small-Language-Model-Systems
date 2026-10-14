@@ -432,7 +432,7 @@ podman compose up -d gateway
 podman compose up -d node-exporter dcgm-exporter
 # 4. Tools on this host: build, then check that host.containers.internal reaches the gateway
 tools build
-tools run --rm python -c 'import urllib.request; print(urllib.request.urlopen("http://host.containers.internal:8080/v1/models").status)'
+tools run --rm python -c 'import os, urllib.request as u; b = os.environ["BASE_URL"]; print(b, u.urlopen(b + "/models", timeout=5).status)'
 tools run --rm smoke --skip-structured --extra-body "$QWEN_EXTRA_BODY"
 ```
 

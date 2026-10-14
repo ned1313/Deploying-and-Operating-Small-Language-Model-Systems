@@ -93,11 +93,12 @@ services:
       - ../results:/app/results
 
   python:
-    # podman-compose run --rm python -c '<code using taco_shared>'
+    # podman-compose run --rm python -c '<code using taco_shared>'; BASE_URL is the configured endpoint
     <<: *tools-image
     entrypoint: ["python"]
     command: ["--version"]
-    network_mode: none
+    environment:
+      <<: *serving-env
 
   # ----- agent and application evaluation (modules 2-3): desktop, app project running ------------
   agent-eval:
