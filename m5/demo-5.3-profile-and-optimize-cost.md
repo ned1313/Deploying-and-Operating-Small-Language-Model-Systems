@@ -56,11 +56,13 @@ podman-compose run --rm cost cost-baseline cost-concurrency
 ```
 
 Read the side-by-side table: successful resolutions per hour, vLLM max running sequences, GPU utilization
-and power, workflow p95, and the cost per successful resolution under both assumption sets. Then the
-quality gate for the change:
+and power, workflow p95, and the cost per successful resolution under both assumption sets. The quality
+gate for the change is in the same table: the **failed checks / failed labels** row counts only the
+samples created during each run, so the two columns compare like for like. To see why individual samples
+failed, list the flagged ones:
 
 ```bash
-podman-compose run --rm quality report --label cost-concurrency --since <started_at from the cost report>
+podman-compose run --rm quality queue
 ```
 
 Accept when the failed-check and failed-label counts stay in line with the baseline and the latency is
