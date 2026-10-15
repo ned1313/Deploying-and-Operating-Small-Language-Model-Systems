@@ -1,8 +1,7 @@
 # Source this on the GPU host before any model-host command:  source model-host/env.sh
 #
-# VERIFY BEFORE RECORDING: the Hugging Face repository ids, revisions, and vLLM parser names below
-# are placeholders for the three course candidates. Confirm each artifact exists, is a vLLM-loadable
-# 4-bit/8-bit format (AWQ, GPTQ, FP8, compressed-tensors), and pin its commit sha in *_REVISION.
+# The three candidates below are pinned to Hugging Face commit shas and the vLLM image to a tag (module 5).
+# A release manifest (model-host/releases/*.json) overrides these values for `release.sh apply`.
 # Check parser names against the running image:  podman run --rm "$VLLM_IMAGE" --help | grep -A3 parser
 
 MODEL_HOST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -25,9 +24,13 @@ export RESULTS_ROOT="${RESULTS_ROOT:-${REPO_DIR}/results}"     # one subfolder p
 export RESULTS_DIR="${RESULTS_DIR:-${RESULTS_ROOT}/serving}"   # deployment records, serving args, VRAM logs
 
 # ----- images (fully qualified; podman does not assume docker.io) -------------------------------
-# Pin VLLM_IMAGE to a specific tag before recording and put the same value in the deployment record.
-export VLLM_IMAGE="${VLLM_IMAGE:-docker.io/vllm/vllm-openai:latest}"
+# Pinned (module 5). The image digests are recorded in model-host/releases/*.json; release.sh checks them.
+export VLLM_IMAGE="${VLLM_IMAGE:-docker.io/vllm/vllm-openai:v0.30.0}"
 export NGINX_IMAGE="${NGINX_IMAGE:-docker.io/library/nginx:stable}"
+
+# Every candidate is also served as this alias, so the application's INFERENCE_MODEL never changes
+# when a release swaps or rolls back the model.
+export SERVED_ALIAS="${SERVED_ALIAS:-taco-slm}"
 
 # ----- shared serving defaults (Demo 1.1 / 1.2 baseline) --------------------------------------
 export MAX_MODEL_LEN="${MAX_MODEL_LEN:-8192}"
@@ -47,7 +50,7 @@ export QWEN_EXTRA_BODY='{"chat_template_kwargs": {"enable_thinking": false}}'
 
 # ----- candidate 2: Llama-3.1-8B-Instruct -------------------------------------------------------
 export LLAMA_REPO="${LLAMA_REPO:-RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8}"
-export LLAMA_REVISION="${LLAMA_REVISION:-main}"
+export LLAMA_REVISION="${LLAMA_REVISION:-024e24cbe4153670f747383ea3265d0fb197c727}"
 export LLAMA_SERVED_NAME="llama-3.1-8b"
 export LLAMA_QUANT_LABEL="gptq-int8"
 export LLAMA_TOOL_PARSER="${LLAMA_TOOL_PARSER:-llama3_json}"

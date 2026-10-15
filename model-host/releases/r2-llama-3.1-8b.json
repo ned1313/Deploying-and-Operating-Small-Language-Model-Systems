@@ -1,0 +1,37 @@
+{
+  "release_id": "r2-llama-3.1-8b",
+  "description": "Candidate: Llama-3.1-8B-Instruct w8a8, a smaller and faster model tier on the same image and settings.",
+  "candidate": "llama",
+  "model": {
+    "repo": "RedHatAI/Meta-Llama-3.1-8B-Instruct-quantized.w8a8",
+    "revision": "024e24cbe4153670f747383ea3265d0fb197c727",
+    "served_name": "llama-3.1-8b",
+    "quantization": "w8a8-int8",
+    "reasoning_parser": null,
+    "tool_call_parser": "llama3_json"
+  },
+  "serving": {
+    "image": "docker.io/vllm/vllm-openai:v0.30.0",
+    "image_digests": [
+      "docker.io/vllm/vllm-openai@sha256:5f5e535216848d0c52159c8c13a0af04be5f6fe1a84e79914300610796f76d40",
+      "docker.io/vllm/vllm-openai@sha256:8a69ffad015f138d7170c4ddc429e230a3bc1c1719f67e14324749df200a4b90"
+    ],
+    "max_model_len": 8192,
+    "gpu_memory_utilization": 0.9,
+    "max_num_seqs": 64,
+    "extra_args": []
+  },
+  "app": {
+    "inference_model": "taco-slm",
+    "inference_extra_body": {"chat_template_kwargs": {"enable_thinking": false}},
+    "tool_calling": "native",
+    "structured_output": "json_schema"
+  },
+  "versions": {
+    "policy_version": "2026.09",
+    "schema_version": "proposal.v2",
+    "dataset_version": "agent-v2",
+    "prompt_version": "362ec4b4"
+  },
+  "evidence": {}
+}

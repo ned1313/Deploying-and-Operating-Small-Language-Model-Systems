@@ -1,0 +1,40 @@
+{
+  "release_id": "r1-qwen3-14b",
+  "description": "Baseline: the module 1-4 deployment. Qwen3-14B AWQ int4, thinking off, 8K context.",
+  "candidate": "qwen",
+  "model": {
+    "repo": "Qwen/Qwen3-14B-AWQ",
+    "revision": "31c69efc29464b6bb0aee1398b5a7b50a99340c3",
+    "served_name": "qwen3-14b",
+    "quantization": "awq-int4",
+    "reasoning_parser": "qwen3",
+    "tool_call_parser": "hermes"
+  },
+  "serving": {
+    "image": "docker.io/vllm/vllm-openai:v0.30.0",
+    "image_digests": [
+      "docker.io/vllm/vllm-openai@sha256:5f5e535216848d0c52159c8c13a0af04be5f6fe1a84e79914300610796f76d40",
+      "docker.io/vllm/vllm-openai@sha256:8a69ffad015f138d7170c4ddc429e230a3bc1c1719f67e14324749df200a4b90"
+    ],
+    "max_model_len": 8192,
+    "gpu_memory_utilization": 0.9,
+    "max_num_seqs": 64,
+    "extra_args": []
+  },
+  "app": {
+    "inference_model": "taco-slm",
+    "inference_extra_body": {"chat_template_kwargs": {"enable_thinking": false}},
+    "tool_calling": "native",
+    "structured_output": "json_schema"
+  },
+  "versions": {
+    "policy_version": "2026.09",
+    "schema_version": "proposal.v2",
+    "dataset_version": "agent-v2",
+    "prompt_version": "362ec4b4"
+  },
+  "evidence": {
+    "e2e": "results/e2e/e2e-qwen3-14b-e2e-baseline-20261012-135022.json",
+    "load_baseline": "results/baseline/baseline-app-baseline-20261012-184024.json"
+  }
+}

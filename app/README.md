@@ -14,8 +14,10 @@ app/
     service.py              authorization, case records, bounded graph runs, restart resume, trace metadata
     store.py                app.db: cases, proposal versions, review decisions
     security.py             X-Actor-Id -> actor, role, store scope (an unauthenticated identity claim)
-    observability.py        request ids, JSON logs, Prometheus metrics, deployment versions
-    ui.py                   the review page: cases by status, case detail with workflow steps (every value escaped)
+    observability.py        request ids, JSON logs, Prometheus metrics, deployment versions, the served-model
+                            lookup behind the taco-slm alias, taco_quality_* metrics
+    ui.py                   the review page: cases by status, case detail with workflow steps, the quality
+                            review queue (/ui/quality); every value escaped
   case_api/main.py          mock case-management API: scoped reads, idempotent approved actions, admin fault
                             injection and fixture reset (admin routes only when TACO_ADMIN_TOKEN is set)
   clients/taco_cli.py       submit, show, reviews, approve, revise, reject, clarify, retry, graph, reset, case-fault
@@ -34,7 +36,7 @@ because the evaluation tools use them too. Evaluation, load, and report one-shot
 | `case-api` | long-running | module 2 | Mock case API on `127.0.0.1:8081`; owns `taco-case-data` |
 | `seed` | one-shot | module 2 | Seeds `taco-app-data` with customers, orders, and prior resolutions (idempotent; `--reset` is explicit) |
 | `basic-agent` | one-shot | module 2 | `examples/basic_agent.py`; database mounted read-only; `--save-transcript` writes to `../results/agent/` |
-| `complaint-api` | long-running | module 3 | Complaint API on `127.0.0.1:8090`; owns `taco-app-state` (`checkpoints.db`, `app.db`); reads `taco-app-data`; also on `taco-telemetry` for metrics scraping |
+| `complaint-api` | long-running | module 3 | Complaint API on `127.0.0.1:8090`; owns `taco-app-state` (`checkpoints.db`, `app.db`); reads `taco-app-data`; also on `taco-telemetry` for metrics scraping; from module 5 writes quality samples to `taco-app-quality` |
 | `cli` | one-shot | module 3 | `clients/taco_cli.py` |
 
 Runbooks always name the services they start, so module 2 never starts `complaint-api`.
@@ -54,6 +56,7 @@ Runbooks always name the services they start, so module 2 never starts `complain
 | `sup-kop-01`, `sup-wg-01` | reviewer | KOP / WG | approve, revise, reject in their store |
 | `sup-area-01` | area_manager | all | approve, revise, reject anywhere |
 | `load-reviewer-01` | reviewer (synthetic) | KOP, WG | used only by the load generator; hidden from the review page |
+| `qa-01` | quality_reviewer | all | reads quality samples and records rubric reviews (module 5); cannot submit or approve |
 
 Nobody may decide on a case they submitted.
 
@@ -84,6 +87,12 @@ single worker; operations on the same case are serialized, and a request that wa
 `WORKFLOW_QUEUE_TIMEOUT_SECONDS` for a slot gets `503` with `Retry-After`. LangSmith tracing is off
 unless `LANGSMITH_TRACING=true` in `.env` (module 4); recreate `complaint-api` after changing it.
 
+From module 5, `INFERENCE_MODEL=taco-slm` (the stable alias every release is served under; the API reads
+the real model name from `/v1/models` and reports it in `/healthz`, `taco_build_info`, and trace
+metadata). `QUALITY_SAMPLE_RATE` above 0 writes sampled outcomes to `quality.db` on the
+`taco-app-quality` volume; the `quality` tool in `tools/` scores them, and quality reviewers work the
+queue at `http://127.0.0.1:8090/ui/quality?actor=qa-01`.
+
 ### Browser on Windows, Podman in WSL
 
 The ports are published on `127.0.0.1` inside WSL. Windows reaches them only if WSL forwards
@@ -104,6 +113,7 @@ with `--keep-state`) makes the module 2 agent see that order as already compensa
 ```bash
 podman-compose stop case-api complaint-api      # state is kept in the named volumes
 podman volume rm taco-app-state                 # only to forget all cases and checkpoints (destructive)
+podman volume rm taco-app-quality               # only to forget all quality samples, scores, and reviews (destructive)
 podman-compose run --rm seed --reset            # only to restore the seeded fixture database (destructive)
 ```
 

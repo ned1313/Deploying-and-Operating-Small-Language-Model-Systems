@@ -18,7 +18,7 @@ import httpx
 from fastapi import Body, Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse
-from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
+from prometheus_client import CONTENT_TYPE_LATEST, REGISTRY, generate_latest
 from pydantic import BaseModel, Field
 
 from taco_shared.agent.faults import FaultPlan, ModelFault
@@ -29,11 +29,12 @@ from taco_shared.context import Actor
 from taco_shared.db import AppDatabase
 from taco_shared.paths import AGENT_SCENARIOS_V2, DATA_DIR, load_json
 from taco_shared.policy import load_policy
+from taco_shared.quality.store import DISPOSITIONS
 from taco_shared.workflow import WorkflowDeps, WorkflowSettings
 
 from . import ui
-from .observability import (BUILD_INFO, HTTP_REQUESTS, HTTP_SECONDS, REQUEST_ID, current_request_id,
-                            deployment_versions, log, new_request_id, observe)
+from .observability import (HTTP_REQUESTS, HTTP_SECONDS, REQUEST_ID, QualityCollector, ServedModel,
+                            current_request_id, log, new_request_id, observe, versions_provider)
 from .security import actor_from_id, current_actor
 from .service import ComplaintService, ServiceSettings
 
@@ -52,15 +53,22 @@ def build_service() -> ComplaintService:
                         db=AppDatabase(Path(inference.app_db)), cases=cases, policy=load_policy(inference.policy_version),
                         settings=workflow, faults=FaultPlan(), observer=observe)
     STATE["inference"] = inference
-    versions = deployment_versions(inference.model, inference.policy_version)
-    BUILD_INFO.labels(**versions).set(1)
+    provider = versions_provider(ServedModel(inference.base_url, inference.model, inference.api_key),
+                                 inference.policy_version)
+    STATE["versions_provider"] = provider
+    versions = provider()
     STATE["versions"] = versions
+    quality_db = Path(os.environ.get("TACO_QUALITY_DB") or "/data/quality/quality.db")
+    sample_rate = float(os.environ.get("QUALITY_SAMPLE_RATE") or 0)
+    if sample_rate > 0 and not STATE.get("quality_collector"):
+        STATE["quality_collector"] = QualityCollector(quality_db)
+        REGISTRY.register(STATE["quality_collector"])
     return ComplaintService(deps, cases, ServiceSettings(
         state_dir=Path(os.environ.get("TACO_STATE_DIR") or "/data/state"),
         run_timeout_seconds=workflow.run_timeout_seconds,
         max_concurrent_runs=int(os.environ.get("WORKFLOW_MAX_CONCURRENT_RUNS") or 1),
         queue_timeout_seconds=float(os.environ.get("WORKFLOW_QUEUE_TIMEOUT_SECONDS") or 60),
-        versions=versions))
+        versions=versions, versions_provider=provider, quality_db=quality_db, quality_sample_rate=sample_rate))
 
 
 @asynccontextmanager
@@ -70,7 +78,8 @@ async def lifespan(app: FastAPI):
     if os.environ.get("TACO_RESUME_ON_STARTUP", "1") != "0":
         threading.Thread(target=service.resume_incomplete, name="resume-incomplete", daemon=True).start()
     log("complaint_api_ready", **STATE.get("versions", {}), max_concurrent_runs=service.settings.max_concurrent_runs,
-        tracing=os.environ.get("LANGSMITH_TRACING", "false"), trace_project=os.environ.get("LANGSMITH_PROJECT"))
+        tracing=os.environ.get("LANGSMITH_TRACING", "false"), trace_project=os.environ.get("LANGSMITH_PROJECT"),
+        quality_sample_rate=service.settings.quality_sample_rate)
     yield
 
 
@@ -123,7 +132,8 @@ def healthz(remote: bool = True) -> dict[str, Any]:
                                           "model_served": inference.model in response.text}
         except httpx.HTTPError as error:
             remote_status["inference"] = {"reachable": False, "error": type(error).__name__}
-    return {"status": "ok", "model": inference.model if inference else None, "dependencies": remote_status}
+    return {"status": "ok", "model": svc.versions().get("model") if inference else None,
+            "alias": inference.model if inference else None, "dependencies": remote_status}
 
 
 @app.get("/graph", response_class=PlainTextResponse)
@@ -133,6 +143,7 @@ def graph() -> str:
 
 @app.get("/metrics")
 def metrics() -> Response:
+    service().versions()
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
@@ -274,6 +285,8 @@ def ui_home(actor: str | None = None, status: str | None = None, message: str | 
         counts[case["status"]] = counts.get(case["status"], 0) + 1
     shown = cases if status == "all" else [c for c in cases if c["status"] == status]
     body = ui.actor_picker(actors, status) + ui.status_tabs(who, status, counts) + ui.case_list(who, shown, status)
+    if who.role in ui.QUALITY_ROLES and service().quality is not None:
+        body = f"<p><a href='/ui/quality?actor={quote(who.actor_id)}'>Quality review queue</a></p>" + body
     return ui.page("Cases", who, body, message)
 
 
@@ -300,4 +313,56 @@ async def ui_decide(case_id: str, request: Request) -> RedirectResponse:
     except HTTPException as error:
         message = str(error.detail)
     target = f"/ui/cases/{quote(case_id)}?actor={quote(who.actor_id)}"
+    return RedirectResponse(target + (f"&message={quote(message)}" if message else ""), status_code=303)
+
+
+# Quality review pages (module 5) ----------------------------------------------------------------------
+
+def quality_store():
+    store = service().quality
+    if store is None:
+        raise HTTPException(status_code=404, detail="quality sampling is off (QUALITY_SAMPLE_RATE=0)")
+    return store
+
+
+def quality_reader(actor_id: str | None) -> Actor:
+    who = ui_actor(actor_id)
+    if who is None or who.role not in ui.QUALITY_ROLES:
+        raise HTTPException(status_code=403, detail="only quality reviewers and area managers see quality samples")
+    return who
+
+
+@app.get("/ui/quality", response_class=HTMLResponse)
+def ui_quality(actor: str | None = None, message: str | None = None) -> str:
+    who = quality_reader(actor)
+    store = quality_store()
+    return ui.page("Quality review", who, ui.quality_list(who, store.queue(), store.counts()), message)
+
+
+@app.get("/ui/quality/{sample_id}", response_class=HTMLResponse)
+def ui_quality_sample(sample_id: str, actor: str | None = None, message: str | None = None) -> str:
+    who = quality_reader(actor)
+    store = quality_store()
+    sample = store.sample(sample_id)
+    if sample is None:
+        raise HTTPException(status_code=404, detail="sample not found")
+    return ui.page(f"Quality sample {sample['case_id']}", who,
+                   ui.quality_detail(who, sample, store.score(sample["sample_id"]), store.reviews(sample["sample_id"]),
+                                     DISPOSITIONS), message)
+
+
+@app.post("/ui/quality/{sample_id}/review")
+async def ui_quality_review(sample_id: str, request: Request) -> RedirectResponse:
+    form = {key: values[0] for key, values in parse_qs((await request.body()).decode("utf-8")).items()}
+    who = quality_reader(form.get("actor"))
+    message = None
+    try:
+        scores = {name: int(form[name]) for name, _ in ui.RUBRIC}
+        quality_store().add_review(sample_id, who.actor_id, scores["tone"], scores["helpfulness"], scores["escalation"],
+                                   form.get("safe_to_send") == "yes", form.get("disposition", ""),
+                                   form.get("note") or None)
+        log("quality_review", sample_id=sample_id, reviewer=who.actor_id, disposition=form.get("disposition"))
+    except (KeyError, ValueError) as error:
+        message = f"review not saved: {error}"
+    target = f"/ui/quality/{quote(sample_id)}?actor={quote(who.actor_id)}"
     return RedirectResponse(target + (f"&message={quote(message)}" if message else ""), status_code=303)

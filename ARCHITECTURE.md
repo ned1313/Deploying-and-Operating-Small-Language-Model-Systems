@@ -11,7 +11,7 @@ shared components change.
 | [2](#module-2-building-an-slm-agent-with-tools) | Implemented | Shared dataset and package, mock case API, LangChain agent with typed tools, structured proposal and validator, agent evaluation |
 | [3](#module-3-orchestrating-and-hardening-the-agent-workflow) | Implemented | LangGraph workflow in a complaint API, durable checkpoints, human approval, idempotent actions, failure handling |
 | [4](#module-4-monitoring-and-tracing) | Implemented | Prometheus, Grafana, GPU/host exporters, structured logs, LangSmith tracing, Locust, performance baseline |
-| [5](#module-5-quality-releases-and-cost-planned) | Planned | Quality sampling and scoring, model release and rollback, cost per successful resolution |
+| [5](#module-5-quality-releases-and-cost) | Implemented (GPU host steps pending) | Quality sampling and scoring, model release and rollback, cost per successful resolution |
 | [6](#module-6-security-and-auditing-planned) | Planned | TLS and service keys at the gateway, rate limits, authenticated metrics, user roles, audit store |
 
 ## System context
@@ -355,11 +355,52 @@ model call, and records it as LangSmith metadata next to `case_id`, `thread_id`,
 versions (`taco_build_info`). A case produces one trace per graph invocation (`submit`, `decision`,
 `clarify`, `retry`), grouped by `thread_id`; approval wait is a metric, not a span.
 
-## Module 5: Quality, Releases, and Cost (planned)
+## Module 5: Quality, Releases, and Cost
 
-Samples completed proposals into a restricted evaluation store, scores them with deterministic checks
-and a rubric, flags degraded outputs for review, compares candidate models or serving settings against
-a pinned baseline, rolls back on regression, and reports cost per successful resolution.
+The complaint API samples completed workflow outcomes into an evaluation store (`quality.db` on the
+`taco-app-quality` volume). One-shot tools score them, gate releases, and compute cost per successful
+resolution. Every release is served under the stable alias `taco-slm`, so a release or rollback is a
+model-host action.
+
+```mermaid
+flowchart LR
+    subgraph Desktop["Desktop"]
+        subgraph App["taco-app (app/)"]
+            API["complaint-api<br/>samples outcomes<br/>/ui/quality, taco_quality_*"]
+            QVol[("taco-app-quality<br/>quality.db: samples,<br/>scores, reviews")]
+        end
+        subgraph ToolsP["taco-tools (tools/)"]
+            Q["quality (one-shot)<br/>checks, labels, flags,<br/>queue, review"]
+            Rel["release (one-shot)<br/>gates vs baseline"]
+            Cost["cost (one-shot)"]
+            Eval["e2e-eval, failure-tests,<br/>load, baseline<br/>--label release id"]
+        end
+        subgraph Obs["taco-observe"]
+            Prom["prometheus<br/>QualityDegraded"] --> Graf["grafana<br/>Quality and cost"]
+        end
+        Res[("results/quality, release, cost")]
+    end
+    subgraph GPU["GPU host: taco-model"]
+        RelSh["release.sh apply | rollback<br/>releases/*.json"] --> VLLM["vllm<br/>served as taco-slm + real name"]
+    end
+    API -- write samples --> QVol
+    Q -- write scores --> QVol
+    API -. "/metrics" .-> Prom
+    Cost --> QVol
+    Cost --> Prom
+    Eval --> API
+    Eval --> Res
+    Rel --> Res
+    Q --> Res
+    API -- "model taco-slm" --> VLLM
+```
+
+Scoring per sample: deterministic checks recomputed from the evidence the tools returned (amount for the
+cited rule, rule fits the category, approval flag both ways, filing window, prior compensation, duplicate
+actions, policy version, schema), `grade()` against a label where the case is synthetic and labeled, and
+human rubric reviews. A sample is flagged on any failure; a model is degraded when its last 20 scored
+samples fall below the thresholds in `tools/quality-gates.yaml`. A release is promoted only if the
+candidate's labeled runs pass the gates in the same file against the baseline's.
 
 ## Module 6: Security and Auditing (planned)
 

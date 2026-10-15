@@ -12,14 +12,19 @@ import logging
 import os
 import re
 import sys
+import threading
 import time
 import uuid
-from typing import Any
+from pathlib import Path
+from typing import Any, Callable
 
+import httpx
 from prometheus_client import Counter, Gauge, Histogram
+from prometheus_client.core import CounterMetricFamily, GaugeMetricFamily
 
 from taco_shared.agent import prompts
 from taco_shared.paths import AGENT_SCENARIOS_V2, load_json
+from taco_shared.quality.store import QualityStore
 
 REQUEST_ID = contextvars.ContextVar("request_id", default="-")
 VALID_REQUEST_ID = re.compile(r"^[A-Za-z0-9._-]{1,64}$")
@@ -66,6 +71,120 @@ def deployment_versions(model: str | None, policy_version: str | None) -> dict[s
             "prompt_version": hashlib.sha256(prompt_text.encode("utf-8")).hexdigest()[:8],
             "schema_version": "proposal.v2",
             "dataset_version": load_json(AGENT_SCENARIOS_V2).get("dataset_version", "unknown")}
+
+
+class ServedModel:
+    """The real model behind the stable served alias (for example taco-slm -> qwen3-14b), from /v1/models.
+
+    vLLM lists every --served-model-name as its own entry with the same root. Cached for `ttl` seconds;
+    falls back to the configured name when the server is unreachable (for example during a model swap).
+    """
+
+    def __init__(self, base_url: str, alias: str, api_key: str, ttl: float = 30.0) -> None:
+        self.base_url, self.alias, self.api_key, self.ttl = base_url, alias, api_key, ttl
+        self._value, self._checked = alias, 0.0
+        self._lock = threading.Lock()
+
+    def __call__(self) -> str:
+        with self._lock:
+            if time.monotonic() - self._checked < self.ttl:
+                return self._value
+            self._checked = time.monotonic()
+        try:
+            response = httpx.get(f"{self.base_url}/models", timeout=2.0,
+                                 headers={"Authorization": f"Bearer {self.api_key}"})
+            models = response.json().get("data", [])
+        except (httpx.HTTPError, ValueError):
+            return self._value
+        root = next((m.get("root") for m in models if m.get("id") == self.alias), None)
+        same_root = [m["id"] for m in models if root is not None and m.get("root") == root]
+        # serve.sh lists the alias first; a configured name that is not first is already the real name.
+        with self._lock:
+            self._value = same_root[1] if len(same_root) > 1 and same_root[0] == self.alias else self.alias
+            return self._value
+
+
+def versions_provider(served_model: Callable[[], str], policy_version: str | None) -> Callable[[], dict[str, str]]:
+    """Deployment versions with the currently served model; keeps taco_build_info to one current series."""
+    state: dict[str, Any] = {"labels": None}
+
+    def current() -> dict[str, str]:
+        versions = deployment_versions(served_model(), policy_version)
+        if versions != state["labels"]:
+            BUILD_INFO.clear()
+            BUILD_INFO.labels(**versions).set(1)
+            if state["labels"] is not None:
+                log("deployment_versions_changed", previous=state["labels"].get("model"), model=versions["model"])
+            state["labels"] = versions
+        return versions
+    return current
+
+
+_TRACE_BASE: dict[str, Any] = {"url": None, "checked": 0.0}
+
+
+def trace_url(run_id: str | None) -> str | None:
+    """LangSmith URL of a root run, or None when tracing is off or LangSmith cannot be reached."""
+    if not run_id or os.environ.get("LANGSMITH_TRACING", "false").lower() != "true":
+        return None
+    if _TRACE_BASE["url"] is None and time.monotonic() - _TRACE_BASE["checked"] > 300:
+        _TRACE_BASE["checked"] = time.monotonic()
+        try:
+            from langsmith import Client
+
+            client = Client(timeout_ms=3000)
+            project = client.read_project(project_name=os.environ.get("LANGSMITH_PROJECT") or "default")
+            _TRACE_BASE["url"] = f"{client._host_url}/o/{project.tenant_id}/projects/p/{project.id}/r/"
+        except Exception as error:  # noqa: BLE001 - a missing link must not fail sampling
+            log("trace_url_unavailable", error=type(error).__name__)
+    return f"{_TRACE_BASE['url']}{run_id}?poll=true" if _TRACE_BASE["url"] else None
+
+
+class QualityCollector:
+    """taco_quality_* series computed from the evaluation store on each scrape (planning decision 10a)."""
+
+    def __init__(self, path: Path, window: int = 20) -> None:
+        self.path, self.window = path, window
+
+    def collect(self):
+        if not self.path.exists():
+            return
+        store = QualityStore(self.path, read_only=True)
+        try:
+            counts, recent = store.counts(), store.recent(self.window)
+        finally:
+            store.close()
+        samples = GaugeMetricFamily("taco_quality_samples", "Sampled workflow outcomes by current status",
+                                    labels=["status"])
+        for status, n in counts["samples"].items():
+            samples.add_metric([status], n)
+        yield samples
+        scored = CounterMetricFamily("taco_quality_scored", "Scored samples by model and successful resolution",
+                                     labels=["model", "successful"])
+        for row in counts["scored"]:
+            outcome = {1: "true", 0: "false"}.get(row["successful"], "pending")
+            scored.add_metric([row["model"], outcome], row["n"])
+        yield scored
+        yield GaugeMetricFamily("taco_quality_review_queue", "Flagged samples waiting for a human review",
+                                value=counts["queue"])
+        yield GaugeMetricFamily("taco_quality_unscored", "Samples not yet scored by the quality tool",
+                                value=counts["unscored"])
+        ratio = GaugeMetricFamily("taco_quality_recent_ratio", f"Share over the last {self.window} scored final "
+                                  "samples", labels=["model", "signal"])
+        window = GaugeMetricFamily("taco_quality_recent_samples", "Scored final samples in the window",
+                                   labels=["model"])
+        for model in sorted({row["model"] or "unknown" for row in recent}):
+            rows = [row for row in recent if (row["model"] or "unknown") == model]
+            window.add_metric([model], len(rows))
+            for signal, values in (("checks_passed", [r["checks_passed"] for r in rows]),
+                                   ("label_passed", [r["label_passed"] for r in rows]),
+                                   ("successful", [r["successful"] for r in rows]),
+                                   ("escalated", [r["escalated"] for r in rows])):
+                known = [v for v in values if v is not None]
+                if known:
+                    ratio.add_metric([model, signal], sum(known) / len(known))
+        yield ratio
+        yield window
 
 
 class JsonFormatter(logging.Formatter):

@@ -165,3 +165,87 @@ def case_detail(actor: Actor, view: dict[str, Any], back: str = "pending_review"
     parts.append(f"<h2>Workflow steps</h2>{steps_table(view.get('steps', []))}")
     parts.append(f"<p><a href='/ui?actor={quote(actor.actor_id)}&status={quote(back)}'>Back to the case list</a></p>")
     return "".join(parts)
+
+
+# Quality review (module 5) ----------------------------------------------------------------------
+
+QUALITY_ROLES = {"quality_reviewer", "area_manager"}
+RUBRIC = (("tone", "Tone: courteous, plain, no blame (1-5)"),
+          ("helpfulness", "Helpfulness: says what happens next and when (1-5)"),
+          ("escalation", "Escalation: hands off to a person exactly when policy or judgment requires (1-5)"))
+
+
+def _verdict(value: Any) -> str:
+    if value is None:
+        return "<span class='muted'>n/a</span>"
+    return "<span class='ok'>pass</span>" if value else "<span class='bad'>fail</span>"
+
+
+def quality_list(actor: Actor, queue: list[dict[str, Any]], counts: dict[str, Any]) -> str:
+    who = quote(actor.actor_id)
+    summary = (f"<p class='muted'>{sum(counts['samples'].values())} samples, {counts['unscored']} not yet scored "
+               f"(run the <code>quality score</code> tool), {counts['reviews']} reviews.</p>")
+    if not queue:
+        return summary + "<p class='muted'>No flagged samples are waiting for review.</p>"
+    rows = "".join(
+        f"<tr><td><a href='/ui/quality/{quote(item['sample_id'])}?actor={who}'>{escape(item['case_id'])}</a></td>"
+        f"<td>{escape(item.get('scenario_id') or '')}</td><td>{escape(item['status'] or '')}</td>"
+        f"<td>{escape(item['model'] or '')}</td><td>{_verdict(item['checks_passed'])}</td>"
+        f"<td>{_verdict(item['label_passed'])}</td><td>{escape('; '.join(item['flag_reasons']))}</td>"
+        f"<td>{escape(item['updated_at'])}</td></tr>" for item in queue)
+    return (summary + "<h2>Review queue (flagged, not yet reviewed)</h2><table><tr><th>Case</th><th>Scenario</th>"
+            "<th>Status</th><th>Model</th><th>Checks</th><th>Label</th><th>Why flagged</th><th>Updated</th></tr>"
+            f"{rows}</table>")
+
+
+def quality_detail(actor: Actor, sample: dict[str, Any], score: dict[str, Any] | None,
+                   reviews: list[dict[str, Any]], dispositions: tuple[str, ...]) -> str:
+    proposal = sample.get("proposal") or {}
+    fields = ("order_id", "complaint_category", "resolution_type", "refund_amount", "affected_items",
+              "policy_rule_ids", "requires_human_approval", "customer_message", "justification")
+    proposal_rows = "".join(f"<tr><th>{escape(k)}</th><td>{_cell(proposal.get(k))}</td></tr>" for k in fields if k in proposal)
+    versions = sample.get("versions") or {}
+    trace = (f"<a href='{escape(sample['trace_url'])}'>open the trace in LangSmith</a>" if sample.get("trace_url")
+             else f"LangSmith run ids: {escape(', '.join(sample.get('run_ids', [])))}")
+    parts = [
+        f"<p>Case <a href='/ui/cases/{quote(sample['case_id'])}?actor={quote(actor.actor_id)}&back=all'>"
+        f"{escape(sample['case_id'])}</a> | status <b>{escape(sample['status'])}</b>"
+        f"{' (' + escape(sample['outcome_reason']) + ')' if sample.get('outcome_reason') else ''}"
+        f" | sampled: {escape(sample['sampled_reason'])}</p>",
+        f"<p>Request <code>{escape(sample.get('request_id') or '')}</code> | {trace}</p>",
+        f"<p class='muted'>Model {escape(versions.get('model', ''))}, policy {escape(versions.get('policy_version', ''))}, "
+        f"prompt {escape(versions.get('prompt_version', ''))}, app {escape(versions.get('app_version', ''))}</p>",
+        f"<h2>Complaint</h2><pre>{escape(sample.get('complaint') or '')}</pre>",
+        f"<h2>Proposal</h2><table>{proposal_rows or '<tr><td>none</td></tr>'}</table>",
+    ]
+    if score is None:
+        parts.append("<p class='muted'>Not scored yet: run the quality tool.</p>")
+    else:
+        rows = "".join(f"<tr><td>{escape(name)}</td><td>{_verdict(result['passed'])}</td>"
+                       f"<td>{escape(result.get('detail') or '')}</td></tr>" for name, result in score["checks"].items())
+        label = score.get("label")
+        label_line = ("<p class='muted'>No label (production traffic has none).</p>" if label is None else
+                      f"<p>Label: {_verdict(label.get('passed'))} {escape('; '.join(label.get('issues', [])))}</p>")
+        parts += [f"<h2>Deterministic checks</h2><table><tr><th>Check</th><th>Result</th><th>Detail</th></tr>{rows}</table>",
+                  label_line,
+                  f"<p>Successful resolution: {_verdict(score.get('successful'))} | flagged: "
+                  f"{escape('; '.join(score['flag_reasons']) or 'no')}</p>"]
+    done = "".join(f"<li>{escape(r['reviewer'])}: tone {r['tone']}, helpfulness {r['helpfulness']}, escalation "
+                   f"{r['escalation']}, safe to send {_verdict(r['safe_to_send'])}, {escape(r['disposition'])}"
+                   f"{': ' + escape(r['note']) if r.get('note') else ''} <span class='muted'>{escape(r['at'])}</span></li>"
+                   for r in reviews)
+    parts.append(f"<h2>Reviews</h2><ul>{done or '<li class=muted>none</li>'}</ul>")
+    if actor.role in QUALITY_ROLES:
+        scores = "".join(
+            f"<p>{escape(text)}: " + "".join(f"<label><input type='radio' name='{name}' value='{n}' required> {n}</label> "
+                                             for n in range(1, 6)) + "</p>" for name, text in RUBRIC)
+        options = "".join(f"<option value='{escape(d)}'>{escape(d)}</option>" for d in dispositions)
+        parts.append(
+            f"<h2>Rubric review</h2><form method='post' action='/ui/quality/{quote(sample['sample_id'])}/review'>"
+            f"<input type='hidden' name='actor' value='{escape(actor.actor_id)}'>{scores}"
+            f"<p>Safe to send as written: <label><input type='radio' name='safe_to_send' value='yes' required> yes</label> "
+            f"<label><input type='radio' name='safe_to_send' value='no'> no</label></p>"
+            f"<p>Disposition: <select name='disposition'>{options}</select></p>"
+            f"<p><textarea name='note' placeholder='Note'></textarea></p><button>Save review</button></form>")
+    parts.append(f"<p><a href='/ui/quality?actor={quote(actor.actor_id)}'>Back to the review queue</a></p>")
+    return "".join(parts)

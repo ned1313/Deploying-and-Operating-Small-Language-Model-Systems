@@ -81,11 +81,15 @@ services:
       LANGSMITH_TRACING_SAMPLING_RATE: ${LANGSMITH_TRACING_SAMPLING_RATE:-1.0}
       LANGSMITH_HIDE_INPUTS: ${LANGSMITH_HIDE_INPUTS:-false}
       LANGSMITH_HIDE_OUTPUTS: ${LANGSMITH_HIDE_OUTPUTS:-false}
+      # Quality sampling (module 5); 0 turns it off.
+      QUALITY_SAMPLE_RATE: ${QUALITY_SAMPLE_RATE:-0}
+      TACO_QUALITY_DB: /data/quality/quality.db
     secrets:
       - inference_api_key
     volumes:
       - taco-app-data:/data/app:ro    # seeded orders and history; written only by `seed`
       - taco-app-state:/data/state    # checkpoints.db and app.db; this service is the only writer
+      - taco-app-quality:/data/quality  # evaluation store; the tools project's `quality` service also writes it
     ports:
       - "${PUBLISH_ADDRESS:-127.0.0.1}:${COMPLAINT_API_PORT:-8090}:8090"   # X-Actor-Id is an unauthenticated claim: keep this host-only
     networks:
@@ -144,6 +148,8 @@ volumes:
     name: taco-case-data
   taco-app-state:
     name: taco-app-state
+  taco-app-quality:
+    name: taco-app-quality
 
 networks:
   default:

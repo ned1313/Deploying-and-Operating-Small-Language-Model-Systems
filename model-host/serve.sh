@@ -41,7 +41,7 @@ esac
 vllm_args=(
   --model "$repo"
   --revision "$revision"
-  --served-model-name "$served"
+  --served-model-name "${SERVED_ALIAS:-taco-slm}" "$served"
   --max-model-len "$MAX_MODEL_LEN"
   --gpu-memory-utilization "$GPU_MEMORY_UTILIZATION"
   --max-num-seqs "$MAX_NUM_SEQS"

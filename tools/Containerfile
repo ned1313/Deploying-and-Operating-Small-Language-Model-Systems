@@ -9,6 +9,7 @@ COPY shared/ /opt/shared/
 RUN pip install --no-cache-dir --no-deps /opt/shared
 
 COPY tools/taco_tools/ /app/taco_tools/
+COPY tools/quality-gates.yaml tools/rubric.md /app/
 
 # tools/compose.yaml mounts the repository's results/ at /app/results and sets RESULTS_DIR per service.
 ENV PYTHONPATH=/app \

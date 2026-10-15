@@ -195,9 +195,59 @@ WORKFLOW = dashboard("taco-workflow", "Complaint workflow",
 ])
 
 
+QUALITY = dashboard("taco-quality", "Quality and cost",
+                    "Module 5: sampled output quality by model, the review queue, and an estimated cost per successful "
+                    "resolution. Quality ratios cover the last 20 scored samples; run the quality tool to score new ones.", [
+    stat("Checks pass (last 20)", 'min(taco_quality_recent_ratio{signal="checks_passed"})', "percentunit",
+         [(None, "red"), (0.9, "green")], desc="Deterministic checks on the sampled proposals (QualityDegraded below 90%)."),
+    stat("Label pass (last 20)", 'min(taco_quality_recent_ratio{signal="label_passed"})', "percentunit",
+         [(None, "red"), (0.78, "green")], desc="grade() against the synthetic labels; production traffic has none."),
+    stat("Successful (last 20)", 'min(taco_quality_recent_ratio{signal="successful"})', "percentunit",
+         [(None, "red"), (0.8, "green")]),
+    stat("Review queue", "sum(taco_quality_review_queue)", thresholds=[(None, "green"), (1, "orange"), (10, "red")],
+         desc="Flagged samples without a human review. Work them at /ui/quality?actor=qa-01."),
+    stat("Unscored samples", "sum(taco_quality_unscored)", thresholds=[(None, "green"), (1, "orange")],
+         desc="Run `podman-compose run --rm quality score` from tools/."),
+    stat("Cost per successful resolution",
+         f'$hourly_cost / clamp_min(sum(rate(taco_workflow_runs_total{{status=~"recorded|escalated"}}[15m])) * 3600 '
+         f'* scalar(min(taco_quality_recent_ratio{{signal="successful"}})), 1e-9)', "currencyUSD",
+         desc="Hourly cost (dashboard variable) / (recorded per hour x successful share). The cost report has the "
+              "exact numbers and assumptions.", decimals=3),
+    row("Quality by model"),
+    ts("Quality signals (last 20 scored samples)", [q("taco_quality_recent_ratio", "{{model}} {{signal}}")],
+       "percentunit", w=24, desc="Each point is the window at that moment; a model swap shows up as a new series."),
+    ts("Sampled outcomes", [q("taco_quality_samples", "{{status}}")], stack=True),
+    ts("Review queue and unscored samples", [q("sum(taco_quality_review_queue)", "review queue"),
+                                            q("sum(taco_quality_unscored)", "unscored")]),
+    row("Throughput and cost"),
+    ts("Recorded resolutions per hour", [q('sum(rate(taco_workflow_runs_total{status=~"recorded|escalated"}[15m])) * 3600',
+                                         "recorded per hour (15m rate)")],
+       desc="Approved actions recorded through the case API, from the application's own counters."),
+    ts("GPU power and utilization", [q("taco:gpu_power:watts", "power (W)"),
+                                     q("taco:gpu_utilization:ratio * 100", "utilization (%)")],
+       desc="The GPU host costs the same per hour whether it is busy or idle; cost per resolution falls only when "
+            "more successful resolutions fit in the hour."),
+    row("Deployment"),
+    {"type": "table", "title": "Deployment versions (current model behind the alias)", "datasource": DS,
+     "targets": [q("taco_build_info", instant=True, table=True)],
+     "transformations": [{"id": "organize", "options": {"excludeByName": {"Time": True, "Value": True, "__name__": True,
+                                                                           "job": True, "host": True}}}],
+     "fieldConfig": {"defaults": {}, "overrides": []}, "options": {"showHeader": True},
+     "gridPos": {"w": 24, "h": 4}},
+])
+QUALITY["tags"] = ["taco-alley", "module-5"]
+QUALITY["refresh"] = "30s"
+QUALITY["time"] = {"from": "now-3h", "to": "now"}
+QUALITY["templating"]["list"] = [{
+    "type": "textbox", "name": "hourly_cost", "label": "Hourly cost (USD)", "query": "0.24",
+    "current": {"text": "0.24", "value": "0.24"}, "options": [{"selected": True, "text": "0.24", "value": "0.24"}],
+    "description": "On-prem estimate from tools/.env defaults: amortized host + GPU power + desktop share."}]
+
+
 def main() -> None:
     OUT.mkdir(exist_ok=True)
-    for name, board in (("model-serving", VLLM), ("model-host", HOST), ("complaint-workflow", WORKFLOW)):
+    for name, board in (("model-serving", VLLM), ("model-host", HOST), ("complaint-workflow", WORKFLOW),
+                        ("quality-and-cost", QUALITY)):
         (OUT / f"{name}.json").write_text(json.dumps(board, indent=2) + "\n", encoding="utf-8")
         print(f"wrote {name}.json ({len(board['panels'])} panels)")
 

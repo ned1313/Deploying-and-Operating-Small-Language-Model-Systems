@@ -8,9 +8,12 @@ the desktop. Used from module 1 onward; exporters from module 4.
 model-host/
   compose.yaml              project taco-model: vllm (GPU via CDI), gateway (nginx), node-exporter,
                             dcgm-exporter, nvidia-smi-exporter (fallback)
-  env.sh                    host settings, image tags, COMPOSE_FILE, the three candidate definitions, and
-                            the `tools` shell function (edit before recording)
-  serve.sh                  build VLLM_ARGS for a candidate and `podman compose up -d --force-recreate vllm`
+  env.sh                    host settings, pinned image tag and model revisions, the taco-slm alias, COMPOSE_FILE,
+                            the three candidate definitions, and the `tools` shell function
+  serve.sh                  build VLLM_ARGS for a candidate (served as taco-slm plus its own name) and
+                            `podman compose up -d --force-recreate vllm`
+  release.sh                module 5: apply, roll back, and show releases from releases/*.json (needs jq)
+  releases/                 module 5: release manifests (r1-qwen3-14b baseline, r2-llama-3.1-8b candidate)
   gateway/nginx.conf        reverse proxy on :8080 -> fixed vllm upstream address; keeps the caller's
                             X-Request-ID, JSON access log (module 6 adds TLS and keys)
   exporters/dcgm-counters.csv   the GPU fields a GeForce card reports
@@ -35,10 +38,10 @@ tools build                                                     # the tools imag
 
 Before recording, open [env.sh](env.sh) and:
 
-1. Replace the placeholder Hugging Face repository ids with verified vLLM-loadable quantized
-   artifacts, and pin `*_REVISION` to a commit sha.
-2. Pin `VLLM_IMAGE` to a specific tag; confirm the `--reasoning-parser` / `--tool-call-parser`
-   names exist in that tag (`podman run --rm "$VLLM_IMAGE" --help | grep -A5 parser`).
+1. Confirm the pinned Hugging Face revisions (`*_REVISION`) and the vLLM image tag (`VLLM_IMAGE`) match
+   what you want to serve; the release manifests in [releases/](releases/) pin the same values.
+2. Confirm the `--reasoning-parser` / `--tool-call-parser` names exist in that tag
+   (`podman run --rm "$VLLM_IMAGE" --help | grep -A5 parser`).
 3. Export `HF_TOKEN` in the shell for gated repositories. Compose passes it to the container by
    name; nothing in this folder writes it to disk.
 4. If `10.89.7.0/24` overlaps your LAN, change `INFERENCE_SUBNET` / `VLLM_UPSTREAM_IP` and the
@@ -81,6 +84,20 @@ use the fallback; the Prometheus recording rules normalize both to the same seri
 podman compose stop dcgm-exporter
 podman compose up -d nvidia-smi-exporter
 ```
+
+## Releases (module 5)
+
+```bash
+./model-host/release.sh apply r1-qwen3-14b     # or a manifest path
+./model-host/release.sh rollback               # re-apply the previous release
+./model-host/release.sh status
+```
+
+`apply` exports the manifest's repo, revision, parsers, image, and serving settings, recreates `vllm`
+through `serve.sh` (the old model stops first: a maintenance window on one GPU), waits until the model
+is served, checks the image digest against the manifest, runs the `smoke` tool, and records current and
+previous releases in `results/serving/release-state.json`. It prints a desktop step only when the
+release changes app-side settings.
 
 ## Teardown
 

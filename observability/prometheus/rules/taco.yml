@@ -85,3 +85,20 @@ groups:
         labels: {severity: info}
         annotations:
           summary: "VRAM above 95%; vLLM preallocates most of it, so watch KV-cache usage for load"
+      # Module 5. Same thresholds as tools/quality-gates.yaml (degradation); change both together.
+      - alert: QualityDegraded
+        expr: >
+          (
+            taco_quality_recent_ratio{signal="checks_passed"} < 0.90
+            or taco_quality_recent_ratio{signal="label_passed"} < 0.78
+            or taco_quality_recent_ratio{signal="escalated"} > 0.10
+          ) and on (model) taco_quality_recent_samples >= 5
+        labels: {severity: warn}
+        annotations:
+          summary: "{{ $labels.model }}: {{ $labels.signal }} is {{ $value | humanizePercentage }} over the last scored samples"
+      - alert: QualityReviewBacklog
+        expr: taco_quality_review_queue > 10
+        for: 15m
+        labels: {severity: info}
+        annotations:
+          summary: "{{ $value }} flagged samples are waiting for a human review"

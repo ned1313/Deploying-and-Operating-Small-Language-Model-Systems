@@ -16,7 +16,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any, Callable, Iterator
 
 from fastapi import HTTPException
 from langgraph.checkpoint.sqlite import SqliteSaver
@@ -26,10 +26,12 @@ from langgraph.types import Command
 from taco_shared.agent.faults import InferenceUnavailable
 from taco_shared.case_api_client import CaseApiClient, CaseApiUnavailable
 from taco_shared.context import Actor
+from taco_shared.quality.sampling import build_record, sample_reason
+from taco_shared.quality.store import QualityStore
 from taco_shared.workflow import WorkflowDeps, build_graph, case_status
 
 from .observability import (APPROVAL_WAIT, QUEUE_REJECTED, QUEUE_WAIT, RUN_SECONDS, RUNS, RUNS_IN_PROGRESS,
-                            log)
+                            log, trace_url)
 from .store import AppStore, now
 
 RESET_COUNTERS = {"tool_calls_used": 0, "repeated_calls": 0, "nudges_used": 0, "corrections_used": 0,
@@ -44,6 +46,10 @@ class ServiceSettings:
     max_concurrent_runs: int = 1
     queue_timeout_seconds: float = 60.0
     versions: dict[str, str] = field(default_factory=dict)
+    # Called per run so a model swapped behind the stable alias shows up without a restart.
+    versions_provider: Callable[[], dict[str, str]] | None = None
+    quality_db: Path | None = None
+    quality_sample_rate: float = 0.0
 
 
 class ComplaintService:
@@ -55,6 +61,11 @@ class ComplaintService:
         self._slots = threading.BoundedSemaphore(max(1, settings.max_concurrent_runs))
         self._case_locks: dict[str, threading.Lock] = {}
         self._case_locks_guard = threading.Lock()
+        self.quality = (QualityStore(settings.quality_db)
+                        if settings.quality_db is not None and settings.quality_sample_rate > 0 else None)
+
+    def versions(self) -> dict[str, str]:
+        return self.settings.versions_provider() if self.settings.versions_provider else self.settings.versions
 
     # Runs -------------------------------------------------------------------------------------
 
@@ -82,20 +93,25 @@ class ComplaintService:
         return {"configurable": {"thread_id": thread_id, "deadline": time.time() + self.settings.run_timeout_seconds},
                 "recursion_limit": self.settings.recursion_limit}
 
-    def _run_config(self, case: dict[str, Any], run_name: str, request_id: str, actor_id: str) -> dict[str, Any]:
-        """Graph config plus the run name, tags, and metadata that LangSmith records (when tracing is on)."""
+    def _run_config(self, case: dict[str, Any], run_name: str, request_id: str, actor_id: str,
+                    run_id: str | None = None) -> dict[str, Any]:
+        """Graph config plus the run id, name, tags, and metadata that LangSmith records (when tracing is on)."""
         tags = [run_name, *(f"injected_fault:{fault['mode']}" for fault in self.deps.faults.describe())]
         if case.get("scenario_id"):
             tags.append(f"scenario:{case['scenario_id']}")
         metadata = {"request_id": request_id, "case_id": case["case_id"], "thread_id": case["thread_id"],
-                    "store_id": case["store_id"], "actor_id": actor_id, **self.settings.versions}
-        return {**self._config(case["thread_id"]), "run_name": run_name, "tags": tags, "metadata": metadata}
+                    "store_id": case["store_id"], "actor_id": actor_id, **self.versions()}
+        config = {**self._config(case["thread_id"]), "run_name": run_name, "tags": tags, "metadata": metadata}
+        if run_id:
+            config["run_id"] = uuid.UUID(run_id)
+        return config
 
     def _run(self, case: dict[str, Any], payload: Any, request_id: str, run_name: str, actor_id: str) -> None:
         started = time.perf_counter()
         failure: tuple[str, str] | None = None
+        run_id = str(uuid.uuid4())
         try:
-            self.graph.invoke(payload, self._run_config(case, run_name, request_id, actor_id))
+            self.graph.invoke(payload, self._run_config(case, run_name, request_id, actor_id, run_id))
         except InferenceUnavailable as error:
             failure = ("failed_retryable", f"inference_unavailable: {error}")
         except CaseApiUnavailable as error:
@@ -112,6 +128,29 @@ class ComplaintService:
         RUN_SECONDS.observe(seconds)
         log("workflow_run", case_id=case["case_id"], thread_id=case["thread_id"], run=run_name, status=status,
             reason=failure[1] if failure else None, seconds=round(seconds, 3))
+        self._sample(case["case_id"], run_id)
+
+    def _sample(self, case_id: str, run_id: str) -> None:
+        """Write or update the case's quality sample. Never fails the request."""
+        if self.quality is None:
+            return
+        try:
+            case = self.store.get(case_id)
+            values = self.graph.get_state(self._config(case["thread_id"])).values
+            existing = self.quality.sample(case["thread_id"])
+            if existing is not None and existing["sample_id"] != case["thread_id"]:
+                existing = None
+            reason = (existing or {}).get("sampled_reason") or sample_reason(
+                case_id, case["status"], values.get("corrections_used", 0), self.settings.quality_sample_rate)
+            if reason is None:
+                return
+            run_ids = [*(existing or {}).get("run_ids", []), run_id]
+            record = build_record(case, values, self.versions(), run_ids,
+                                  (existing or {}).get("trace_url") or trace_url(run_ids[0]))
+            self.quality.upsert_sample(record, reason)
+            log("quality_sample", case_id=case_id, sample_id=record["sample_id"], status=case["status"], reason=reason)
+        except Exception as error:  # noqa: BLE001 - sampling is best effort by design
+            log("quality_sample_failed", case_id=case_id, error=type(error).__name__)
 
     def _sync(self, case_id: str, request_id: str | None = None) -> None:
         case = self.store.get(case_id)

@@ -195,6 +195,52 @@ services:
     networks:
       - telemetry  # reaches the observability project's Prometheus by name
 
+  # ----- quality, releases, and cost (module 5): desktop -------------------------------------------
+  quality:
+    # podman-compose run --rm quality score | report | queue | show <id> | review <id> --tone 4 ...
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.quality.quality"]
+    command: ["--help"]
+    environment:
+      QUALITY_DB: /data/quality/quality.db
+      RESULTS_DIR: /app/results/quality
+    volumes:
+      - taco-app-quality:/data/quality  # the app's evaluation store; complaint-api writes samples, this writes scores
+      - ../results:/app/results
+
+  release:
+    # podman-compose run --rm release --baseline r1-qwen3-14b --candidate r2-llama-3.1-8b
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.quality.release_report"]
+    command: ["--help"]
+    environment:
+      RESULTS_ROOT: /app/results
+    volumes:
+      - ../results:/app/results
+      - ../model-host/releases:/app/releases:ro
+
+  cost:
+    # podman-compose run --rm cost <load label> [<load label>]
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.quality.cost_report"]
+    command: ["--help"]
+    environment:
+      QUALITY_DB: /data/quality/quality.db
+      RESULTS_ROOT: /app/results
+      PROMETHEUS_URL: http://prometheus:9090
+      COST_GPU_HOST_PRICE_USD: ${COST_GPU_HOST_PRICE_USD:-3000}
+      COST_AMORTIZATION_YEARS: ${COST_AMORTIZATION_YEARS:-3}
+      COST_ELECTRICITY_USD_PER_KWH: ${COST_ELECTRICITY_USD_PER_KWH:-0.15}
+      COST_HOST_OVERHEAD_WATTS: ${COST_HOST_OVERHEAD_WATTS:-120}
+      COST_DESKTOP_SHARE_USD_PER_HOUR: ${COST_DESKTOP_SHARE_USD_PER_HOUR:-0.05}
+      COST_CLOUD_GPU_USD_PER_HOUR: ${COST_CLOUD_GPU_USD_PER_HOUR:-1.00}
+      COST_REVIEW_USD_PER_CASE: ${COST_REVIEW_USD_PER_CASE:-0}
+    volumes:
+      - taco-app-quality:/data/quality
+      - ../results:/app/results
+    networks:
+      - telemetry
+
   # ----- tests: every suite against the mounted source, no network or GPU -----------------------
   tests:
     # podman-compose run --rm tests
@@ -220,6 +266,9 @@ volumes:
   taco-app-data:
     external: true
     name: taco-app-data
+  taco-app-quality:
+    external: true
+    name: taco-app-quality
 
 networks:
   default:

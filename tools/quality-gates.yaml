@@ -1,0 +1,28 @@
+# Quality degradation thresholds and release gates (module 5, planning decisions 8 and 14).
+# Read by the quality and release tools. The QualityDegraded alert in
+# observability/prometheus/rules/taco.yml uses the same numbers; change both together.
+version: 1
+
+degradation:
+  window_samples: 20            # last N scored final samples per model
+  min_samples: 5                # no verdict on fewer
+  checks_pass_rate_min: 0.90
+  labeled_pass_drop_max: 0.10   # degraded below baseline.labeled_pass_rate minus this
+  escalation_rate_multiplier_max: 2.0
+  baseline:
+    labeled_pass_rate: 0.88     # module 3 e2e baseline, Qwen3-14B
+    escalation_rate: 0.05       # floor: the e2e baseline had no workflow escalations
+
+flags:
+  rubric_score_max: 2           # a rubric score at or below this flags the sample
+
+release:
+  e2e_pass_rate_drop_max: 0.05  # candidate >= baseline - this
+  e2e_pass_rate_min: 0.80
+  policy_compliant_drop_max: 0.05
+  perfect: [grounded, schema_valid, duplicate_free]
+  failure_tests_all_pass: true
+  workflow_p95_ratio_max: 1.20  # app steady load, candidate / baseline
+  load_failed_requests_max: 0
+  load_failed_retryable_max: 0
+  peak_vram_gib_max: 23.0

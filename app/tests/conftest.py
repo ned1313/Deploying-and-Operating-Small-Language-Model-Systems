@@ -73,7 +73,7 @@ def make_api(tmp_path: Path, app_db: AppDatabase, case_api: TestClient) -> Calla
 
     clients: list[TestClient] = []
 
-    def build(model: ScriptedChatModel) -> TestClient:
+    def build(model: ScriptedChatModel, quality_rate: float = 0.0) -> TestClient:
         for client in clients:
             client.__exit__(None, None, None)
         clients.clear()
@@ -81,7 +81,9 @@ def make_api(tmp_path: Path, app_db: AppDatabase, case_api: TestClient) -> Calla
                               sleep=lambda _: None)
         deps = WorkflowDeps(model=model, db=app_db, cases=cases, policy=load_policy(), settings=WorkflowSettings())
         main.STATE.clear()
-        main.STATE["service"] = ComplaintService(deps, cases, ServiceSettings(state_dir=tmp_path / "state"))
+        main.STATE["service"] = ComplaintService(deps, cases, ServiceSettings(
+            state_dir=tmp_path / "state", versions={"model": "scripted", "policy_version": "2026.09"},
+            quality_db=tmp_path / "quality" / "quality.db", quality_sample_rate=quality_rate))
         client = TestClient(main.app)
         client.__enter__()
         clients.append(client)

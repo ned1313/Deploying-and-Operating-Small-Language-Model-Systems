@@ -7,14 +7,18 @@ either host against a configured URL; nothing here is long-running.
 ```
 tools/
   compose.yaml              project taco-tools: one service per command (below)
-  .env.example              target URL, model settings for agent-eval and direct load, admin token, execution host
+  .env.example              target URL, model settings for agent-eval and direct load, admin token, execution host,
+                            cost assumptions
   Containerfile             python:3.12-slim + shared[agent,service,dev,load] + taco_tools
+  quality-gates.yaml        quality degradation thresholds and release gates (module 5)
+  rubric.md                 the human review rubric for flagged samples (module 5)
   taco_tools/
     serving/                module 1: smoke_test, screen_models, compare_screening, load_sweep, compare_load
     agent_eval/             module 2: run_agent_scenarios, compare_agent_vs_screening
     e2e/                    module 3: failure_tests, run_e2e_scenarios, compare_e2e
     load/                   module 4: Locust workloads (locustfile) and the headless runner (run)
     reports/                module 4: baseline_report
+    quality/                module 5: quality (score, report, queue, show, review), release_report, cost_report
   tests/                    harness and agent-eval tests (reuse the app test fixtures)
 ```
 
@@ -51,11 +55,18 @@ paths relative to the container's working directory, for example `'results/scree
 | `e2e-compare` | 3 | results | screening vs agent vs end to end, per scenario |
 | `load` | 4 | app, gateway URL | Locust `--mode direct|app`, `--shape steady|burst` -> `results/load/` |
 | `baseline` | 4 | observability (`prometheus`) | Prometheus over a load run's window + Locust numbers -> `results/baseline/` |
+| `quality` | 5 | app (`taco-app-quality` volume) | score samples, report, review queue, show, review -> `results/quality/` |
+| `release` | 5 | results, `model-host/releases/` | candidate vs baseline against the release gates -> `results/release/`; exits 1 unless PROMOTE |
+| `cost` | 5 | app volume, observability (`prometheus`) | cost per successful resolution for one or more app load runs -> `results/cost/` |
 | `tests` | any | - | `shared/tests`, `app/tests`, `tools/tests` against the mounted source, no network |
 
-Services that need the app join the external `taco-app-private` network, `baseline` joins
-`taco-telemetry`, and `agent-eval` mounts the app's `taco-app-data` volume read-only, so those run on
-the desktop after `app/` (and `observability/`) are up. The serving services only need the gateway URL.
+Services that need the app join the external `taco-app-private` network, `baseline` and `cost` join
+`taco-telemetry`, and `agent-eval`, `quality`, and `cost` mount the app's volumes (`taco-app-data`
+read-only, `taco-app-quality`), so those run on the desktop after `app/` (and `observability/`) are up.
+The serving services only need the gateway URL.
+
+Release evidence is found by label: run `e2e-eval`, `failure-tests`, `load`, and `baseline` with
+`--label <release id>` (for example `r1-qwen3-14b`) and `release` picks the newest of each.
 
 `failure-tests` and `e2e-eval` reset the cases they use through the admin routes (`TACO_ADMIN_TOKEN`
 must match `app/.env`) and restore them when they finish unless `--keep-state`. App-mode `load` resets
