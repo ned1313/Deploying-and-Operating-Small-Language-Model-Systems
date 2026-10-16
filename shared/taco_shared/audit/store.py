@@ -140,6 +140,12 @@ class AuditStore:
             rows = self._connection.execute(query, params).fetchall()
         return [self._public(row) for row in rows]
 
+    def recent(self, limit: int = 200) -> list[dict[str, Any]]:
+        """Newest events first, metadata only."""
+        with self._lock:
+            rows = self._connection.execute("SELECT * FROM events ORDER BY seq DESC LIMIT ?", (limit,)).fetchall()
+        return [self._public(row) for row in rows]
+
     def content(self, content_id: str) -> Any:
         """Decrypted content, or None when it was deleted."""
         with self._lock:

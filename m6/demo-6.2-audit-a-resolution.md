@@ -38,7 +38,7 @@ certificate serial. None of them hold the complaint, tool results, or the propos
 
 ```bash
 podman-compose run --rm cli audit CASE-10431
-podman-compose run --rm cli audit CASE-10431 --content | head -20
+podman-compose run --rm cli audit CASE-10431 --content | sed -n '1,20p'   # sed reads to the end: no broken pipe
 ```
 
 Events, in order: `intake` (complaint), four `model_call` + `tool_access` pairs (each tool's arguments
@@ -48,10 +48,15 @@ version), `action_recorded` (idempotency key and action id), and a second `workf
 carries the request id, case, thread, actor, role, and deployment versions; only the final response of
 each model call is captured (full prompts are in LangSmith).
 
+In the browser, sign in as `aud-01` and open `https://app.taco.internal:8443/ui/audit`: the newest events
+across all cases with the hash-chain result at the top, and a case box that opens
+`/ui/audit/CASE-10431`, the same timeline with each event's metadata and decrypted content under
+**details**. The case page links to it too ("Audit trail for this case").
+
 ### 4. Who can read it
 
 ```bash
-podman-compose run --rm cli --actor sup-area-01 audit CASE-10431 | head -3   # metadata only
+podman-compose run --rm cli --actor sup-area-01 audit CASE-10431 | sed -n '1,3p'   # metadata only
 podman-compose run --rm cli --actor sup-kop-01 audit CASE-10431              # 403
 podman-compose run --rm cli --actor rep-kop-01 audit CASE-10431              # 403
 podman run --rm -v taco-app-audit:/a docker.io/library/nginx:1.30.6 sh -c 'grep -c -i carnitas /a/*'  # 0: encrypted
@@ -59,7 +64,9 @@ podman run --rm -v taco-app-audit:/a docker.io/library/nginx:1.30.6 sh -c 'grep 
 
 Each read is itself an `audit_read` event (`cli audit CASE-10431` again shows them). Denied requests from
 Demo 6.1 are `access_denied` events with the route, status, and reason. Credentials never reach the
-audit store: Authelia checks the password, and the API only sees the user name.
+audit store: Authelia checks the password, and the API only sees the user name. In the browser, sign out
+and back in as `sup-area-01`: `/ui/audit/CASE-10431` says "Metadata only for your role" and has no
+content or delete button; as `sup-kop-01` the page returns 403.
 
 ### 5. Tamper evidence
 
@@ -81,6 +88,9 @@ podman-compose run --rm cli show CASE-10431          # complaint: None, outcome 
 podman-compose run --rm cli audit-verify             # still ok
 ```
 
+Or in the browser as `aud-01`: **Delete content** at the bottom of `/ui/audit/CASE-10431`; the content
+under each event's details then reads `{"deleted": true}` and the chain on `/ui/audit` still verifies.
+
 Deletion removes the case's audit content, its quality sample, and its workflow checkpoint; it keeps the
 case record, the recorded action in the case API, and every audit event (with a `case_content_deleted`
 event). Retention periods and legal holds are policy decisions covered on the slides; they decide when
@@ -97,7 +107,7 @@ customer message show `[redacted]`. `none` hides all inputs and outputs; `full` 
 
 ```bash
 podman-compose stop complaint-api case-api && podman-compose up -d case-api complaint-api
-podman-compose run --rm cli show CASE-10431          # still there: volumes survive a stop
+podman-compose run --rm cli --actor sup-kop-01 show CASE-10431          # still there: volumes survive a stop
 podman-compose stop complaint-api case-api
 podman-compose run --rm reset                        # lists what it would delete; deletes nothing
 podman-compose run --rm reset --yes                  # workflow state, quality store, case records, seed data

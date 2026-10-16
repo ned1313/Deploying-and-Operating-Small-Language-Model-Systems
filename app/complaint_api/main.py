@@ -304,14 +304,14 @@ def audit_store() -> AuditRecorder:
 
 
 def audit_reader(actor: Actor, case_id: str | None = None) -> None:
-    if actor.role not in {"auditor", "area_manager"}:
+    if actor.role not in ui.AUDIT_ROLES:
         raise HTTPException(status_code=403, detail="only auditors and area managers read the audit trail")
     if case_id is not None:
         service()._visible(actor, case_id)
 
 
-@app.get("/audit/cases/{case_id}")
-def audit_case(case_id: str, request: Request, actor: Actor = Depends(current_actor)) -> dict[str, Any]:
+def read_trail(actor: Actor, case_id: str, request_id: str) -> dict[str, Any]:
+    """A case's events; content only for auditors. The read itself is recorded."""
     audit = audit_store()
     audit_reader(actor, case_id)
     events = audit.store.events(case_id)
@@ -321,9 +321,26 @@ def audit_case(case_id: str, request: Request, actor: Actor = Depends(current_ac
             if event["content_id"]:
                 content = audit.store.content(event["content_id"])
                 event["content"] = content if content is not None else {"deleted": True}
-    audit.record("audit_read", case_id=case_id, request_id=request.state.request_id, actor_id=actor.actor_id,
+    audit.record("audit_read", case_id=case_id, request_id=request_id, actor_id=actor.actor_id,
                  role=actor.role, metadata={"content": with_content, "events": len(events)})
     return {"case_id": case_id, "content_included": with_content, "events": events}
+
+
+def delete_trail_content(actor: Actor, case_id: str, request_id: str) -> dict[str, int]:
+    audit = audit_store()
+    if actor.role != "auditor":
+        raise HTTPException(status_code=403, detail="only auditors process deletion requests")
+    service()._visible(actor, case_id)
+    removed = service().delete_content(case_id)
+    audit.record("case_content_deleted", case_id=case_id, request_id=request_id,
+                 actor_id=actor.actor_id, role=actor.role, metadata=removed)
+    log("case_content_deleted", case_id=case_id, by=actor.actor_id, **removed)
+    return removed
+
+
+@app.get("/audit/cases/{case_id}")
+def audit_case(case_id: str, request: Request, actor: Actor = Depends(current_actor)) -> dict[str, Any]:
+    return read_trail(actor, case_id, request.state.request_id)
 
 
 @app.get("/audit/events")
@@ -348,15 +365,7 @@ def audit_verify(actor: Actor = Depends(current_actor)) -> dict[str, Any]:
 
 @app.delete("/audit/cases/{case_id}")
 def audit_delete(case_id: str, request: Request, actor: Actor = Depends(current_actor)) -> dict[str, Any]:
-    audit = audit_store()
-    if actor.role != "auditor":
-        raise HTTPException(status_code=403, detail="only auditors process deletion requests")
-    service()._visible(actor, case_id)
-    removed = service().delete_content(case_id)
-    audit.record("case_content_deleted", case_id=case_id, request_id=request.state.request_id,
-                 actor_id=actor.actor_id, role=actor.role, metadata=removed)
-    log("case_content_deleted", case_id=case_id, by=actor.actor_id, **removed)
-    return {"case_id": case_id, "deleted": removed}
+    return {"case_id": case_id, "deleted": delete_trail_content(actor, case_id, request.state.request_id)}
 
 
 # Review page ------------------------------------------------------------------------------------------
@@ -391,6 +400,8 @@ def ui_home(request: Request, actor: str | None = None, status: str | None = Non
     body = ui.actor_picker(actors, status) + ui.status_tabs(who, status, counts) + ui.case_list(who, shown, status)
     if who.role in ui.QUALITY_ROLES and service().quality is not None:
         body = f"<p><a href='/ui/quality?actor={quote(who.actor_id)}'>Quality review queue</a></p>" + body
+    if who.role in ui.AUDIT_ROLES and service().audit is not None:
+        body = f"<p><a href='/ui/audit?actor={quote(who.actor_id)}'>Audit trail</a></p>" + body
     return ui.page("Cases", who, body, message)
 
 
@@ -402,7 +413,10 @@ def ui_case(request: Request, case_id: str, actor: str | None = None, back: str 
         return ui.page("Case", None, "<p>Choose an actor on the <a href='/ui'>cases page</a>.</p>")
     service()._visible(who, case_id)
     back = back if back in ui.STATUSES else "all"
-    return ui.page(f"Case {case_id}", who, ui.case_detail(who, service().view(case_id, include_steps=True), back),
+    body = ui.case_detail(who, service().view(case_id, include_steps=True), back)
+    if who.role in ui.AUDIT_ROLES and service().audit is not None:
+        body = f"<p><a href='/ui/audit/{quote(case_id)}?actor={quote(who.actor_id)}'>Audit trail for this case</a></p>" + body
+    return ui.page(f"Case {case_id}", who, body,
                    message)
 
 
@@ -471,3 +485,49 @@ async def ui_quality_review(sample_id: str, request: Request) -> RedirectRespons
         message = f"review not saved: {error}"
     target = f"/ui/quality/{quote(sample_id)}?actor={quote(who.actor_id)}"
     return RedirectResponse(target + (f"&message={quote(message)}" if message else ""), status_code=303)
+
+
+# Audit pages (module 6): the same rules as the /audit routes, and every page view is an audit_read ------
+
+def audit_page_reader(request: Request, actor_id: str | None) -> Actor:
+    who = ui_actor(request, actor_id)
+    if who is None or who.role not in ui.AUDIT_ROLES:
+        raise HTTPException(status_code=403, detail="only auditors and area managers read the audit trail")
+    return who
+
+
+@app.get("/ui/audit", response_class=HTMLResponse, response_model=None)
+def ui_audit(request: Request, actor: str | None = None, case: str | None = None,
+             message: str | None = None) -> HTMLResponse | RedirectResponse:
+    who = audit_page_reader(request, actor)
+    if case:
+        return RedirectResponse(f"/ui/audit/{quote(case.strip())}?actor={quote(who.actor_id)}", status_code=303)
+    audit = audit_store()
+    events = audit.store.recent(200)
+    if who.role != "auditor":
+        stores = {c["case_id"]: c["store_id"] for c in service().store.list(who.store_ids)}
+        events = [e for e in events if e.get("case_id") in stores]
+    verify = audit.store.verify() if who.role == "auditor" else None
+    audit.record("audit_read", request_id=request.state.request_id, actor_id=who.actor_id, role=who.role,
+                 metadata={"content": False, "events": len(events), "page": "recent"})
+    return HTMLResponse(ui.page("Audit trail", who, ui.audit_recent(who, events, verify), message))
+
+
+@app.get("/ui/audit/{case_id}", response_class=HTMLResponse)
+def ui_audit_case(request: Request, case_id: str, actor: str | None = None, message: str | None = None) -> str:
+    who = audit_page_reader(request, actor)
+    trail = read_trail(who, case_id, request.state.request_id)
+    return ui.page(f"Audit trail {case_id}", who, ui.audit_case(who, trail), message)
+
+
+@app.post("/ui/audit/{case_id}/delete")
+async def ui_audit_delete(case_id: str, request: Request) -> RedirectResponse:
+    form = {key: values[0] for key, values in parse_qs((await request.body()).decode("utf-8")).items()}
+    who = resolve_actor(request, form.get("actor"))
+    try:
+        removed = await run_in_threadpool(delete_trail_content, who, case_id, request.state.request_id)
+        message = "Content deleted: " + ", ".join(f"{k} {v}" for k, v in removed.items())
+    except HTTPException as error:
+        message = str(error.detail)
+    return RedirectResponse(f"/ui/audit/{quote(case_id)}?actor={quote(who.actor_id)}&message={quote(message)}",
+                            status_code=303)

@@ -18,16 +18,16 @@ Create `model-host/local.env` (git-ignored; `env.sh` reads it):
 
 ```bash
 cat > model-host/local.env <<'EOF'
-# Module 6: only gateway-secure reaches the exporters.
+# Module 6: only gateway-secure reaches the GPU exporter.
 export GPU_EXPORTER_BIND=127.0.0.1
-# Rootful Podman: node-exporter listens on the inference bridge, which only containers reach.
-# Rootless Podman (`podman info --format '{{.Host.Security.Rootless}}'` prints true): leave this line out;
-# node-exporter stays on MODEL_HOST:9100 and gateway-secure proxies it from there.
-export NODE_EXPORTER_LISTEN=10.89.7.1
+export NODE_EXPORTER_UPSTREAM=host.containers.internal:9100
 EOF
 source model-host/env.sh
 podman rm -f node-exporter dcgm-exporter && podman compose up -d node-exporter dcgm-exporter
 ```
+
+The course GPU host runs rootless Podman, on a rootful host you can add
+`export NODE_EXPORTER_LISTEN=10.89.7.1` to `local.env` to take it off the LAN as well.
 
 ### 2. GPU host: the course CA and the gateway certificate
 
@@ -52,18 +52,15 @@ podman compose up -d gateway-secure
 ss -tlnp | grep -E ':(8000|8080|8443|9000|9100|9400)\b'
 ```
 
-Expected: 8443 and 9000 on `MODEL_HOST`, 8000 and 9400 on 127.0.0.1, 9100 on 10.89.7.1 (rootful) or
-`MODEL_HOST` (rootless), and nothing on 8080. Check that the gateway reaches both exporters:
+Expected: 8443, 9000, and 9100 on `MODEL_HOST`, 8000 and 9400 on 127.0.0.1, and nothing on 8080
+(9100 on 10.89.7.1 on a rootful host). Check that the gateway reaches both exporters:
 
 ```bash
 podman exec gateway-secure curl -s -o /dev/null -w 'node %{http_code}\n' "http://${NODE_EXPORTER_UPSTREAM}/metrics"
 podman exec gateway-secure curl -s -o /dev/null -w 'gpu %{http_code}\n' "http://${GPU_EXPORTER_UPSTREAM}/metrics"
 ```
 
-Both should print 200. On rootless Podman, if `node` fails, add
-`export NODE_EXPORTER_UPSTREAM=host.containers.internal:9100` to `model-host/local.env`, `source
-model-host/env.sh`, and recreate the gateway (`podman rm -f gateway-secure && podman compose up -d
-gateway-secure`). Walk through [nginx.secure.conf](../model-host/gateway/nginx.secure.conf): `ssl_verify_client
+Walk through [nginx.secure.conf](../model-host/gateway/nginx.secure.conf): `ssl_verify_client
 optional`, the CN map to an identity, the inference and metrics allowlists, `limit_req` and `limit_conn`
 keyed on the identity, 256 KB bodies, everything else 404, and an access log with identity and serial but
 no bodies or credentials. `diff model-host/gateway/nginx.conf model-host/gateway/nginx.secure.conf` shows
@@ -155,8 +152,10 @@ cd app && podman-compose run --rm cli reset CASE-10849 && podman-compose run --r
 
 The complaint API picks up the new key and certificate on its next connection (no restart); the old pair
 is kept in `secrets/rotated/` and step-ca no longer renews it. The old certificate is still valid for a
-year, so the rotation window ends when the gateway denies its serial. Wait a minute (connections recycle
-after 30 s idle or 100 requests), then on the **GPU host** run the command the script printed:
+year, so the rotation window ends when the gateway denies its serial. Wait a minute connections recycle
+after 30 s idle or 100 requests.
+
+On the **GPU host** run the command the script printed:
 
 ```bash
 ./model-host/pki/deny-serial.sh <OLD-SERIAL> complaint-api-rotation

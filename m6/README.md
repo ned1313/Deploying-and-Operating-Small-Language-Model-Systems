@@ -51,6 +51,10 @@ start the secure gateway.
 127.0.0.1  app.taco.internal auth.taco.internal
 ```
 
+If Windows cannot reach WSL on 127.0.0.1 (you set `PUBLISH_ADDRESS=0.0.0.0` in `app/.env`), use the WSL
+address (`hostname -I` in WSL) instead, and keep **both** names on the line: the portal at
+`auth.taco.internal` must resolve too.
+
 and import `secrets/ca/root_ca.crt` into **Trusted Root Certification Authorities** for the current user
 (`certmgr.msc`, or double-click the file) after Demo 6.1 step 4. Remove both after the course.
 

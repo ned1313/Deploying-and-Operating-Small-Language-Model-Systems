@@ -174,3 +174,25 @@ def test_authelia_mode_ui_uses_the_signed_in_user(make_api, authelia_mode) -> No
     api = make_api(scripted("CASE-10431"))
     page = api.get("/ui?actor=sup-area-01", headers=as_user(authelia_mode, "sup-kop-01", "reviewer")).text
     assert "Signed in through Authelia as <b>sup-kop-01" in page and "Act as:" not in page
+
+
+def test_audit_pages(make_api) -> None:
+    api = make_api(scripted("CASE-10431"), audit=True)
+    api.post("/complaints", json={"scenario_id": "A01"}, headers=REP)
+
+    recent = api.get("/ui/audit?actor=aud-01").text
+    assert "Hash chain verified" in recent and "tool_access" in recent and "/ui/audit/CASE-10431" in recent
+    trail = api.get("/ui/audit/CASE-10431?actor=aud-01").text
+    assert "decrypted for you" in trail and "Delete content" in trail and "get_order" in trail
+    area = api.get("/ui/audit/CASE-10431?actor=sup-area-01").text
+    assert "Metadata only for your role" in area and "Delete content" not in area and "decrypted" not in area
+    assert api.get("/ui/audit?actor=rep-kop-01").status_code == 403
+    assert api.get("/ui/audit?actor=aud-01&case=CASE-10431", follow_redirects=False).status_code == 303
+    assert "Audit trail for this case" in api.get("/ui/cases/CASE-10431?actor=aud-01").text
+
+    deleted = api.post("/ui/audit/CASE-10431/delete", data={"actor": "aud-01"}, follow_redirects=False)
+    assert deleted.status_code == 303 and "Content%20deleted" in deleted.headers["location"]
+    refused = api.post("/ui/audit/CASE-10431/delete", data={"actor": "sup-area-01"}, follow_redirects=False)
+    assert "only%20auditors" in refused.headers["location"]
+    reads = [e for e in service().audit.store.events() if e["kind"] == "audit_read"]
+    assert {e["actor_id"] for e in reads} == {"aud-01", "sup-area-01"}

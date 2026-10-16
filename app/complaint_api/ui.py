@@ -20,6 +20,9 @@ button{margin-right:.5rem;padding:.3rem .8rem}textarea{width:30rem;height:3rem}
 .kind{font-family:monospace;padding:0 .3rem;border-radius:3px;background:#eef}
 .kind-tool{background:#e8f5e9}.kind-finalize,.kind-validate{background:#fff3e0}.kind-record{background:#e3f2fd}
 .kind-escalate,.kind-rejected,.kind-limit{background:#fdecea}.kind-nudge,.kind-clarify{background:#f3e5f5}
+.kind-tool_access{background:#e8f5e9}.kind-model_call,.kind-proposal_validated{background:#fff3e0}
+.kind-review_decision,.kind-action_recorded{background:#e3f2fd}.kind-intake,.kind-clarification{background:#f3e5f5}
+.kind-access_denied,.kind-action_refused,.kind-case_content_deleted{background:#fdecea}.kind-audit_read,.kind-admin{background:#eee}
 details summary{cursor:pointer;color:#555}
 """
 
@@ -259,4 +262,106 @@ def quality_detail(actor: Actor, sample: dict[str, Any], score: dict[str, Any] |
             f"<p>Disposition: <select name='disposition'>{options}</select></p>"
             f"<p><textarea name='note' placeholder='Note'></textarea></p><button>Save review</button></form>")
     parts.append(f"<p><a href='/ui/quality?actor={quote(actor.actor_id)}'>Back to the review queue</a></p>")
+    return "".join(parts)
+
+
+# Audit trail (module 6) -------------------------------------------------------------------------------
+
+AUDIT_ROLES = {"auditor", "area_manager"}
+
+
+def _short(value: Any, length: int = 12) -> str:
+    return str(value)[:length] if value else ""
+
+
+def audit_summary(event: dict[str, Any]) -> str:
+    """One readable line per audit event; the full metadata is in the row's details."""
+    kind, meta = event["kind"], event.get("metadata") or {}
+    if kind == "intake":
+        return f"{meta.get('channel')} complaint from {meta.get('customer_id')}, store {meta.get('store_id')}"
+    if kind == "tool_access":
+        args = json.dumps(meta.get("args") or {}, separators=(", ", ": "))
+        result = meta.get("record_id") or meta.get("error_kind") or ""
+        return f"{meta.get('tool')} {args} <- {meta.get('status')} {result}"
+    if kind == "model_call":
+        calls = ", ".join(meta.get("tool_calls") or [])
+        return (f"{meta.get('node')} on {meta.get('model')}: {meta.get('input_tokens')}/{meta.get('output_tokens')} tokens, "
+                f"{meta.get('finish_reason')}" + (f", calls {calls}" if calls else ""))
+    if kind == "proposal_validated":
+        return (f"v{meta.get('proposal_version')} {'accepted' if meta.get('accepted') else 'rejected'}, "
+                f"sha256 {_short(meta.get('proposal_sha256'))}")
+    if kind == "review_decision":
+        return f"{meta.get('decision')} v{meta.get('proposal_version')}, sha256 {_short(meta.get('proposal_sha256'))}"
+    if kind in {"action_recorded", "action_refused"}:
+        return (f"{meta.get('action_id') or ''} {meta.get('type') or ''} {meta.get('amount') or ''} "
+                f"key {meta.get('idempotency_key')}" + (f", refused: {meta.get('conflict')}" if meta.get("conflict") else ""))
+    if kind == "access_denied":
+        return f"{meta.get('method')} {meta.get('route')} -> {meta.get('status')}: {meta.get('reason')}"
+    if kind == "audit_read":
+        return f"read {meta.get('events')} events, content {'yes' if meta.get('content') else 'no'}"
+    if kind == "workflow_run":
+        return f"{meta.get('run')} -> {meta.get('status')}" + (f" ({meta.get('reason')})" if meta.get("reason") else "")
+    if kind == "admin":
+        return str(meta.get("action"))
+    if kind == "case_content_deleted":
+        return ", ".join(f"{k} {v}" for k, v in meta.items())
+    return json.dumps(meta, default=str)[:160]
+
+
+def _audit_rows(actor: Actor, events: list[dict[str, Any]], show_case: bool) -> str:
+    who = quote(actor.actor_id)
+    rows = []
+    for event in events:
+        kind = str(event["kind"])
+        case = (f"<td><a href='/ui/audit/{quote(event['case_id'])}?actor={who}'>{escape(event['case_id'])}</a></td>"
+                if event.get("case_id") else "<td class='muted'>-</td>") if show_case else ""
+        details = f"<details><summary>details</summary>{_cell(event['metadata'])}"
+        if "content" in event:
+            label = "deleted" if event["content"] == {"deleted": True} else "captured content (decrypted for you)"
+            details += f"<p class='muted'>{label}</p>{_cell(event['content'])}"
+        elif event.get("content_id"):
+            details += "<p class='muted'>content captured; visible to auditors only</p>"
+        details += "</details>"
+        rows.append(
+            f"<tr><td>{event['seq']}</td><td>{escape(event['at'][11:23])}<br><span class='muted'>{escape(event['at'][:10])}"
+            f"</span></td><td><span class='kind kind-{escape(kind)}'>{escape(kind)}</span></td>{case}"
+            f"<td>{escape(event.get('actor_id') or '-')}<br><span class='muted'>{escape(event.get('role') or '')}</span></td>"
+            f"<td>{escape(audit_summary(event))}{details}</td>"
+            f"<td><code>{escape(_short(event.get('request_id'), 8))}</code></td></tr>")
+    header = ("<tr><th>#</th><th>Time (UTC)</th><th>Event</th>" + ("<th>Case</th>" if show_case else "")
+              + "<th>Actor</th><th>What happened</th><th>Request</th></tr>")
+    return f"<table>{header}{''.join(rows)}</table>" if rows else "<p class='muted'>No events.</p>"
+
+
+def audit_recent(actor: Actor, events: list[dict[str, Any]], verify: dict[str, Any] | None) -> str:
+    who = escape(actor.actor_id)
+    search = (f"<form method='get' action='/ui/audit'><input type='hidden' name='actor' value='{who}'>"
+              f"Case: <input name='case' placeholder='CASE-10431'> <button>Open trail</button></form>")
+    if verify is None:
+        chain = "<p class='muted'>Metadata for cases in your stores. Content is visible to auditors only.</p>"
+    elif verify["ok"]:
+        chain = (f"<p class='ok'>Hash chain verified: {verify['events']} events, head "
+                 f"<code>{escape(_short(verify.get('head'), 16))}</code></p>")
+    else:
+        chain = f"<p class='bad'>Hash chain broken at event #{verify['first_bad_seq']} of {verify['events']}</p>"
+    return (search + chain + f"<h2>Recent events (newest first, {len(events)})</h2>" + _audit_rows(actor, events, True)
+            + f"<p><a href='/ui?actor={quote(actor.actor_id)}'>Back to cases</a></p>")
+
+
+def audit_case(actor: Actor, trail: dict[str, Any]) -> str:
+    who, case_id = quote(actor.actor_id), trail["case_id"]
+    scope = ("Captured content is decrypted for you; this view is recorded as an audit_read event."
+             if trail["content_included"] else "Metadata only for your role; this view is recorded as an audit_read event.")
+    parts = [f"<p>{len(trail['events'])} events. <span class='muted'>{escape(scope)}</span></p>",
+             _audit_rows(actor, trail["events"], False)]
+    if actor.role == "auditor":
+        parts.append(
+            f"<h2>Deletion request</h2><p class='muted'>Removes this case's captured audit content, quality sample, "
+            f"and workflow checkpoint. Events, the case record, and the recorded action are kept.</p>"
+            f"<form method='post' action='/ui/audit/{quote(case_id)}/delete'>"
+            f"<input type='hidden' name='actor' value='{escape(actor.actor_id)}'>"
+            f"<button onclick=\"return confirm('Delete the captured content for {escape(case_id)}?')\">Delete content</button>"
+            f"</form>")
+    parts.append(f"<p><a href='/ui/audit?actor={who}'>All recent events</a> | "
+                 f"<a href='/ui/cases/{quote(case_id)}?actor={who}&back=all'>Case page</a></p>")
     return "".join(parts)
