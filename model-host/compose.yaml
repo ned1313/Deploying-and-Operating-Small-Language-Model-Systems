@@ -4,6 +4,8 @@
 #   ./model-host/serve.sh qwen            # sets VLLM_ARGS for a candidate and (re)creates the vllm service
 #   podman compose up -d gateway
 #   podman compose up -d node-exporter dcgm-exporter          # module 4
+#   ./model-host/pki/init-ca.sh                               # module 6: step-ca and the gateway certificate
+#   podman compose stop gateway && podman compose up -d gateway-secure   # module 6: TLS on 8443, 8080 closed
 #
 # GPU access uses CDI: `sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml` once on the host.
 # Always name the service you want (`up -d gateway`, `up -d vllm`); `vllm` requires VLLM_ARGS.
@@ -49,14 +51,55 @@ services:
         aliases: [gateway]
     restart: unless-stopped
 
+  # Module 6: the same proxy with TLS, client-certificate identities, a route allowlist, and rate limits
+  # (gateway/nginx.secure.conf). Run it instead of `gateway`; it publishes only on MODEL_HOST.
+  gateway-secure:
+    container_name: gateway-secure
+    image: ${NGINX_IMAGE:-docker.io/library/nginx:1.30.6}
+    ports:
+      - "${MODEL_HOST:?source model-host/env.sh first}:${GATEWAY_TLS_PORT:-8443}:8443"
+    environment:
+      VLLM_UPSTREAM_IP: ${VLLM_UPSTREAM_IP:-10.89.7.10}
+      NODE_EXPORTER_UPSTREAM: ${NODE_EXPORTER_UPSTREAM:-10.89.7.1:9100}
+      GPU_EXPORTER_UPSTREAM: ${GPU_EXPORTER_UPSTREAM:-10.89.7.11:9400}
+      NGINX_ENVSUBST_FILTER: "^(VLLM_UPSTREAM_IP|NODE_EXPORTER_UPSTREAM|GPU_EXPORTER_UPSTREAM)$$"
+    volumes:
+      - ./gateway/nginx.secure.conf:/etc/nginx/nginx.conf:ro
+      - ./gateway/upstreams.conf.template:/etc/nginx/templates/upstreams.conf.template:ro
+      - ./secrets/pki/gateway:/etc/nginx/pki:ro    # gateway.crt/.key, root_ca.crt, revoked-serials.map (pki/init-ca.sh)
+    networks:
+      inference:
+        aliases: [gateway-secure]
+    restart: unless-stopped
+
+  # Module 6: the course CA. Issues the gateway's server certificate and the desktop's client certificates.
+  # First start: model-host/pki/init-ca.sh (sets STEP_CA_INIT_PASSWORD only for that run).
+  step-ca:
+    container_name: step-ca
+    image: ${STEP_CA_IMAGE:-docker.io/smallstep/step-ca:0.30.2}
+    environment:
+      DOCKER_STEPCA_INIT_NAME: Taco Alley Course CA
+      DOCKER_STEPCA_INIT_DNS_NAMES: ${CA_HOSTNAME:-ca.taco.internal},step-ca,localhost
+      DOCKER_STEPCA_INIT_PROVISIONER_NAME: ${STEP_PROVISIONER:-taco}
+      DOCKER_STEPCA_INIT_PASSWORD: ${STEP_CA_INIT_PASSWORD:-}
+    ports:
+      - "${MODEL_HOST:?source model-host/env.sh first}:${CA_PORT:-9000}:9000"
+    volumes:
+      - pki-data:/home/step
+    networks:
+      inference:
+        aliases: [step-ca, "${CA_HOSTNAME:-ca.taco.internal}"]   # step's default CA URL uses the CA hostname
+    restart: unless-stopped
+
   # Exporters (module 4). No authentication in modules 4-5: they bind to MODEL_HOST only, and the
-  # desktop is the only intended client. Module 6 revisits this.
+  # desktop is the only intended client. Module 6 moves them off the LAN (NODE_EXPORTER_LISTEN,
+  # GPU_EXPORTER_BIND) and gateway-secure serves them at /metrics/node and /metrics/gpu.
   node-exporter:
     container_name: node-exporter
     image: quay.io/prometheus/node-exporter:v1.12.1
     command:
       - --path.rootfs=/host
-      - --web.listen-address=${MODEL_HOST:?source model-host/env.sh first}:${NODE_EXPORTER_PORT:-9100}
+      - --web.listen-address=${NODE_EXPORTER_LISTEN:?source model-host/env.sh first}:${NODE_EXPORTER_PORT:-9100}
     network_mode: host      # host network and PID namespace so CPU, memory, and NIC metrics are the host's
     pid: host
     volumes:
@@ -72,7 +115,10 @@ services:
     volumes:
       - ./exporters/dcgm-counters.csv:/etc/dcgm-exporter/taco-counters.csv:ro
     ports:
-      - "${MODEL_HOST:?source model-host/env.sh first}:${GPU_EXPORTER_PORT:-9400}:9400"
+      - "${GPU_EXPORTER_BIND:?source model-host/env.sh first}:${GPU_EXPORTER_PORT:-9400}:9400"
+    networks:
+      inference:
+        ipv4_address: ${GPU_EXPORTER_IP:-10.89.7.11}   # gateway-secure reaches it here (module 6)
     restart: unless-stopped
 
   # Fallback when dcgm-exporter cannot read the GPU: start this instead of dcgm-exporter (same port).
@@ -83,7 +129,10 @@ services:
     devices:
       - nvidia.com/gpu=0
     ports:
-      - "${MODEL_HOST:?source model-host/env.sh first}:${GPU_EXPORTER_PORT:-9400}:9835"
+      - "${GPU_EXPORTER_BIND:?source model-host/env.sh first}:${GPU_EXPORTER_PORT:-9400}:9835"
+    networks:
+      inference:
+        ipv4_address: ${GPU_EXPORTER_IP:-10.89.7.11}   # module 6: set GPU_EXPORTER_UPSTREAM=10.89.7.11:9835
     restart: unless-stopped
 
 networks:
@@ -97,3 +146,5 @@ networks:
 volumes:
   hf-cache:
     name: ${MODEL_CACHE_VOLUME:-hf-cache}
+  pki-data:
+    name: taco-pki-data

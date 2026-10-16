@@ -1,0 +1,4 @@
+# Rendered by the nginx image at start (envsubst) into /etc/nginx/conf.d/upstreams.conf; see compose.yaml.
+upstream vllm          { server ${VLLM_UPSTREAM_IP}:8000; }
+upstream node_exporter { server ${NODE_EXPORTER_UPSTREAM}; }
+upstream gpu_exporter  { server ${GPU_EXPORTER_UPSTREAM}; }

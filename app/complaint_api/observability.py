@@ -25,6 +25,7 @@ from prometheus_client.core import CounterMetricFamily, GaugeMetricFamily
 from taco_shared.agent import prompts
 from taco_shared.paths import AGENT_SCENARIOS_V2, load_json
 from taco_shared.quality.store import QualityStore
+from taco_shared.tls import TlsFiles, verify_arg
 
 REQUEST_ID = contextvars.ContextVar("request_id", default="-")
 VALID_REQUEST_ID = re.compile(r"^[A-Za-z0-9._-]{1,64}$")
@@ -80,8 +81,9 @@ class ServedModel:
     falls back to the configured name when the server is unreachable (for example during a model swap).
     """
 
-    def __init__(self, base_url: str, alias: str, api_key: str, ttl: float = 30.0) -> None:
+    def __init__(self, base_url: str, alias: str, api_key: str, ttl: float = 30.0, tls: TlsFiles | None = None) -> None:
         self.base_url, self.alias, self.api_key, self.ttl = base_url, alias, api_key, ttl
+        self.tls = tls or TlsFiles()
         self._value, self._checked = alias, 0.0
         self._lock = threading.Lock()
 
@@ -91,10 +93,10 @@ class ServedModel:
                 return self._value
             self._checked = time.monotonic()
         try:
-            response = httpx.get(f"{self.base_url}/models", timeout=2.0,
+            response = httpx.get(f"{self.base_url}/models", timeout=2.0, verify=verify_arg(self.tls),
                                  headers={"Authorization": f"Bearer {self.api_key}"})
             models = response.json().get("data", [])
-        except (httpx.HTTPError, ValueError):
+        except (httpx.HTTPError, ValueError, OSError):
             return self._value
         root = next((m.get("root") for m in models if m.get("id") == self.alias), None)
         same_root = [m["id"] for m in models if root is not None and m.get("root") == root]

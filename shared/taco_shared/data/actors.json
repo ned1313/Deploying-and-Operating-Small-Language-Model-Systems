@@ -8,6 +8,8 @@
     {"actor_id": "sup-wg-01", "role": "reviewer", "store_ids": ["WG"]},
     {"actor_id": "sup-area-01", "role": "area_manager", "store_ids": ["ALN", "CHL", "DOY", "KOP", "LAN", "NBR", "PHL", "PRN", "WAR", "WG"]},
     {"actor_id": "qa-01", "role": "quality_reviewer", "store_ids": ["ALN", "CHL", "DOY", "KOP", "LAN", "NBR", "PHL", "PRN", "WAR", "WG"], "note": "Module 5: reviews sampled outputs; cannot submit or approve complaints."},
-    {"actor_id": "load-reviewer-01", "role": "reviewer", "store_ids": ["KOP", "WG"], "synthetic": true, "note": "Used only by the module 4 Locust workload to approve load-test cases."}
+    {"actor_id": "load-reviewer-01", "role": "reviewer", "store_ids": ["KOP", "WG"], "synthetic": true, "note": "Used only by the module 4 Locust workload to approve load-test cases."},
+    {"actor_id": "aud-01", "role": "auditor", "store_ids": ["ALN", "CHL", "DOY", "KOP", "LAN", "NBR", "PHL", "PRN", "WAR", "WG"], "note": "Module 6: reads audit events and captured content; cannot submit, approve, or see quality samples."},
+    {"actor_id": "admin-01", "role": "admin", "store_ids": [], "synthetic": true, "note": "Module 6: fault injection and fixture reset through app-gateway (replaces TACO_ADMIN_TOKEN); no case access."}
   ]
 }

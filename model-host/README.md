@@ -73,9 +73,12 @@ absent), which reaches the gateway's published port from a container.
 | `node-exporter` | long-running | host CPU, memory, disk, network on `MODEL_HOST:9100` (host network and PID namespace) |
 | `dcgm-exporter` | long-running | GPU utilization, framebuffer, power, temperature on `MODEL_HOST:9400` |
 | `nvidia-smi-exporter` | long-running | fallback for `dcgm-exporter` on the same port; start one or the other |
+| `gateway-secure` | long-running | module 6: nginx with TLS on `MODEL_HOST:8443` ([nginx.secure.conf](gateway/nginx.secure.conf)); run instead of `gateway` |
+| `step-ca` | long-running | module 6: the course CA on `MODEL_HOST:9000`; data in the `taco-pki-data` volume |
 
 The exporters have no authentication in modules 4-5. They listen on `MODEL_HOST` only; if the host
-runs a firewall, allow 9100 and 9400 from the desktop's address only. Module 6 revisits metrics access.
+runs a firewall, allow 9100 and 9400 from the desktop's address only. Module 6 moves them off the LAN
+(`model-host/local.env`) and serves them through `gateway-secure` at `/metrics/node` and `/metrics/gpu`.
 
 If `dcgm-exporter` exits or the `DCGM_FI_DEV_*` lines are missing (driver or DCGM version mismatch),
 use the fallback; the Prometheus recording rules normalize both to the same series:
@@ -98,6 +101,23 @@ through `serve.sh` (the old model stops first: a maintenance window on one GPU),
 is served, checks the image digest against the manifest, runs the `smoke` tool, and records current and
 previous releases in `results/serving/release-state.json`. It prints a desktop step only when the
 release changes app-side settings.
+
+## Secure gateway and course CA (module 6)
+
+```bash
+./model-host/pki/init-ca.sh                      # step-ca, one-year certificates, the gateway certificate
+podman compose stop gateway && podman compose up -d gateway-secure
+./model-host/pki/deny-serial.sh <HEX-SERIAL>     # end a rotation window: reject an old client certificate
+```
+
+`gateway-secure` verifies client certificates against the course root and maps the CN to an identity:
+`complaint-api` and `tools` may call `POST /v1/chat/completions` and `GET /v1/models`; `prometheus` may
+read `/metrics`, `/metrics/node`, and `/metrics/gpu`; `/health` and `/version` need no certificate;
+everything else is 404. Requests are limited to 256 KB and 20 r/s (burst 40, 16 concurrent) per
+inference identity, 2 r/s per metrics identity. Secrets (CA password, gateway key, the denied-serial
+list) are in `model-host/secrets/pki/`, git-ignored. From this host, tools reach the gateway as
+`https://slm.taco.internal:8443/v1` with `MODEL_HOST` set in `tools/.env`. Walkthrough:
+[m6/demo-6.1](../m6/demo-6.1-secure-the-request-path.md).
 
 ## Teardown
 

@@ -69,11 +69,15 @@ def case_api(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 def make_api(tmp_path: Path, app_db: AppDatabase, case_api: TestClient) -> Callable[[ScriptedChatModel], TestClient]:
     """Builds a complaint API around a model; calling it again with the same tmp_path simulates a restart."""
     from complaint_api import main
+    from complaint_api.audit import AuditRecorder
     from complaint_api.service import ComplaintService, ServiceSettings
+    from cryptography.fernet import Fernet
+    from taco_shared.audit import AuditStore
 
     clients: list[TestClient] = []
+    audit_key = Fernet.generate_key()
 
-    def build(model: ScriptedChatModel, quality_rate: float = 0.0) -> TestClient:
+    def build(model: ScriptedChatModel, quality_rate: float = 0.0, audit: bool = False) -> TestClient:
         for client in clients:
             client.__exit__(None, None, None)
         clients.clear()
@@ -81,9 +85,10 @@ def make_api(tmp_path: Path, app_db: AppDatabase, case_api: TestClient) -> Calla
                               sleep=lambda _: None)
         deps = WorkflowDeps(model=model, db=app_db, cases=cases, policy=load_policy(), settings=WorkflowSettings())
         main.STATE.clear()
+        recorder = AuditRecorder(AuditStore(tmp_path / "audit" / "audit.db", audit_key)) if audit else None
         main.STATE["service"] = ComplaintService(deps, cases, ServiceSettings(
             state_dir=tmp_path / "state", versions={"model": "scripted", "policy_version": "2026.09"},
-            quality_db=tmp_path / "quality" / "quality.db", quality_sample_rate=quality_rate))
+            quality_db=tmp_path / "quality" / "quality.db", quality_sample_rate=quality_rate, audit=recorder))
         client = TestClient(main.app)
         client.__enter__()
         clients.append(client)

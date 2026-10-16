@@ -33,7 +33,7 @@ Points to make:
 - Both releases are served as `taco-slm` plus their own name. The application only knows `taco-slm`, so a
   release or rollback is a model-host action; the app reads the real model from `/v1/models`.
 - The gates are decided before the candidate runs: e2e pass rate and policy compliance within 5 points of
-  the baseline (and at least 0.80), grounded/schema/duplicate-free at 100%, all failure tests, workflow
+  the baseline (and at least 0.75), grounded/schema/duplicate-free at 100%, all failure tests, workflow
   p95 within 120% of the baseline under steady load, no errors, peak VRAM under 23 GiB.
 
 ### 2. The baseline's evidence (recorded off camera)

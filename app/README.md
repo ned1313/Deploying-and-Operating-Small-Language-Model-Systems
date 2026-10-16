@@ -37,18 +37,24 @@ because the evaluation tools use them too. Evaluation, load, and report one-shot
 | `seed` | one-shot | module 2 | Seeds `taco-app-data` with customers, orders, and prior resolutions (idempotent; `--reset` is explicit) |
 | `basic-agent` | one-shot | module 2 | `examples/basic_agent.py`; database mounted read-only; `--save-transcript` writes to `../results/agent/` |
 | `complaint-api` | long-running | module 3 | Complaint API on `127.0.0.1:8090`; owns `taco-app-state` (`checkpoints.db`, `app.db`); reads `taco-app-data`; also on `taco-telemetry` for metrics scraping; from module 5 writes quality samples to `taco-app-quality` |
-| `cli` | one-shot | module 3 | `clients/taco_cli.py` |
+| `cli` | one-shot | module 3 | `clients/taco_cli.py`; module 6 adds `audit`, `audit-verify`, `audit-delete` |
+| `authelia` | long-running | module 6 | Signs people in (portal and HTTP Basic); users and groups from `../secrets/authelia/users_database.yml` |
+| `app-gateway` | long-running | module 6 | nginx with TLS on `127.0.0.1:8443` for `app.taco.internal` and `auth.taco.internal`; forward auth to Authelia on every app route |
+| `reset` | one-shot | module 6 | Explicit, destructive demo reset (`--yes`); refuses while the APIs run; never touches the audit store |
 
 Runbooks always name the services they start, so module 2 never starts `complaint-api`.
 
 ## Identity: two different credentials
 
-- **Application to inference gateway:** the service key in `../secrets/inference_api_key`. Every model
-  call carries it; module 6 enforces it at NGINX.
+- **Application to inference gateway:** modules 1-5 send the key in `../secrets/inference_api_key`, which
+  nothing checks; module 6 replaces it with the `complaint-api` client certificate from the course CA
+  (`INFERENCE_CA_FILE`, `INFERENCE_CLIENT_CERT_FILE`, `INFERENCE_CLIENT_KEY_FILE`).
 - **Person to complaint API:** the `X-Actor-Id` header (or `?actor=` on the review page). The API maps
   it to an actor in `shared/taco_shared/data/actors.json` and derives role and store scope itself. It
   is an identity claim, not authentication, so the API is published on `127.0.0.1` by default
-  (see the WSL note below).
+  (see the WSL note below). With `APP_AUTH_MODE=authelia` (module 6) the person signs in through
+  Authelia at `app-gateway`; the API takes the user from `Remote-User`, the role from the Authelia group,
+  and store scope from `actors.json`, and accepts those headers only with the gateway's shared secret.
 
 | Actor | Role | Stores | May |
 | --- | --- | --- | --- |
@@ -57,6 +63,12 @@ Runbooks always name the services they start, so module 2 never starts `complain
 | `sup-area-01` | area_manager | all | approve, revise, reject anywhere |
 | `load-reviewer-01` | reviewer (synthetic) | KOP, WG | used only by the load generator; hidden from the review page |
 | `qa-01` | quality_reviewer | all | reads quality samples and records rubric reviews (module 5); cannot submit or approve |
+| `aud-01` | auditor | all | reads the audit trail with content and processes deletion requests (module 6) |
+| `admin-01` | admin (synthetic) | none | fault injection and fixture reset through app-gateway in Authelia mode (module 6) |
+
+Audit capture (module 6) is on when `../secrets/audit/audit_content_key` exists: `complaint-api` writes
+an append-only, hash-chained event log with Fernet-encrypted content to the `taco-app-audit` volume.
+`GET /audit/cases/{id}` returns content to `aud-01` and metadata to area managers; every read is logged.
 
 Nobody may decide on a case they submitted.
 

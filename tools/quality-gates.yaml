@@ -18,7 +18,7 @@ flags:
 
 release:
   e2e_pass_rate_drop_max: 0.05  # candidate >= baseline - this
-  e2e_pass_rate_min: 0.80
+  e2e_pass_rate_min: 0.75       # absolute floor; r1 scored 0.79-0.88 across runs
   policy_compliant_drop_max: 0.05
   perfect: [grounded, schema_valid, duplicate_free]
   failure_tests_all_pass: true

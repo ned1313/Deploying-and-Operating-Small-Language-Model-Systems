@@ -1,0 +1,7 @@
+# Rendered at start (envsubst) into /etc/nginx/conf.d/gateway.conf.
+# Resolve service names per request: a recreated container gets a new address.
+resolver ${NGINX_LOCAL_RESOLVERS} valid=10s ipv6=off;
+resolver_timeout 5s;
+# complaint-api and case-api accept Remote-User / Remote-Groups only with this value, so the headers cannot
+# be forged by a caller that goes around this gateway.
+map $host $taco_gateway_secret { default "${APP_GATEWAY_SECRET}"; }

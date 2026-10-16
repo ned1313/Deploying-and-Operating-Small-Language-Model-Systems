@@ -20,6 +20,7 @@ import gevent
 from locust import HttpUser, LoadTestShape, between, events, task
 from locust.exception import StopUser
 
+from taco_shared.api_client import authelia_mode, user_password
 from taco_shared.config import InferenceSettings
 from taco_shared.load import LOAD_REVIEWER, direct_requests, load_cases
 
@@ -44,6 +45,12 @@ class DirectUser(HttpUser):
     settings = InferenceSettings.from_env() if MODE == "direct" else None
     bodies = itertools.cycle(direct_requests(settings.model, settings.extra_body) if settings else [{}])
 
+    def on_start(self) -> None:
+        # Module 6: the course root CA and the tools client certificate.
+        if self.settings and self.settings.tls.enabled:
+            for name, value in self.settings.tls.requests_args().items():
+                setattr(self.client, name, value)
+
     @task
     def chat_completion(self) -> None:
         request = next(self.bodies)
@@ -62,6 +69,17 @@ class AppUser(HttpUser):
 
     wait_time = between(1, 3)
     cases = collections.deque(load_cases() if MODE == "app" else [])
+    password = user_password() if MODE == "app" and authelia_mode() else None
+
+    def on_start(self) -> None:
+        if self.password is not None:
+            self.client.verify = os.environ.get("APP_CA_FILE") or True
+
+    def identify(self, actor: str) -> dict:
+        """Header mode: X-Actor-Id. Authelia mode: HTTP Basic, checked by Authelia at app-gateway."""
+        if self.password is not None:
+            return {"auth": (actor, self.password), "headers": {}}
+        return {"headers": {"X-Actor-Id": actor}}
 
     @task
     def submit_complaint(self) -> None:
@@ -69,9 +87,10 @@ class AppUser(HttpUser):
             raise StopUser()
         case = self.cases.popleft()
         intake = {key: case[key] for key in ("case_id", "customer_id", "complaint_date", "complaint_channel", "complaint")}
-        headers = {"X-Actor-Id": case["actor_id"], "X-Request-ID": f"load-{uuid.uuid4().hex[:16]}"}
+        who = self.identify(case["actor_id"])
+        headers = {**who.pop("headers"), "X-Request-ID": f"load-{uuid.uuid4().hex[:16]}"}
         with self.client.post("/complaints", json=intake, headers=headers, name="/complaints", timeout=REQUEST_TIMEOUT,
-                              catch_response=True) as response:
+                              catch_response=True, **who) as response:
             if response.status_code not in (200, 201):
                 response.failure(f"HTTP {response.status_code}")
                 OUTCOMES[f"http_{response.status_code}"] += 1
@@ -82,10 +101,11 @@ class AppUser(HttpUser):
             gevent.spawn_later(random.uniform(*THINK), self.approve, case["case_id"], view["proposal_version"])
 
     def approve(self, case_id: str, version: int) -> None:
-        headers = {"X-Actor-Id": LOAD_REVIEWER, "X-Request-ID": f"load-{uuid.uuid4().hex[:16]}"}
+        who = self.identify(LOAD_REVIEWER)
+        headers = {**who.pop("headers"), "X-Request-ID": f"load-{uuid.uuid4().hex[:16]}"}
         with self.client.post(f"/reviews/{case_id}/decision", json={"decision": "approve", "proposal_version": version},
                               headers=headers, name="/reviews/[case]/decision", timeout=REQUEST_TIMEOUT,
-                              catch_response=True) as response:
+                              catch_response=True, **who) as response:
             if response.status_code != 200:
                 response.failure(f"HTTP {response.status_code}")
                 OUTCOMES[f"approve_http_{response.status_code}"] += 1

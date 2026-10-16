@@ -6,6 +6,8 @@ import re
 
 import httpx
 
+from .tls import verify_arg
+
 METRIC_NAMES = (
     "vllm:num_requests_running",
     "vllm:num_requests_waiting",
@@ -27,9 +29,9 @@ def metrics_url_from_base(base_url: str, metrics_url: str | None) -> str:
 def fetch_metrics(url: str, timeout: float = 5.0) -> dict[str, float] | None:
     """Return a flat snapshot of the vLLM metrics we care about, summing over label sets."""
     try:
-        response = httpx.get(url, timeout=timeout)
+        response = httpx.get(url, timeout=timeout, verify=verify_arg())
         response.raise_for_status()
-    except (httpx.HTTPError, ValueError):
+    except (httpx.HTTPError, ValueError, OSError):
         return None
     snapshot: dict[str, float] = {}
     for line in response.text.splitlines():

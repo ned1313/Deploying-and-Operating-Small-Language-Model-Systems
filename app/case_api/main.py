@@ -3,7 +3,8 @@
 Run: uvicorn case_api.main:app --host 0.0.0.0 --port 8081
 
 Module 3 adds idempotent approved actions (POST /cases/{case_id}/actions) and admin routes for fault
-injection and fixture reset. Admin routes exist only when TACO_ADMIN_TOKEN is set.
+injection and fixture reset. Admin routes exist only when TACO_ADMIN_TOKEN is set, or (module 6,
+APP_AUTH_MODE=authelia) for the admin group through app-gateway.
 """
 
 from __future__ import annotations
@@ -225,7 +226,24 @@ def record_action(case_id: str, action: ActionRequest, x_store_scope: str | None
                              "case": case_record(connection, row)}, status_code=201)
 
 
-def require_admin(x_admin_token: str | None = Header(default=None)) -> None:
+def _gateway_secret() -> str:
+    path = os.environ.get("APP_GATEWAY_SECRET_FILE") or ""
+    try:
+        return Path(path).read_text(encoding="utf-8").strip() if path else ""
+    except OSError:
+        return ""
+
+
+def require_admin(request: Request, x_admin_token: str | None = Header(default=None)) -> None:
+    """Header mode: TACO_ADMIN_TOKEN. Authelia mode (module 6): through app-gateway, in the admin group."""
+    if (os.environ.get("APP_AUTH_MODE") or "header").lower() == "authelia":
+        secret, supplied = _gateway_secret(), request.headers.get("X-Taco-Gateway") or ""
+        if not secret or not hmac.compare_digest(supplied, secret):
+            raise HTTPException(status_code=401, detail="requests must come through app-gateway")
+        groups = {g.strip() for g in (request.headers.get("Remote-Groups") or "").split(",")}
+        if "admin" not in groups:
+            raise HTTPException(status_code=403, detail="admin group required")
+        return
     token = os.environ.get("TACO_ADMIN_TOKEN", "")
     if not token:
         raise HTTPException(status_code=404, detail="Not Found")

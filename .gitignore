@@ -7,6 +7,15 @@ build/
 .env
 secrets/*
 !secrets/README.md
+# Module 6: per-service folders exist in the checkout so compose mounts work before any secret is created.
+!secrets/*/
+secrets/*/*
+!secrets/*/.gitkeep
+!secrets/certs/*/
+secrets/certs/*/*
+!secrets/certs/*/.gitkeep
+model-host/secrets/
+model-host/local.env
 # Pre-migration local copies, kept ignored until deleted
 m[1-6]/secrets/
 

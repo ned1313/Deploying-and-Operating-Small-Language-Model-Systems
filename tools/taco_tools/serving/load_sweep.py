@@ -26,6 +26,7 @@ from taco_shared.metrics import fetch_metrics, metrics_url_from_base
 from taco_shared.paths import DEFAULT_POLICY, DEFAULT_RESULTS_DIR, DEFAULT_SCENARIOS, DEFAULT_SCHEMA, load_json
 from taco_shared.reporting import print_table, safe_slug, summarize_latency, timestamp_slug
 from taco_shared.screening import build_messages, build_system_prompt
+from taco_shared.tls import openai_http_client
 
 # Filler paragraph appended to the user prompt to pad context; ~55 tokens per repetition.
 FILLER = (
@@ -154,7 +155,8 @@ async def run(args: argparse.Namespace) -> dict[str, Any]:
     metrics_url = metrics_url_from_base(args.base_url, args.metrics_url)
     padding = FILLER * max(0, round(args.pad_prompt_tokens / 55))
 
-    async with AsyncOpenAI(base_url=args.base_url, api_key=args.api_key, max_retries=0, timeout=args.request_timeout) as client:
+    async with AsyncOpenAI(base_url=args.base_url, api_key=args.api_key, max_retries=0, timeout=args.request_timeout,
+                           http_client=openai_http_client(asynchronous=True)) as client:
         if args.model is None:
             models = await client.models.list()
             args.model = models.data[0].id

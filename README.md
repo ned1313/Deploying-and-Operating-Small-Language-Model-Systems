@@ -20,6 +20,8 @@ Runnable components live in one folder per deployment unit, each with its own co
 | [m3/](m3/README.md) | Module 3: a complaint API running a LangGraph workflow with durable approval checkpoints, bounded retries, clarification and escalation routes, idempotent recording, and failure tests |
 | [m4/](m4/README.md) | Module 4: Prometheus, Grafana, and GPU/host exporters across both hosts, correlated structured logs, LangSmith traces, Locust load generation, and a documented performance baseline |
 | [m5/](m5/README.md) | Module 5: sampled output quality with deterministic checks and a review queue, pinned model releases with gates and rollback, and cost per successful resolution |
+| [m6/](m6/README.md) | Module 6: a TLS model gateway with per-service client certificates from a course CA (step-ca), authenticated metrics, Authelia sign-in for people, and an encrypted, tamper-evident audit trail |
+| `scripts/` | Module 6 desktop helpers: `issue-certs.sh` (certificates and rotation) and `setup-app-auth.sh` (Authelia users and application secrets) |
 
 Run each unit's commands from its own folder (`cd app && podman-compose ...`). On the GPU host,
 `source model-host/env.sh` once per shell. [ARCHITECTURE.md](ARCHITECTURE.md) shows how the system

@@ -8,6 +8,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from .tls import TlsFiles
+
 DEFAULT_SECRET_FILE = "/run/secrets/inference_api_key"
 PLACEHOLDER_KEY = "not-needed"
 
@@ -42,6 +44,7 @@ class InferenceSettings:
     results_dir: str = "results"
     api_key: str = field(default=PLACEHOLDER_KEY, repr=False)
     api_key_source: str = "placeholder"
+    tls: TlsFiles = field(default_factory=TlsFiles)
 
     @classmethod
     def from_env(cls) -> InferenceSettings:
@@ -67,6 +70,7 @@ class InferenceSettings:
             results_dir=_env("RESULTS_DIR", "results"),
             api_key=key or PLACEHOLDER_KEY,
             api_key_source=f"secret file {secret_file}" if key else "placeholder (no secret file)",
+            tls=TlsFiles.from_env(),
         )
 
     def describe(self) -> dict[str, Any]:
@@ -75,4 +79,4 @@ class InferenceSettings:
                 "extra_body": self.extra_body, "tool_calling": self.tool_calling,
                 "structured_output": self.structured_output, "max_tool_calls": self.max_tool_calls,
                 "max_output_tokens": self.max_output_tokens, "policy_version": self.policy_version,
-                "api_key_source": self.api_key_source}
+                "api_key_source": self.api_key_source, "tls": self.tls.describe() if self.tls.enabled else None}

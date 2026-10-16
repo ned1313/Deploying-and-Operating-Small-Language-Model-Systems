@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from html import escape
 from typing import Any
 from urllib.parse import quote
@@ -26,16 +27,26 @@ STATUSES = ("pending_review", "recorded", "escalated", "needs_clarification", "f
             "investigating", "all")
 
 
+def identity_banner(who: str) -> str:
+    if (os.environ.get("APP_AUTH_MODE") or "header").lower() == "authelia":
+        portal = os.environ.get("AUTHELIA_URL") or "https://auth.taco.internal:8443"
+        return (f"Signed in through Authelia as <b>{who}</b>. "
+                f"<a href='{escape(portal)}/logout'>Sign out</a>. Inference authentication is separate.")
+    return (f"Demo identity: <b>{who}</b>. The actor is an unauthenticated claim "
+            f"(host-only, synthetic data). Inference authentication is separate.")
+
+
 def page(title: str, actor: Actor | None, body: str, message: str | None = None) -> str:
     who = f"{escape(actor.actor_id)} ({escape(actor.role)}, stores {escape(', '.join(actor.store_ids))})" if actor else "-"
     note = f"<p class='bad'>{escape(message)}</p>" if message else ""
     return (f"<!doctype html><html><head><meta charset='utf-8'><title>{escape(title)}</title><style>{STYLE}</style>"
-            f"</head><body><div class='banner'>Demo identity: <b>{who}</b>. The actor is an unauthenticated claim "
-            f"(host-only, synthetic data). Inference authentication is separate.</div>"
+            f"</head><body><div class='banner'>{identity_banner(who)}</div>"
             f"<h1>{escape(title)}</h1>{note}{body}</body></html>")
 
 
 def actor_picker(actors: list[dict[str, Any]], status: str) -> str:
+    if not actors:
+        return ""
     links = " | ".join(f"<a href='/ui?actor={quote(a['actor_id'])}&status={quote(status)}'>{escape(a['actor_id'])}</a>"
                        f" <span class='muted'>({escape(a['role'])})</span>" for a in actors)
     return f"<p>Act as: {links}</p>"

@@ -24,6 +24,10 @@ x-serving-env: &serving-env
   BASE_URL: ${INFERENCE_BASE_URL:-http://host.containers.internal:8080/v1}
   MODEL: ${MODEL:-}                  # empty: use the model the server lists
   EXTRA_BODY: ${EXTRA_BODY:-}
+  # Module 6: the course root CA and the tools client certificate (empty: plain HTTP, modules 1-5).
+  INFERENCE_CA_FILE: ${INFERENCE_CA_FILE:-}
+  INFERENCE_CLIENT_CERT_FILE: ${INFERENCE_CLIENT_CERT_FILE:-}
+  INFERENCE_CLIENT_KEY_FILE: ${INFERENCE_CLIENT_KEY_FILE:-}
 
 x-inference-env: &inference-env
   INFERENCE_BASE_URL: ${INFERENCE_BASE_URL:-http://host.containers.internal:8080/v1}
@@ -33,11 +37,24 @@ x-inference-env: &inference-env
   INFERENCE_TOOL_CALLING: ${INFERENCE_TOOL_CALLING:-native}
   INFERENCE_STRUCTURED_OUTPUT: ${INFERENCE_STRUCTURED_OUTPUT:-json_schema}
   INFERENCE_API_KEY_FILE: /run/secrets/inference_api_key
+  INFERENCE_CA_FILE: ${INFERENCE_CA_FILE:-}
+  INFERENCE_CLIENT_CERT_FILE: ${INFERENCE_CLIENT_CERT_FILE:-}
+  INFERENCE_CLIENT_KEY_FILE: ${INFERENCE_CLIENT_KEY_FILE:-}
 
 x-client-env: &client-env
   COMPLAINT_API_URL: http://complaint-api:8090
   CASE_API_URL: http://case-api:8081
   TACO_ADMIN_TOKEN: ${TACO_ADMIN_TOKEN:-}
+  # Module 6: through app-gateway with HTTP Basic; admin calls as the synthetic admin-01 user.
+  APP_AUTH_MODE: ${APP_AUTH_MODE:-header}
+  APP_GATEWAY_URL: https://${APP_HOSTNAME:-app.taco.internal}:8443
+  APP_CA_FILE: /run/taco-ca/root_ca.crt
+  TACO_USER_PASSWORD_FILE: /run/taco-users/password
+
+# Module 6: the tools identity's client certificate, the root CA, and the model gateway's name.
+x-tools-cert: &tools-cert ../secrets/certs/tools:/run/taco-certs:ro
+x-model-host: &model-host
+  - "${SLM_HOSTNAME:-slm.taco.internal}:${MODEL_HOST:-127.0.0.1}"
 
 services:
   # ----- model serving (module 1): gateway URL only ------------------------------------------------
@@ -51,6 +68,8 @@ services:
       RESULTS_DIR: /app/results/serving
     volumes:
       - ../results:/app/results
+      - *tools-cert
+    extra_hosts: *model-host
 
   screen:
     # podman-compose run --rm screen --model <served-name> --extra-body '{...}' --label baseline
@@ -62,6 +81,8 @@ services:
       RESULTS_DIR: /app/results/screening
     volumes:
       - ../results:/app/results
+      - *tools-cert
+    extra_hosts: *model-host
 
   compare-screening:
     # podman-compose run --rm compare-screening 'results/screening/screening-*-baseline-*.json'
@@ -81,6 +102,8 @@ services:
       RESULTS_DIR: /app/results/sweep
     volumes:
       - ../results:/app/results
+      - *tools-cert
+    extra_hosts: *model-host
 
   compare-load:
     # podman-compose run --rm compare-load 'results/sweep/load-*.json'
@@ -99,6 +122,9 @@ services:
     command: ["--version"]
     environment:
       <<: *serving-env
+    volumes:
+      - *tools-cert
+    extra_hosts: *model-host
 
   # ----- agent and application evaluation (modules 2-3): desktop, app project running ------------
   agent-eval:
@@ -119,6 +145,8 @@ services:
     volumes:
       - taco-app-data:/data/app:ro    # the app project's seeded database; never written here
       - ../results:/app/results
+      - *tools-cert
+    extra_hosts: *model-host
     networks:
       - app
 
@@ -140,6 +168,8 @@ services:
       RESULTS_DIR: /app/results/failure
     volumes:
       - ../results:/app/results
+      - ../secrets/ca:/run/taco-ca:ro
+      - ../secrets/users:/run/taco-users:ro
     networks:
       - app
 
@@ -153,6 +183,8 @@ services:
       RESULTS_DIR: /app/results/e2e
     volumes:
       - ../results:/app/results
+      - ../secrets/ca:/run/taco-ca:ro
+      - ../secrets/users:/run/taco-users:ro
     networks:
       - app
 
@@ -178,6 +210,10 @@ services:
       - inference_api_key
     volumes:
       - ../results:/app/results
+      - *tools-cert
+      - ../secrets/ca:/run/taco-ca:ro
+      - ../secrets/users:/run/taco-users:ro
+    extra_hosts: *model-host
     networks:
       - app        # a client of the complaint API, like the CLI
 
@@ -240,6 +276,21 @@ services:
       - ../results:/app/results
     networks:
       - telemetry
+
+  # ----- security (module 6) -----------------------------------------------------------------------
+  gateway-check:
+    # podman-compose run --rm gateway-check [--extra-cert <crt> <key> 401]
+    <<: *tools-image
+    entrypoint: ["python", "-m", "taco_tools.security.gateway_check"]
+    command: []
+    environment:
+      <<: *inference-env
+      RESULTS_DIR: /app/results/security
+    volumes:
+      - ../results:/app/results
+      - *tools-cert
+      - ../secrets/rotated:/run/taco-rotated:ro   # certificates replaced by scripts/issue-certs.sh --rotate
+    extra_hosts: *model-host
 
   # ----- tests: every suite against the mounted source, no network or GPU -----------------------
   tests:

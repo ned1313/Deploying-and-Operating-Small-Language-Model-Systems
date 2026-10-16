@@ -30,6 +30,7 @@ from taco_shared.metrics import fetch_metrics, metrics_url_from_base
 from taco_shared.paths import DEFAULT_POLICY, DEFAULT_RESULTS_DIR, DEFAULT_SCENARIOS, DEFAULT_SCHEMA, load_json
 from taco_shared.reporting import peak_vram_from_log, safe_slug, summarize_latency, timestamp_slug
 from taco_shared.screening import build_messages, build_system_prompt
+from taco_shared.tls import openai_http_client
 
 WEIGHTS = {"schema_valid": 0.35, "grounded": 0.25, "policy_compliant": 0.30, "category_correct": 0.10}
 
@@ -129,7 +130,8 @@ async def run(args: argparse.Namespace) -> dict[str, Any]:
     system_prompt = build_system_prompt(policy, schema)
     metrics_url = metrics_url_from_base(args.base_url, args.metrics_url)
 
-    async with AsyncOpenAI(base_url=args.base_url, api_key=args.api_key, max_retries=0, timeout=args.request_timeout) as client:
+    async with AsyncOpenAI(base_url=args.base_url, api_key=args.api_key, max_retries=0, timeout=args.request_timeout,
+                           http_client=openai_http_client(asynchronous=True)) as client:
         if args.model is None:
             models = await client.models.list()
             args.model = models.data[0].id

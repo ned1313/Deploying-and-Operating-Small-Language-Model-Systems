@@ -44,8 +44,10 @@ log in as `admin` with the password file to edit). With `PUBLISH_ADDRESS=0.0.0.0
 
 Prometheus does not expand environment variables in its config, so `start.sh` writes the GPU host
 targets (`vllm` through the gateway, `node`, `gpu`) from `MODEL_HOST` when the container starts. The
-`vllm` job scrapes the gateway without authentication in modules 4-5; module 6 moves it to an
-authenticated route and keeps `job="vllm"`, `instance="model-host"` so dashboards keep working.
+`vllm` job scrapes the gateway without authentication in modules 4-5. Module 6 sets
+`PROMETHEUS_CONFIG=prometheus.secure.yml`: all three jobs scrape `https://slm.taco.internal:8443` (paths
+`/metrics`, `/metrics/node`, `/metrics/gpu`) with the `prometheus` client certificate from
+`../secrets/certs/prometheus/`, and keep `job` and `instance="model-host"` so dashboards keep working.
 
 ## Teardown
 

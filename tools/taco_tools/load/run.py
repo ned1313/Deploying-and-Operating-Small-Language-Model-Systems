@@ -21,6 +21,7 @@ from pathlib import Path
 
 import httpx
 
+from taco_shared.api_client import APP_GATEWAY_URL, Api, authelia_mode
 from taco_shared.config import InferenceSettings
 from taco_shared.load import LOAD_DATASET_VERSION, LOAD_SEED, load_cases
 from taco_shared.reporting import safe_slug, timestamp_slug
@@ -52,14 +53,13 @@ def parse_args() -> argparse.Namespace:
 
 def reset_load_cases() -> int:
     """Return load-v1 cases to their fixtures on both services so each run starts from the same state."""
-    token = os.environ.get("TACO_ADMIN_TOKEN") or ""
-    if not token:
+    if not authelia_mode() and not os.environ.get("TACO_ADMIN_TOKEN"):
         sys.exit("TACO_ADMIN_TOKEN is not set; app mode resets the load cases through the admin routes")
     case_ids = [case["case_id"] for case in load_cases()]
-    headers = {"X-Admin-Token": token}
-    for url in (os.environ["COMPLAINT_API_URL"], os.environ["CASE_API_URL"]):
-        response = httpx.post(f"{url}/admin/reset", json={"case_ids": case_ids}, headers=headers, timeout=60)
-        response.raise_for_status()
+    try:
+        Api().reset(case_ids)
+    except httpx.HTTPStatusError as error:
+        sys.exit(f"resetting the load cases failed: HTTP {error.response.status_code} from {error.request.url.path}")
     return len(case_ids)
 
 
@@ -70,7 +70,8 @@ def main() -> int:
     prefix = RESULTS / f"load-{label}-{timestamp_slug()}"
     RESULTS.mkdir(parents=True, exist_ok=True)
     settings = InferenceSettings.from_env()
-    host = settings.base_url if args.mode == "direct" else os.environ["COMPLAINT_API_URL"]
+    app_url = APP_GATEWAY_URL if authelia_mode() else os.environ["COMPLAINT_API_URL"]
+    host = settings.base_url if args.mode == "direct" else app_url
     if args.mode == "app" and not args.no_reset:
         print(f"reset {reset_load_cases()} {LOAD_DATASET_VERSION} cases", flush=True)
 
@@ -97,6 +98,7 @@ def main() -> int:
         "dataset_version": LOAD_DATASET_VERSION if args.mode == "app" else "screening-v2 (module 1 prompts)",
         "dataset_seed": LOAD_SEED if args.mode == "app" else None,
         "target": host, "model": settings.model, "extra_body": settings.extra_body,
+        "auth": {"inference_tls": settings.tls.enabled, "app_auth_mode": "authelia" if authelia_mode() else "header"},
         "execution_host": args.execution_host, "container_platform": platform.platform(),
         "network_path": NETWORK_PATHS[args.mode],
         "started_at": datetime.fromtimestamp(started, timezone.utc).isoformat(timespec="seconds"),

@@ -32,6 +32,10 @@ certifi==2026.7.22
     #   httpx
     #   langchain-openai
     #   requests
+cffi==2.1.1
+    # via
+    #   -c shared/requirements/dev.txt
+    #   cryptography
 charset-normalizer==3.5.2
     # via
     #   -c shared/requirements/dev.txt
@@ -40,6 +44,10 @@ click==8.5.0
     # via
     #   -c shared/requirements/dev.txt
     #   uvicorn
+cryptography==49.0.0
+    # via
+    #   -c shared/requirements/dev.txt
+    #   taco-shared (shared/pyproject.toml)
 distro==1.9.0
     # via
     #   -c shared/requirements/dev.txt
@@ -176,6 +184,10 @@ prometheus-client==0.26.0
     # via
     #   -c shared/requirements/dev.txt
     #   taco-shared (shared/pyproject.toml)
+pycparser==3.11
+    # via
+    #   -c shared/requirements/dev.txt
+    #   cffi
 pydantic==2.13.5
     # via
     #   -c shared/requirements/dev.txt

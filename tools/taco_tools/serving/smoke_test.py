@@ -31,6 +31,7 @@ from taco_shared.metrics import fetch_metrics, metrics_url_from_base
 from taco_shared.paths import DEFAULT_POLICY, DEFAULT_RESULTS_DIR, DEFAULT_SCENARIOS, DEFAULT_SCHEMA, load_json
 from taco_shared.reporting import safe_slug
 from taco_shared.screening import build_messages, build_system_prompt
+from taco_shared.tls import openai_http_client, verify_arg
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -73,7 +74,8 @@ def main() -> int:
     args = parse_arguments()
     extra_body = parse_extra_body(args.extra_body)
     metrics_url = metrics_url_from_base(args.base_url, args.metrics_url)
-    client = OpenAI(base_url=args.base_url, api_key=args.api_key, max_retries=0, timeout=args.request_timeout)
+    client = OpenAI(base_url=args.base_url, api_key=args.api_key, max_retries=0, timeout=args.request_timeout,
+                    http_client=openai_http_client())
     record: dict[str, Any] = {
         "recorded_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "base_url": args.base_url,
@@ -111,7 +113,7 @@ def main() -> int:
     banner("Server version and metrics endpoints")
     version_url = metrics_url.replace("/metrics", "/version")
     try:
-        version = httpx.get(version_url, timeout=5.0)
+        version = httpx.get(version_url, timeout=5.0, verify=verify_arg())
         record["server_version"] = version.json() if version.status_code == 200 else None
         print(f"{version_url} -> {version.status_code} {version.text.strip()[:200]}")
     except (httpx.HTTPError, ValueError):

@@ -58,6 +58,7 @@ paths relative to the container's working directory, for example `'results/scree
 | `quality` | 5 | app (`taco-app-quality` volume) | score samples, report, review queue, show, review -> `results/quality/` |
 | `release` | 5 | results, `model-host/releases/` | candidate vs baseline against the release gates -> `results/release/`; exits 1 unless PROMOTE |
 | `cost` | 5 | app volume, observability (`prometheus`) | cost per successful resolution for one or more app load runs -> `results/cost/` |
+| `gateway-check` | 6 | secure gateway, `tools` certificate | expected-response matrix for the TLS gateway (certificates, routes, sizes, rate limits) -> `results/security/`; exits 1 on any mismatch |
 | `tests` | any | - | `shared/tests`, `app/tests`, `tools/tests` against the mounted source, no network |
 
 Services that need the app join the external `taco-app-private` network, `baseline` and `cost` join
@@ -71,3 +72,9 @@ Release evidence is found by label: run `e2e-eval`, `failure-tests`, `load`, and
 `failure-tests` and `e2e-eval` reset the cases they use through the admin routes (`TACO_ADMIN_TOKEN`
 must match `app/.env`) and restore them when they finish unless `--keep-state`. App-mode `load` resets
 its 150 `load-v1` cases before each run (`--no-reset` to skip), which never touches the curated cases.
+
+Module 6: with the module 6 block in `.env`, every inference client (`smoke`, `screen`, `load-sweep`,
+`agent-eval`, `load --mode direct`, `gateway-check`) connects to `https://slm.taco.internal:8443` with the
+`tools` client certificate from `../secrets/certs/tools/`, and with `APP_AUTH_MODE=authelia` the
+harnesses and app-mode `load` call the complaint API through `app-gateway` with HTTP Basic (the shared
+demo password in `../secrets/users/password`; admin calls as `admin-01`).

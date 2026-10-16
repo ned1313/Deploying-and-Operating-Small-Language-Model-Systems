@@ -402,9 +402,44 @@ human rubric reviews. A sample is flagged on any failure; a model is degraded wh
 samples fall below the thresholds in `tools/quality-gates.yaml`. A release is promoted only if the
 candidate's labeled runs pass the gates in the same file against the baseline's.
 
-## Module 6: Security and Auditing (planned)
+## Module 6: Security and Auditing
 
-The gateway gains TLS, per-service bearer keys (the module 2 secret file starts being enforced), key
-rotation, route restrictions, request-size and rate limits, and an authenticated metrics route that
-Prometheus switches to. The application enforces user roles and store scope (already in the tools) and
-writes protected audit records separate from operational logs and quality samples.
+Services authenticate to the model with client certificates from a course CA; people authenticate to the
+application through Authelia; the application keeps deciding what each person may do with a case and
+records it in an audit trail separate from logs and quality samples.
+
+```mermaid
+flowchart LR
+    subgraph Desktop["Desktop"]
+        Browser["browser / CLI /<br/>harnesses"] -- "HTTPS, session or Basic" --> AppGW
+        subgraph App["taco-app (app/)"]
+            AppGW["app-gateway (nginx)<br/>app.taco.internal:8443"] -- "auth_request" --> Auth["authelia<br/>users, groups"]
+            AppGW -- "Remote-User/Groups<br/>+ shared secret" --> API["complaint-api<br/>roles, store scope,<br/>/audit routes"]
+            AppGW -- "/case-admin (admin group)" --> Case["case-api"]
+            API --> AVol[("taco-app-audit<br/>hash-chained events,<br/>encrypted content")]
+        end
+        Tools["tools one-shots<br/>(tools cert)"]
+        Prom["prometheus<br/>(prometheus cert)"]
+        Certs[("secrets/certs/*<br/>issue-certs.sh")]
+    end
+    subgraph GPU["GPU host: taco-model"]
+        GW["gateway-secure (nginx)<br/>slm.taco.internal:8443<br/>CN -> identity, allowlist,<br/>limits"]
+        CA["step-ca<br/>course root + intermediate"]
+        GW --> VLLM["vllm (private network)"]
+        GW --> Exp["node / GPU exporters<br/>(off the LAN)"]
+    end
+    API -- "mTLS: complaint-api" --> GW
+    Tools -- "mTLS: tools" --> GW
+    Prom -- "mTLS: prometheus<br/>/metrics, /metrics/node, /metrics/gpu" --> GW
+    Certs -. "issued by" .-> CA
+```
+
+| Boundary | Authenticates | Authorizes | Where |
+| --- | --- | --- | --- |
+| Desktop -> model | client certificate signed by the course CA | CN: inference (`complaint-api`, `tools`) or metrics (`prometheus`); per-identity rate limits | `gateway-secure` |
+| Person -> application | Authelia (portal session or HTTP Basic) | route by group (admin routes: `admin` only) | `app-gateway` + Authelia |
+| Application -> case data | trusted identity from the gateway | role and store scope per case and tool call | `complaint-api` code |
+
+The audit trail records intake, every tool access and model response, validation, the review decision
+(bound to the proposal's hash), the recorded action, denials, admin actions, reads of the trail, and
+deletions. Operational logs stay content-free; LangSmith exports follow `TRACE_CONTENT_POLICY`.

@@ -113,7 +113,12 @@ def _past_deadline(config: RunnableConfig) -> bool:
 def _call_model(fn: Callable[[], Any]) -> Any:
     try:
         return fn()
-    except (openai.APIConnectionError, openai.InternalServerError, openai.RateLimitError) as error:
+    except openai.RateLimitError as error:
+        # The client already retried, honouring the gateway's Retry-After (module 6 rate limits).
+        raise InferenceUnavailable(f"rate_limited: {describe_error(error)['message']}") from error
+    except (openai.AuthenticationError, openai.PermissionDeniedError) as error:
+        raise InferenceUnavailable(f"gateway_auth: {describe_error(error)['message']}") from error
+    except (openai.APIConnectionError, openai.InternalServerError) as error:
         raise InferenceUnavailable(describe_error(error)["message"]) from error
 
 

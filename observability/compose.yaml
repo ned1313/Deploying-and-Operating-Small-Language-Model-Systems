@@ -21,9 +21,16 @@ services:
       NODE_EXPORTER_PORT: ${NODE_EXPORTER_PORT:-9100}
       GPU_EXPORTER_PORT: ${GPU_EXPORTER_PORT:-9400}
       PROMETHEUS_RETENTION: ${PROMETHEUS_RETENTION:-30d}
+      # Module 6: prometheus.secure.yml scrapes the model host through the TLS gateway with a client cert.
+      PROMETHEUS_CONFIG: ${PROMETHEUS_CONFIG:-prometheus.yml}
+      SLM_HOSTNAME: ${SLM_HOSTNAME:-slm.taco.internal}
+      GATEWAY_TLS_PORT: ${GATEWAY_TLS_PORT:-8443}
     volumes:
       - ./prometheus:/etc/prometheus:ro
       - taco-observe-prometheus:/prometheus
+      - ../secrets/certs/prometheus:/etc/prometheus-certs:ro   # module 6: the metrics-only identity
+    extra_hosts:
+      - "${SLM_HOSTNAME:-slm.taco.internal}:${MODEL_HOST}"
     ports:
       - "${PUBLISH_ADDRESS:-127.0.0.1}:${PROMETHEUS_PORT:-9090}:9090"
     networks:

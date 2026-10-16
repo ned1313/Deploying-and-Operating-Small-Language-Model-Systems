@@ -23,10 +23,14 @@ certifi==2026.7.22
     #   httpx
     #   langchain-openai
     #   requests
+cffi==2.1.1
+    # via cryptography
 charset-normalizer==3.5.2
     # via requests
 click==8.5.0
     # via uvicorn
+cryptography==49.0.0
+    # via taco-shared (shared/pyproject.toml)
 distro==1.9.0
     # via langsmith
 fastapi==0.142.2
@@ -120,6 +124,8 @@ pluggy==1.6.0
     # via pytest
 prometheus-client==0.26.0
     # via taco-shared (shared/pyproject.toml)
+pycparser==3.11
+    # via cffi
 pydantic==2.13.5
     # via
     #   taco-shared (shared/pyproject.toml)

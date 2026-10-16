@@ -30,6 +30,7 @@ from taco_shared.quality.sampling import build_record, sample_reason
 from taco_shared.quality.store import QualityStore
 from taco_shared.workflow import WorkflowDeps, build_graph, case_status
 
+from .audit import AuditRecorder, digest
 from .observability import (APPROVAL_WAIT, QUEUE_REJECTED, QUEUE_WAIT, RUN_SECONDS, RUNS, RUNS_IN_PROGRESS,
                             log, trace_url)
 from .store import AppStore, now
@@ -50,6 +51,7 @@ class ServiceSettings:
     versions_provider: Callable[[], dict[str, str]] | None = None
     quality_db: Path | None = None
     quality_sample_rate: float = 0.0
+    audit: AuditRecorder | None = None
 
 
 class ComplaintService:
@@ -63,6 +65,7 @@ class ComplaintService:
         self._case_locks_guard = threading.Lock()
         self.quality = (QualityStore(settings.quality_db)
                         if settings.quality_db is not None and settings.quality_sample_rate > 0 else None)
+        self.audit: AuditRecorder | None = settings.audit
 
     def versions(self) -> dict[str, str]:
         return self.settings.versions_provider() if self.settings.versions_provider else self.settings.versions
@@ -106,7 +109,8 @@ class ComplaintService:
             config["run_id"] = uuid.UUID(run_id)
         return config
 
-    def _run(self, case: dict[str, Any], payload: Any, request_id: str, run_name: str, actor_id: str) -> None:
+    def _run(self, case: dict[str, Any], payload: Any, request_id: str, run_name: str, actor_id: str,
+             role: str | None = None) -> None:
         started = time.perf_counter()
         failure: tuple[str, str] | None = None
         run_id = str(uuid.uuid4())
@@ -128,6 +132,10 @@ class ComplaintService:
         RUN_SECONDS.observe(seconds)
         log("workflow_run", case_id=case["case_id"], thread_id=case["thread_id"], run=run_name, status=status,
             reason=failure[1] if failure else None, seconds=round(seconds, 3))
+        if self.audit is not None:
+            values = self.graph.get_state(self._config(case["thread_id"])).values
+            self.audit.after_run(case, values, run_name, status, failure[1] if failure else values.get("outcome_reason"),
+                                 request_id, actor_id, role, self.versions())
         self._sample(case["case_id"], run_id)
 
     def _sample(self, case_id: str, run_id: str) -> None:
@@ -173,7 +181,7 @@ class ComplaintService:
                 continue
             log("resume_incomplete_run", case_id=case["case_id"], thread_id=case["thread_id"])
             with self._slot(case["case_id"], blocking=True):
-                self._run(case, None, "startup-resume", "resume", "system")
+                self._run(case, None, "startup-resume", "resume", "system", "system")
         return len(pending)
 
     # Authorization helpers -----------------------------------------------------------------
@@ -205,9 +213,16 @@ class ComplaintService:
             thread_id = f"{intake['case_id']}:{uuid.uuid4().hex[:8]}"
             self.store.create(intake["case_id"], thread_id, external["store_id"], intake["customer_id"], actor.actor_id,
                               scenario_id, request_id)
+            if self.audit is not None:
+                self.audit.record("intake", case_id=intake["case_id"], request_id=request_id, thread_id=thread_id,
+                                  actor_id=actor.actor_id, role=actor.role,
+                                  metadata={"store_id": external["store_id"], "customer_id": intake["customer_id"],
+                                            "channel": intake.get("complaint_channel"),
+                                            "complaint_date": intake.get("complaint_date"), "scenario_id": scenario_id},
+                                  content={"intake": intake})
             payload = {"request_id": request_id, "actor_id": actor.actor_id, "store_ids": list(actor.store_ids),
                        "intake": intake, "proposal_version": 0, "status": "investigating", **RESET_COUNTERS}
-            self._run(self.store.get(intake["case_id"]), payload, request_id, "submit", actor.actor_id)
+            self._run(self.store.get(intake["case_id"]), payload, request_id, "submit", actor.actor_id, actor.role)
             return self.view(intake["case_id"]), True
 
     def decide(self, actor: Actor, case_id: str, decision: str, proposal_version: int, note: str | None,
@@ -241,10 +256,17 @@ class ComplaintService:
             waited = (datetime.fromisoformat(at) - datetime.fromisoformat(case["review_requested_at"])).total_seconds()
             APPROVAL_WAIT.observe(max(waited, 0.0))
         log("review_decision", case_id=case_id, decision=decision, reviewer=actor.actor_id, proposal_version=proposal_version)
+        if self.audit is not None:
+            values = self.graph.get_state(self._config(case["thread_id"])).values
+            self.audit.record("review_decision", case_id=case_id, request_id=request_id, thread_id=case["thread_id"],
+                              actor_id=actor.actor_id, role=actor.role,
+                              metadata={"decision": decision, "proposal_version": proposal_version,
+                                        "proposal_sha256": digest(values.get("proposal"))},
+                              content={"note": note} if note else None)
         self.store.update(case_id, status={"approve": "approved", "reject": "rejected"}.get(decision, "investigating"),
                           review_requested_at=None)
         self._run(case, Command(resume={"decision": decision, "reviewer": actor.actor_id, "note": note, "at": at}),
-                  request_id, "decision", actor.actor_id)
+                  request_id, "decision", actor.actor_id, actor.role)
         return self.view(case_id), True
 
     def clarify(self, actor: Actor, case_id: str, answer: str, request_id: str) -> dict[str, Any]:
@@ -258,9 +280,12 @@ class ComplaintService:
             values = self.graph.get_state(self._config(case["thread_id"])).values
             intake = dict(values["intake"])
             intake["complaint"] = f"{intake['complaint']}\nCustomer clarification: {answer.strip()}"
+            if self.audit is not None:
+                self.audit.record("clarification", case_id=case_id, request_id=request_id, thread_id=case["thread_id"],
+                                  actor_id=actor.actor_id, role=actor.role, content={"answer": answer})
             self.store.update(case_id, status="investigating", outcome_reason=None)
             self._run(case, {"intake": intake, "status": "investigating", **RESET_COUNTERS}, request_id, "clarify",
-                      actor.actor_id)
+                      actor.actor_id, actor.role)
             return self.view(case_id)
 
     def retry(self, actor: Actor, case_id: str, request_id: str) -> dict[str, Any]:
@@ -270,7 +295,7 @@ class ComplaintService:
             if case["status"] != "failed_retryable":
                 raise HTTPException(status_code=409, detail=f"case is {case['status']}, not failed_retryable")
             self.store.update(case_id, status="investigating", outcome_reason=None)
-            self._run(case, None, request_id, "retry", actor.actor_id)
+            self._run(case, None, request_id, "retry", actor.actor_id, actor.role)
             return self.view(case_id)
 
     def reset(self, case_ids: list[str] | None) -> int:
@@ -282,6 +307,22 @@ class ComplaintService:
                 self.saver.delete_thread(thread_id)
                 removed += 1
         return removed
+
+    def delete_content(self, case_id: str) -> dict[str, int]:
+        """Case deletion request (module 6): drop captured content, keep the case record and audit metadata."""
+        with self._slot(case_id):
+            case = self.store.get(case_id)
+            if case is None:
+                raise HTTPException(status_code=404, detail="case not found")
+            self.saver.delete_thread(case["thread_id"])
+            quality = self.quality
+            if quality is None and self.settings.quality_db is not None and self.settings.quality_db.exists():
+                quality = QualityStore(self.settings.quality_db)
+            removed = {"checkpoint_threads": 1,
+                       "quality_samples": quality.delete_case(case_id) if quality is not None else 0,
+                       "audit_content": self.audit.store.delete_case_content(case_id) if self.audit else 0}
+            self.store.update(case_id, outcome_reason="content_deleted")
+            return removed
 
     # Views -------------------------------------------------------------------------------------
 

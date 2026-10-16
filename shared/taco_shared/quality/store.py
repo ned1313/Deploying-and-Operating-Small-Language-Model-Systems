@@ -91,6 +91,15 @@ class QualityStore:
                           "LIMIT 1", (sample_id, sample_id))
         return self._decode(rows[0]) if rows else None
 
+    def delete_case(self, case_id: str) -> int:
+        """Remove a case's samples with their scores and reviews (module 6 case deletion)."""
+        with self._lock, self._connection:
+            ids = [row[0] for row in self._connection.execute("SELECT sample_id FROM samples WHERE case_id = ?",
+                                                              (case_id,))]
+            for table in ("scores", "reviews", "samples"):
+                self._connection.executemany(f"DELETE FROM {table} WHERE sample_id = ?", [(i,) for i in ids])
+        return len(ids)
+
     def samples_to_score(self, rescore: bool = False) -> Iterator[dict[str, Any]]:
         query = ("SELECT s.* FROM samples s LEFT JOIN scores c ON c.sample_id = s.sample_id"
                  + ("" if rescore else " WHERE c.sample_id IS NULL OR c.sample_updated_at < s.updated_at")

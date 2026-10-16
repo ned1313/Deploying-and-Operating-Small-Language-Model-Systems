@@ -8,6 +8,10 @@ MODEL_HOST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "${MODEL_HOST_DIR}")"
 export MODEL_HOST_DIR REPO_DIR
 
+# Host-specific overrides (git-ignored), for example the module 6 exporter bindings. See m6/demo-6.1.
+# shellcheck source=/dev/null
+[ -f "${MODEL_HOST_DIR}/local.env" ] && source "${MODEL_HOST_DIR}/local.env"
+
 # ----- podman compose --------------------------------------------------------------------------
 # With these exported, `podman compose <cmd>` works from any directory.
 export COMPOSE_FILE="${MODEL_HOST_DIR}/compose.yaml"
@@ -23,10 +27,26 @@ export GATEWAY_PORT="${GATEWAY_PORT:-8080}"                    # nginx, reachabl
 export RESULTS_ROOT="${RESULTS_ROOT:-${REPO_DIR}/results}"     # one subfolder per kind of result
 export RESULTS_DIR="${RESULTS_DIR:-${RESULTS_ROOT}/serving}"   # deployment records, serving args, VRAM logs
 
+# ----- module 6: TLS gateway, course CA, exporters off the LAN --------------------------------------
+export GATEWAY_TLS_PORT="${GATEWAY_TLS_PORT:-8443}"            # gateway-secure, on MODEL_HOST only
+export SLM_HOSTNAME="${SLM_HOSTNAME:-slm.taco.internal}"       # name in the gateway certificate and the base URL
+export CA_HOSTNAME="${CA_HOSTNAME:-ca.taco.internal}"
+export CA_PORT="${CA_PORT:-9000}"
+export STEP_PROVISIONER="${STEP_PROVISIONER:-taco}"
+export PKI_DIR="${PKI_DIR:-${MODEL_HOST_DIR}/secrets/pki}"     # git-ignored: CA password, gateway certificate
+# Where the exporters listen. Modules 4-5: MODEL_HOST. Module 6 (see m6/demo-6.1): node-exporter on the
+# inference bridge address and the GPU exporter on loopback; gateway-secure proxies both.
+export NODE_EXPORTER_LISTEN="${NODE_EXPORTER_LISTEN:-${MODEL_HOST}}"
+export GPU_EXPORTER_BIND="${GPU_EXPORTER_BIND:-${MODEL_HOST}}"
+export NODE_EXPORTER_UPSTREAM="${NODE_EXPORTER_UPSTREAM:-${NODE_EXPORTER_LISTEN}:${NODE_EXPORTER_PORT:-9100}}"
+export GPU_EXPORTER_UPSTREAM="${GPU_EXPORTER_UPSTREAM:-10.89.7.11:9400}"
+
 # ----- images (fully qualified; podman does not assume docker.io) -------------------------------
 # Pinned (module 5). The image digests are recorded in model-host/releases/*.json; release.sh checks them.
 export VLLM_IMAGE="${VLLM_IMAGE:-docker.io/vllm/vllm-openai:v0.30.0}"
-export NGINX_IMAGE="${NGINX_IMAGE:-docker.io/library/nginx:stable}"
+export NGINX_IMAGE="${NGINX_IMAGE:-docker.io/library/nginx:1.30.6}"   # stable branch (module 6 pin)
+export STEP_CA_IMAGE="${STEP_CA_IMAGE:-docker.io/smallstep/step-ca:0.30.2}"
+export STEP_CLI_IMAGE="${STEP_CLI_IMAGE:-docker.io/smallstep/step-cli:0.31.0}"
 
 # Every candidate is also served as this alias, so the application's INFERENCE_MODEL never changes
 # when a release swaps or rolls back the model.
@@ -75,6 +95,7 @@ export HF_TOKEN
 export BASE_URL_LOCAL="http://localhost:${GATEWAY_PORT}/v1"     # from the GPU host, via the gateway
 export BASE_URL_DIRECT="http://127.0.0.1:${VLLM_PORT}/v1"       # from the GPU host, bypassing the gateway
 export BASE_URL_REMOTE="http://${MODEL_HOST}:${GATEWAY_PORT}/v1" # from the desktop
+export BASE_URL_SECURE="https://${SLM_HOSTNAME}:${GATEWAY_TLS_PORT}/v1" # module 6, with the course CA and a client cert
 
 mkdir -p "$RESULTS_DIR"
 
