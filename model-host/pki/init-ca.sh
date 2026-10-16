@@ -62,7 +62,7 @@ if [ "$REISSUE" = 1 ] || [ ! -s "${GATEWAY_DIR}/gateway.crt" ]; then
 fi
 
 echo
-podman run --rm -v "${GATEWAY_DIR}:/c:ro" "$STEP_CLI_IMAGE" step certificate inspect /c/gateway.crt --short
+podman run --rm --user 0 -v "${GATEWAY_DIR}:/c:ro" "$STEP_CLI_IMAGE" step certificate inspect /c/gateway.crt --short
 echo
 echo "Root fingerprint: $(podman exec step-ca step certificate fingerprint /home/step/certs/root_ca.crt)"
 echo

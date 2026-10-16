@@ -41,7 +41,7 @@ certificate, and issues the gateway's server certificate for `slm.taco.internal`
 fingerprint and the two `scp` commands for the desktop. Show the server certificate:
 
 ```bash
-podman run --rm -v "$PKI_DIR/gateway:/c:ro" "$STEP_CLI_IMAGE" step certificate inspect /c/gateway.crt --short
+podman run --rm --user 0 -v "$PKI_DIR/gateway:/c:ro" "$STEP_CLI_IMAGE" step certificate inspect /c/gateway.crt --short
 ```
 
 ### 3. GPU host: swap the gateway
@@ -52,8 +52,18 @@ podman compose up -d gateway-secure
 ss -tlnp | grep -E ':(8000|8080|8443|9000|9100|9400)\b'
 ```
 
-Expected: 8443 and 9000 on `MODEL_HOST`, 8000 and 9400 on 127.0.0.1, 9100 on 10.89.7.1 (rootful), and
-nothing on 8080. Walk through [nginx.secure.conf](../model-host/gateway/nginx.secure.conf): `ssl_verify_client
+Expected: 8443 and 9000 on `MODEL_HOST`, 8000 and 9400 on 127.0.0.1, 9100 on 10.89.7.1 (rootful) or
+`MODEL_HOST` (rootless), and nothing on 8080. Check that the gateway reaches both exporters:
+
+```bash
+podman exec gateway-secure curl -s -o /dev/null -w 'node %{http_code}\n' "http://${NODE_EXPORTER_UPSTREAM}/metrics"
+podman exec gateway-secure curl -s -o /dev/null -w 'gpu %{http_code}\n' "http://${GPU_EXPORTER_UPSTREAM}/metrics"
+```
+
+Both should print 200. On rootless Podman, if `node` fails, add
+`export NODE_EXPORTER_UPSTREAM=host.containers.internal:9100` to `model-host/local.env`, `source
+model-host/env.sh`, and recreate the gateway (`podman rm -f gateway-secure && podman compose up -d
+gateway-secure`). Walk through [nginx.secure.conf](../model-host/gateway/nginx.secure.conf): `ssl_verify_client
 optional`, the CN map to an identity, the inference and metrics allowlists, `limit_req` and `limit_conn`
 keyed on the identity, 256 KB bodies, everything else 404, and an access log with identity and serial but
 no bodies or credentials. `diff model-host/gateway/nginx.conf model-host/gateway/nginx.secure.conf` shows
