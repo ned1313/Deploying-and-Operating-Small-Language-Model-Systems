@@ -69,6 +69,17 @@ def test_redaction_keeps_structure_and_codes() -> None:
     assert out["proposal"] == {"refund_amount": 8.5, "customer_message": REDACTED, "policy_rule_ids": ["R1"]}
 
 
+def test_redaction_reaches_message_objects() -> None:
+    from langchain_core.messages import AIMessage, ToolMessage
+
+    out = redact({"output": ToolMessage(content='{"customer_id": "CUST-1", "notes": "call me at 555"}',
+                                        tool_call_id="c1", name="get_case_status"),
+                  "generations": [AIMessage(content="Refund the two tacos")]})
+    text = str(out)
+    assert "555" not in text and "Refund the two tacos" not in text
+    assert out["output"]["kwargs"]["name"] == "get_case_status"
+
+
 def _write_cert(directory, cn: str) -> tuple[str, str]:
     key = ec.generate_private_key(ec.SECP256R1())
     name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, cn)])

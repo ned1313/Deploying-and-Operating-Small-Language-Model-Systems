@@ -150,7 +150,7 @@ Desktop, repository root:
 
 ```bash
 scripts/issue-certs.sh --rotate complaint-api
-cd app && podman-compose run --rm cli submit A02 && cd ..
+cd app && podman-compose run --rm cli reset CASE-10849 && podman-compose run --rm cli submit A02 && cd ..   # A02 is CASE-10849
 ```
 
 The complaint API picks up the new key and certificate on its next connection (no restart); the old pair

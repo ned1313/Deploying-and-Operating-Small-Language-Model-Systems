@@ -29,7 +29,14 @@ def redact(value: Any, key: str = "") -> Any:
         if key and SENSITIVE_KEY.search(key):
             return REDACTED if value else value
         return value if SAFE_VALUE.match(value) else REDACTED
-    return value
+    if value is None or isinstance(value, (bool, int, float)):
+        return value
+    # Messages and other objects (tool results arrive as ToolMessage): redact their serialized form.
+    try:
+        from langchain_core.load import dumpd
+        return redact(dumpd(value), key)
+    except Exception:  # noqa: BLE001 - anything that cannot be serialized is not exported
+        return REDACTED
 
 
 def policy() -> str:
