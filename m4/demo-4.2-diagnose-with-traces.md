@@ -7,7 +7,7 @@ infrastructure failure, not a model-quality issue.
 Prerequisites: Demo 4.1 setup; LangSmith settings in `app/.env`. Commands run from `app/` unless
 noted. All data is synthetic.
 
-Before each take:
+Before you start, and before any rerun:
 
 ```bash
 podman-compose run --rm cli reset CASE-10431 CASE-10431-F01
@@ -20,7 +20,7 @@ podman-compose run --rm cli case-fault clear
 
 ### 1. Configure tracing
 
-Show `app/.env` with the key hidden (`grep LANGSMITH .env | grep -v API_KEY`):
+Check the LangSmith settings in `app/.env` without printing the key (`grep LANGSMITH .env | grep -v API_KEY`):
 
 ```
 LANGSMITH_TRACING=true
@@ -36,7 +36,7 @@ podman-compose up -d --force-recreate complaint-api
 podman logs taco-app_complaint-api_1 2>&1 | grep complaint_api_ready | jq -c '{tracing, trace_project, app_version, model, prompt_version}'
 ```
 
-Talking points:
+Key points:
 
 - No tracing code in the workflow: LangGraph and LangChain emit spans when `LANGSMITH_TRACING=true`.
   The service adds the run name (`submit`, `decision`, `clarify`, `retry`), tags (`scenario:<id>`,
@@ -57,7 +57,7 @@ In LangSmith, project **taco-alley**:
 
 - The `submit` trace: `intake`, then `investigate` (a `ChatOpenAI` span) and `tools` (a span per tool)
   alternating four times, `check_evidence`, `propose` (the structured-output call), `validate`,
-  `human_review`. Open one `ChatOpenAI` span to show the prompt, tool definitions, and token counts.
+  `human_review`. Open one `ChatOpenAI` span to see the prompt, tool definitions, and token counts.
 - The metadata panel: `request_id` matches the CLI output and the log lines from Demo 4.1.
 - The `decision` trace is separate: the run ended at the approval interrupt. Filter by
   `metadata.thread_id` (or open **Threads**) to see both runs of the case together. The time between
@@ -108,13 +108,13 @@ retries with backoff), returns `unavailable`, and the graph escalates instead of
   `ToolErrors` alert goes pending, then fires after a minute (Prometheus **Alerts**, or *Alerts firing*
   on the dashboard).
 
-Conclusion for the clip: model latency and token counts were normal in both runs; the time and the
+Conclusion: model latency and token counts were normal in both runs; the time and the
 failure sit in one dependency. The fix is in the case API (or its timeout and retry budget), not in
 the prompt or the model.
 
 ### 5. Redaction before export
 
-To show what leaves the deployment, turn on the redaction switches in `app/.env`:
+To see what leaves the deployment, turn on the redaction switches in `app/.env`:
 
 ```
 LANGSMITH_HIDE_INPUTS=true
@@ -132,6 +132,6 @@ results, or proposals. Set both back to `false` afterwards and recreate `complai
 
 ### 6. Hosted traces vs a local trace store
 
-Discussion only; see "Local tracing alternative" in [README.md](README.md). Synthetic data makes the
+Nothing to run here; see "Local tracing alternative" in [README.md](README.md). Synthetic data makes the
 hosted service acceptable here. A deployment that may not send complaint text to a third party either
 keeps redaction on or replaces LangSmith with OpenTelemetry, a collector, and Tempo on the desktop.

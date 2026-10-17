@@ -35,5 +35,5 @@ mounts work in modules 1-5; the scripts fill them.
 | `audit/audit_content_key` | Fernet key for captured audit content; audit is on while it exists | `complaint-api` | `scripts/setup-app-auth.sh` |
 
 Certificate folders are mode 0711 with 0644 files so non-root container users (Prometheus) can read
-them; the provisioner password lets this desktop issue any identity. Both are demonstration trade-offs
-(planning decisions 55 and 63), discussed in the course rather than recommended.
+them; the provisioner password lets this desktop issue any identity. Both are demonstration trade-offs,
+discussed in the course rather than recommended.

@@ -11,7 +11,7 @@ same network path (desktop container -> complaint API -> LAN -> gateway -> vLLM)
 
 ---
 
-## Clip 4: baselines and optimization (slides)
+## Clip 4: baselines and optimization
 
 - **The unit of cost is a successful resolution**, not a request or a token: recorded (or correctly
   clarified), passing the deterministic checks and, for labeled synthetic cases, the label. A cheap wrong

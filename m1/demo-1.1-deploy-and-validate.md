@@ -2,7 +2,7 @@
 
 Goal: start a quantized candidate on the RTX 3090 with vLLM, expose it through an nginx gateway,
 call the REST API, verify request/response formatting and structured-output support, and record
-the deployment configuration. Show one compatibility failure and label it as such.
+the deployment configuration. Learn to tell a compatibility failure apart from a model-quality problem.
 
 Run everything on the GPU host over SSH. Keep `nvtop` open in a second terminal.
 
@@ -25,7 +25,7 @@ sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml     # once per driver
 nvidia-ctk cdi list                                             # expect nvidia.com/gpu=all
 podman run --rm --device nvidia.com/gpu=all docker.io/library/ubuntu nvidia-smi --query-gpu=name,memory.used --format=csv
 
-# Pull/build images ahead of time so the recording does not wait on downloads
+# Pull/build images ahead of time so later steps do not wait on downloads
 podman pull "$VLLM_IMAGE"
 podman pull "$NGINX_IMAGE"
 tools build                     # the tools image (see model-host/env.sh for the `tools` function)
@@ -44,12 +44,12 @@ service whose arguments come from `VLLM_ARGS`, an nginx `gateway`, and (from mod
 runs `podman compose up -d --force-recreate vllm`.
 
 ```bash
-./model-host/serve.sh qwen --dry-run  # talk through the arguments before running
+./model-host/serve.sh qwen --dry-run  # review the arguments before running
 ./model-host/serve.sh qwen
 podman compose logs -f vllm            # Ctrl-C once you see "Application startup complete"
 ```
 
-Things to call out while it loads (watch nvtop):
+What to watch for while it loads (in nvtop and the log):
 
 - weights download to the `hf-cache` volume on first run only
 - VRAM jumps to the quantized weights, then the KV-cache preallocation fills up to
@@ -87,7 +87,7 @@ curl -s "${BASE_URL_DIRECT}/chat/completions" \
   }' | jq
 ```
 
-Point out in the response: `choices[0].message.content`, `finish_reason` (`stop` vs `length`),
+In the response, look at `choices[0].message.content`, `finish_reason` (`stop` vs `length`),
 and `usage.prompt_tokens` / `usage.completion_tokens`. Those usage numbers drive the cost and
 KV-cache math later in the module.
 

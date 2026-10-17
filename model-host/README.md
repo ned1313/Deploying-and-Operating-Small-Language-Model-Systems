@@ -36,7 +36,7 @@ source model-host/env.sh                                        # exports COMPOS
 tools build                                                     # the tools image, for smoke tests on this host
 ```
 
-Before recording, open [env.sh](env.sh) and:
+Before serving a model, open [env.sh](env.sh) and:
 
 1. Confirm the pinned Hugging Face revisions (`*_REVISION`) and the vLLM image tag (`VLLM_IMAGE`) match
    what you want to serve; the release manifests in [releases/](releases/) pin the same values.

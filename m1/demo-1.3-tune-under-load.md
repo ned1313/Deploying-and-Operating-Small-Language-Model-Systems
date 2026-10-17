@@ -22,7 +22,7 @@ EXTRA="$QWEN_EXTRA_BODY"        #  LLAMA_EXTRA_BODY | GRANITE_EXTRA_BODY
 podman compose logs vllm 2>&1 | grep -E 'GPU KV cache size|Maximum concurrency|model weights take|non_torch_memory|Available KV cache memory'
 ```
 
-Explain the arithmetic: `--gpu-memory-utilization` x 24 GB = total budget; minus weights; minus
+The arithmetic: `--gpu-memory-utilization` x 24 GB = total budget; minus weights; minus
 activation/runtime reserve; the remainder becomes KV-cache blocks. "Maximum concurrency for N
 tokens per request" is how many *full-length* requests fit at once. Real requests are shorter,
 so real concurrency is higher, until it is not.
@@ -88,7 +88,7 @@ Rules of thumb for reading a sweep:
 `peak_running`, token means, and the raw per-level numbers are also in
 `results/sweep/load-<model>-<label>-<timestamp>.json` for later comparison (step 5).
 
-Narration while it runs (keep nvtop visible):
+What to watch for while it runs (keep nvtop visible):
 
 - concurrency 1 to 4: output tok/s climbs almost linearly, p95 barely moves. Decode is
   memory-bandwidth bound; batching more sequences is nearly free.
@@ -239,7 +239,7 @@ tools run --rm smoke --model "$SERVED" --extra-body "$EXTRA" \
     --notes "module 1 tuned baseline"
 ```
 
-Limitations to state on camera: 32-64 requests per level is enough to see the shape of the curve,
+Limitations of this approach: 32-64 requests per level is enough to see the shape of the curve,
 not to certify an SLO; the workload is synthetic and uniform; and quality was checked with a
 22-scenario screen. Module 4 adds Locust, Prometheus, and Grafana for the real baseline.
 

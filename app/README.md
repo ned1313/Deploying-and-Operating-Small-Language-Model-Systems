@@ -108,7 +108,7 @@ queue at `http://127.0.0.1:8090/ui/quality?actor=qa-01`.
 ### Browser on Windows, Podman in WSL
 
 The ports are published on `127.0.0.1` inside WSL. Windows reaches them only if WSL forwards
-localhost, which does not work on every setup (it failed on the test desktop). In that case, set
+localhost, which does not work on every setup (it failed on the course's test desktop). In that case, set
 `PUBLISH_ADDRESS=0.0.0.0` in `.env`, run `podman-compose up -d --force-recreate case-api complaint-api`,
 and browse to `http://<WSL address>:8090/ui?actor=sup-kop-01` (`hostname -I` in WSL). With WSL's
 default NAT networking that address is reachable only from the Windows host. Do not use `0.0.0.0` on a

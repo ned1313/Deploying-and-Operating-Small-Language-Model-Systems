@@ -25,7 +25,7 @@ grep -E '^export (VLLM_IMAGE|SERVED_ALIAS|QWEN_REVISION|LLAMA_REVISION)' model-h
 cat tools/quality-gates.yaml
 ```
 
-Points to make:
+Key points:
 
 - The model repo **and commit**, the quantization and parsers, the vLLM image tag **and its digests**,
   the serving settings, and the app-side inference settings are all in the manifest. The prompt, policy,
@@ -36,9 +36,10 @@ Points to make:
   the baseline (and at least 0.75), grounded/schema/duplicate-free at 100%, all failure tests, workflow
   p95 within 120% of the baseline under steady load, no errors, peak VRAM under 23 GiB.
 
-### 2. The baseline's evidence (recorded off camera)
+### 2. Record the baseline's evidence
 
-Each release's runs carry the release id as their label, so the gate report can find them:
+Run these while the baseline release is serving. Each release's runs carry the release id as their
+label, so the gate report can find them:
 
 ```bash
 podman-compose run --rm e2e-eval --label r1-qwen3-14b
@@ -89,7 +90,7 @@ podman-compose run --rm baseline --label r2-llama-3.1-8b
 podman-compose run --rm quality score --label r2-llama-3.1-8b
 ```
 
-About 15 minutes; cross-fade. The quality dashboard shows the two models as separate series.
+This takes about 15 minutes. The quality dashboard shows the two models as separate series.
 
 ### 5. The release gate
 
@@ -101,7 +102,7 @@ The report (`results/release/release-r2-llama-3.1-8b-vs-r1-qwen3-14b-<ts>.md`) l
 candidate's value, the threshold, and pass/FAIL, then the two releases side by side and the scenarios
 each one failed. It exits non-zero on REJECT, so it can block a pipeline.
 
-Talking points: a faster model is not a better release; the decision is made on the gates agreed in
+Takeaways: a faster model is not a better release; the decision is made on the gates agreed in
 advance; 24 scenarios give wide error bars, so a one-scenario margin is a reason to rerun, not proof.
 
 ### 6. Roll back

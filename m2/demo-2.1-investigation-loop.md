@@ -72,7 +72,7 @@ cat ../secrets/README.md  # the credential is a mounted file, never an env var o
 sed -n '/x-inference-env/,/CASE_API_URL/p' compose.yaml
 ```
 
-Talking points: the application only needs `INFERENCE_BASE_URL` and `INFERENCE_MODEL`; moving the
+Key points: the application only needs `INFERENCE_BASE_URL` and `INFERENCE_MODEL`; moving the
 model to another host is a configuration change. The key file is a placeholder until module 6.
 
 ### 2. Validate connectivity from a container
@@ -121,19 +121,19 @@ Complaint: Two of the three carnitas tacos I ordered were missing from my delive
 No order, history, or policy was looked up: every fact above is the model's guess.
 ```
 
-Discuss: the answer sounds reasonable but nothing in it was checked. The credit is invented, the
+Discussion: the answer sounds reasonable but nothing in it was checked. The credit is invented, the
 price is unknown, and the model cannot know the customer's history or the current policy.
 
 ---
 
-## Clip 3: tool calling and orchestration (printouts for the slides)
+## Clip 3: tool calling and orchestration
 
 ```bash
 podman-compose run --rm basic-agent --show-tools
 ```
 
 Shows the four tools exactly as sent to the model (`convert_to_openai_tool`) and the v2 proposal
-schema used for the finalize call. Points to make:
+schema used for the finalize call. Key points:
 
 - Tool arguments are only what the model may choose: `order_id`, `lookback_days`,
   `complaint_category`. The customer, store scope, and case come from the application and never
@@ -191,7 +191,7 @@ Trusted context: actor=rep-kop-01 stores=KOP customer=CUST-14159 case=CASE-10431
     schema: valid   business rules: 0 violation(s)   ACCEPTED (pending human approval in module 3)
 ```
 
-The correct outcome is a partial refund of 8.50 (2 x 4.25, R1). Narrate the model choosing each tool,
+The correct outcome is a partial refund of 8.50 (2 x 4.25, R1). Follow the model choosing each tool,
 the order id it extracted from the complaint text, and the evidence references in the proposal.
 
 When the model gets it wrong, the validator shows why structured output alone is not enough. A run
@@ -202,8 +202,8 @@ captured with Llama 3.1 8B proposed a full refund of 27.84 under R4 without the 
     rule violation: monetary resolution over 25.00 requires human approval (R9)
 ```
 
-Valid JSON, wrong decision. Keep a saved transcript of both outcomes as recording fallbacks
-(`--save-transcript` writes to `results/agent/`).
+Valid JSON, wrong decision. Your run may produce either outcome; add `--save-transcript` to keep a copy
+in `results/agent/`.
 
 ### 4. Scope: the same complaint from a representative at another store
 
@@ -231,11 +231,11 @@ podman-compose run --rm basic-agent --mode tools --scenario A01 --no-structured-
 ```
 
 The finalize call runs without `response_format`. Failures to parse or schema errors are not
-guaranteed on every run; use a saved transcript if the live run happens to be clean.
+guaranteed on every run; if your run is clean, try it a few more times.
 
 ### 7. What this loop lacks
 
-Close on the comments in `shared/taco_shared/teaching_agent/loop.py`: no checkpointer (a restart loses the run), no custom
+Read the comments in `shared/taco_shared/teaching_agent/loop.py`: no checkpointer (a restart loses the run), no custom
 routing (clarification, escalation), only a tool-call cap rather than retry budgets, and no approval
 pause before anything affects the customer. Module 3 adds these with LangGraph.
 
@@ -271,7 +271,7 @@ Agent evaluation summary
 ```
 
 Qwen calls tools reliably but skips `get_case_status` in about half the scenarios, so it misses the
-required-tools gate. Keep it as the selection and point forward: module 3's workflow checks the
+required-tools gate. It remains the selection: module 3's workflow checks the
 evidence deterministically and sends the model back once for any missing lookup.
 
 If module 3 has been run against the same `case-api`, its harnesses restore the cases they touched.
@@ -286,12 +286,12 @@ podman-compose run --rm agent-compare \
 ```
 
 The grid shows each scenario's module 1 result next to the agent result and its tool checks.
-Discussion: tool calling can be perfectly reliable while decisions get worse, because the agent must
-now find and combine facts that module 1 handed it. Selection gate (planning section 6.7): tool calls
+Takeaway: tool calling can be perfectly reliable while decisions get worse, because the agent must
+now find and combine facts that module 1 handed it. Selection gate: tool calls
 parsed 100%, required tools >= 90%, arguments correct >= 95%, schema valid 100%, and an agent pass rate
 no more than 10 points below the screening pass rate. If the selected model misses the gate, swap to
 the runner-up on the GPU host (`model-host/serve.sh`) and rerun, or (as with Qwen3-14B and the case lookup)
-record the gap and show module 3 closing it.
+record the gap; module 3 closes it.
 
 ---
 

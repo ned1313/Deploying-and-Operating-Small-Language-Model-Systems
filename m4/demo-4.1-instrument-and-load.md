@@ -13,9 +13,9 @@ Sample output below comes from the test run on 2026-10-12 (Qwen3-14B AWQ, RTX 30
 
 ---
 
-## Clip 1: observability for agents and SLMs (slides)
+## Clip 1: observability for agents and SLMs
 
-Use the "Where each signal comes from" table and diagram in [README.md](README.md). Key points:
+See the "Where each signal comes from" table and diagram in [README.md](README.md). Key points:
 
 - **Metrics** answer "how much and how fast" (Prometheus); **logs** answer "what happened to this
   request" (JSON lines with `request_id`); **traces** answer "where did the time go inside this run"
@@ -39,7 +39,7 @@ Use the "Where each signal comes from" table and diagram in [README.md](README.m
 podman ps --format '{{.Names}} {{.Status}}' | grep -E 'gateway|vllm|exporter'
 ```
 
-From the desktop, prove the desktop can read them:
+From the desktop, confirm the desktop can read them:
 
 ```bash
 cd observability
@@ -48,7 +48,7 @@ curl -s "http://$MODEL_HOST:9400/metrics" | grep -E '^DCGM_FI_DEV_(GPU_UTIL|FB_U
 curl -s "http://$MODEL_HOST:8080/metrics" | grep -E '^vllm:(num_requests_running|kv_cache_usage_perc)'
 ```
 
-Talking point: vLLM's metrics come through the gateway without authentication. That is the gap
+Key point: vLLM's metrics come through the gateway without authentication. That is the gap
 module 6 closes; the job and instance labels (`job="vllm"`, `instance="model-host"`) stay the same so
 dashboards survive the change.
 
@@ -70,7 +70,7 @@ prometheus     prometheus     up    http://localhost:9090/metrics
 vllm           model-host     up    http://192.168.1.251:8080/metrics
 ```
 
-Or show **Status > Target health** in the Prometheus UI. Point out `complaint-api:8090`: Prometheus
+Or open **Status > Target health** in the Prometheus UI. Notice `complaint-api:8090`: Prometheus
 reaches the API by name over the shared `taco-telemetry` network; the case API and the business
 routes are not on that network.
 
@@ -137,7 +137,7 @@ Client p95 (26 s) vs workflow run p95 (14.6 s) vs vLLM e2e p95 (8 s): the client
 queue wait for a run slot (p95 18.7 s). The approval calls queue behind submissions for the same slots,
 which is why a fast `record` step shows seconds of latency here.
 
-Talking point: the fix depends on which queue is long. A longer app queue with an idle model calls
+Takeaway: the fix depends on which queue is long. A longer app queue with an idle model calls
 for more run slots (or more workers); a long vLLM queue with high KV cache calls for a bigger GPU, a
 smaller model, or shorter contexts. Module 5 changes one setting and measures it.
 
@@ -184,7 +184,7 @@ podman logs gateway 2>&1 | grep '<request id>'
 {"ts":"...","request_id":"<request id>","client":"...","method":"POST","route":"/v1/chat/completions","status":200,"request_time":0.346,"upstream_response_time":"0.345","bytes":1234}
 ```
 
-Walk through `app/complaint_api/observability.py` (metric definitions, the JSON formatter, `observe()`), the
+Read through `app/complaint_api/observability.py` (metric definitions, the JSON formatter, `observe()`), the
 request-id middleware in `app/complaint_api/main.py`, and `request_id_hook` in
 `shared/taco_shared/agent/model.py`. Logs carry ids, timings, counts, and outcomes; they never carry
 complaint text or proposals. Capturing content for review is a separate, restricted store (module 5),
@@ -192,7 +192,7 @@ and the audit record is another (module 6).
 
 ### 8. Record the baseline
 
-Off camera, run the steady workload and generate the report:
+Run the steady workload and generate the report:
 
 ```bash
 cd ../tools
@@ -200,7 +200,7 @@ podman-compose run --rm load --mode app --shape steady --label app-baseline
 podman-compose run --rm baseline --label app-baseline
 ```
 
-On camera, open `results/baseline-app-baseline-<ts>.md`: client, application, and server numbers for
+Open `results/baseline-app-baseline-<ts>.md`: client, application, and server numbers for
 the same window, the run settings (users, seed, dataset `load-v1`), the execution host and network
 path, and the deployment versions. Compare it with the thresholds in `prometheus/rules/taco.yml`
 (`WorkflowSlow` at 20 s p95, `InferenceQueueing` when anything waits for 2 minutes) and adjust them if

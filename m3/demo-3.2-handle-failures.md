@@ -11,7 +11,7 @@ run from `tools/`, the CLI from `app/`. `TACO_ADMIN_TOKEN` (the same value in `a
 
 ---
 
-## Clip 2: failure modes (slides)
+## Clip 2: failure modes
 
 | Failure | Where it is handled | Mitigation |
 | --- | --- | --- |
@@ -35,8 +35,8 @@ podman-compose run --rm failure-tests --keep-state
 ```
 
 It resets each scenario's case, applies the scenario's faults through the admin routes, submits it as
-`rep-kop-01`, and compares the workflow outcome with the expected one. About 2.5 minutes with
-Qwen3-14B; cross-fade or use `--only` for single scenarios. `--keep-state` leaves the cases as they
+`rep-kop-01`, and compares the workflow outcome with the expected one. It takes about 2.5 minutes with
+Qwen3-14B; use `--only` to run single scenarios. `--keep-state` leaves the cases as they
 ended so step 2 can show them; without it the harness restores every case it touched when it finishes.
 
 ```
@@ -60,7 +60,7 @@ D06  resubmission_is_replayed        -                              HTTP 200 rep
 
 `actions` is 0 for every C/J/F row: nothing reaches the case API without a reviewer's approval.
 
-### 2. Narrate selected scenarios
+### 2. Inspect selected scenarios
 
 ```bash
 cd ../app
@@ -70,7 +70,7 @@ podman-compose run --rm cli show CASE-10431-F01 --steps
 podman-compose run --rm cli show CASE-10431-F03 --steps
 ```
 
-Easier to read on camera: the case page in the browser, for example
+Easier to read: the case page in the browser, for example
 `http://127.0.0.1:8090/ui/cases/CASE-10431-F03?actor=sup-area-01`. Its **Workflow steps** table has
 one line per step (tool calls and arguments, tool results with record ids and case API retries,
 nudges, each proposal version, validation reasons, injected faults, record and escalation), with the
@@ -92,7 +92,7 @@ status (pending review, recorded, escalated, needs clarification, failed retryab
 - **F05**: an injected inference outage leaves the case `failed_retryable` with its checkpoint; `retry`
   resumes from the failed node.
 
-### 3. Real inference outage (recorded take)
+### 3. Real inference outage
 
 On the GPU host, stop only the gateway (the model keeps running):
 
@@ -117,8 +117,9 @@ Start the gateway again (`podman compose start gateway`), then:
 podman-compose run --rm cli retry CASE-10431-F05
 ```
 
-The run resumes from its checkpoint and reaches `pending_review`; nothing was recorded twice. Fallback
-if the GPU host is not reachable on camera: `podman-compose run --rm failure-tests --only F05` (from `tools/`).
+The run resumes from its checkpoint and reaches `pending_review`; nothing was recorded twice. If you
+cannot stop the gateway on the GPU host, use the injected outage instead:
+`podman-compose run --rm failure-tests --only F05` (from `tools/`).
 
 ### 4. Labeled scenarios end to end
 
@@ -128,7 +129,7 @@ podman-compose run --rm e2e-eval --label e2e-baseline
 ```
 
 Each scenario is reset, submitted, approved by `sup-area-01` when it reaches review, then approved and
-submitted again to check that no second action is recorded. About 4 minutes; cross-fade to the summary.
+submitted again to check that no second action is recorded. It takes about 4 minutes.
 When it finishes it restores the 24 cases (the case API volume is shared with module 2, where a
 leftover action would read as already compensated); add `--keep-state` to inspect them first.
 
@@ -151,7 +152,7 @@ podman-compose run --rm e2e-compare \
     'results/screening/screening-<model>-*.json' 'results/agent/agent-<model>-*.json' 'results/e2e/e2e-<model>-*.json'
 ```
 
-Discussion: the module 2 agent passed 75% with Qwen3-14B and called all four required tools in only
+Takeaway: the module 2 agent passed 75% with Qwen3-14B and called all four required tools in only
 half the scenarios (it tends to skip `get_case_status`). With the graph's missing-evidence nudge and
 correction attempt, every case called all four tools and the end-to-end run passed 88%; expect some
 run-to-run variation per scenario. The remaining failures are valid, grounded

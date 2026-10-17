@@ -8,7 +8,7 @@ Prerequisites: module 1 model and gateway running on the GPU host, and the setup
 [app/README.md](../app/README.md#setup) (`.env`, secret, `build`, `seed`, `case-api` and
 `complaint-api` up). Commands run from `app/`.
 
-Before each take, return the demo case to its fixture:
+Before you start, and whenever you rerun the demo, return the demo case to its fixture:
 
 ```bash
 podman-compose run --rm cli reset CASE-10431
@@ -30,7 +30,7 @@ curl -s http://127.0.0.1:8090/healthz | python3 -m json.tool
  "dependencies": {"case_api": true, "inference": {"reachable": true, "status_code": 200, "model_served": true}}}
 ```
 
-Talking point: liveness is "ok" whenever the API serves requests; the remote inference endpoint and
+Key point: liveness is "ok" whenever the API serves requests; the remote inference endpoint and
 the case API are reported separately, so an outage on the GPU host never turns into a restart loop.
 
 ### 2. Map the module 2 loop onto the graph
@@ -39,7 +39,8 @@ the case API are reported separately, so an outage on the GPU host never turns i
 podman-compose run --rm cli graph
 ```
 
-Paste the Mermaid output into the slide. Mapping:
+The output is a Mermaid diagram of the graph; paste it into any Mermaid viewer to see it rendered.
+How the module 2 loop maps onto the graph:
 
 | Module 2 (`shared/taco_shared/teaching_agent/loop.py`) | Module 3 node |
 | --- | --- |
@@ -50,7 +51,7 @@ Paste the Mermaid output into the slide. Mapping:
 | `validate_proposal()` | `validate` (one correction attempt, then escalate) |
 | (nothing) | `human_review` (`interrupt()`), `record` (idempotent), `clarify`, `escalate`, `rejected` |
 
-Walk through `shared/taco_shared/workflow/graph.py`: the state (`state.py`), each node, and the
+Read through `shared/taco_shared/workflow/graph.py`: the state (`state.py`), each node, and the
 `route` function that reads `next_step`. The model chooses tools; application code chooses routes.
 
 ### 3. Submit the missing-items complaint
@@ -68,7 +69,7 @@ Case CASE-10431  status: pending_review  store KOP  submitted by rep-kop-01
   counters: tool_calls=4  repeated_calls=0  nudges=0  corrections=0  case_api_retries=0  model_calls=6
 ```
 
-`--steps` on `cli show CASE-10431` prints every node's step for narration. Point out that the run
+`--steps` on `cli show CASE-10431` prints every node's step. Notice that the run
 stopped at `human_review`: the workflow state is in `checkpoints.db` on the `taco-app-state` volume,
 not in memory.
 
@@ -102,9 +103,9 @@ Case CASE-10431  status: recorded ...
   recorded action: APR-901ea6f1b8 partial_refund 8.50 at 2026-10-09T18:52:01+00:00
 ```
 
-Alternative for the camera: the review page at `http://127.0.0.1:8090/ui?actor=sup-kop-01` shows the
+Alternatively, use the review page at `http://127.0.0.1:8090/ui?actor=sup-kop-01`: it shows the
 same proposal, validation, and Approve / Request revision / Reject buttons, plus a **Workflow steps**
-table that is easier to narrate than `cli show --steps`. After approval, the case moves to the
+table that is easier to read than `cli show --steps`. After approval, the case moves to the
 "recorded" tab of the list. With Podman in WSL and the
 browser on Windows, see "Browser on Windows, Podman in WSL" in [app/README.md](../app/README.md#browser-on-windows-podman-in-wsl) if the page does
 not open.

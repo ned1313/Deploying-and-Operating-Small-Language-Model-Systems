@@ -35,7 +35,7 @@ print(build_system_prompt(DEFAULT_POLICY.read_text(), load_json(DEFAULT_SCHEMA))
 print(build_user_prompt(s))'
 ```
 
-Worth pointing out: S04 asks for a refund on an item that is not on the order (grounding trap),
+Scenarios worth noting: S04 asks for a refund on an item that is not on the order (grounding trap),
 S06 is exactly 30 minutes late (the 15-to-30 bucket is inclusive), S13 needs R5-then-R3 reasoning,
 S20 is outside the 14-day window, S02/S03/S11 test the approval flags, S21 is a billing complaint
 the policy does not cover (R14: escalate), and S22 was already refunded for the same order (R13).
@@ -61,10 +61,10 @@ tools run --rm screen \
 kill $SAMPLER
 ```
 
-While it runs, narrate the per-scenario line: `schema / grounded / policy / category` flags,
+While it runs, each scenario prints a line with the `schema / grounded / policy / category` flags,
 latency, output tokens, and `finish=length` if the model ran out of budget.
 
-Follow-ups worth showing for the first model only:
+Optional follow-ups for the first model:
 
 ```bash
 # Inspect one failure in detail (replace S13 with whatever failed)
@@ -107,8 +107,8 @@ kill $SAMPLER
 ## 4. Swap to candidate 3: Granite-4.2-8B
 
 The checkpoint is FP8; the RTX 3090 (Ampere) has no FP8 math, so vLLM runs the FP8 weights
-weight-only (W8A16) with its Marlin kernels. Point out the warning in the startup log: the format is
-supported, but not on its fast path for this GPU.
+weight-only (W8A16) with its Marlin kernels. Look for the warning in the startup log: the format is
+supported, but not on its fast path for this GPU (or any Ampere card).
 
 ```bash
 ./model-host/serve.sh granite
@@ -121,7 +121,7 @@ tools run --rm screen --model "$GRANITE_SERVED_NAME" \
 kill $SAMPLER
 ```
 
-Worth telling on camera: an earlier attempt with the MXFP4 build of the same model scored 0%. Its chat
+A lesson from building this course: an earlier attempt with the MXFP4 build of the same model scored 0%. Its chat
 template turns thinking on by default, so every answer was reasoning text that ran out of tokens
 before any JSON, and MXFP4 (4-bit weights *and* activations) has no hardware path on Ampere. With an
 FP8 build and `enable_thinking: false` in `GRANITE_EXTRA_BODY`, the same model is competitive. Read
@@ -139,7 +139,7 @@ backend/version" rather than scoring it zero on quality.
 tools run --rm compare-screening --by-scenario 'results/screening/screening-*-baseline-*.json'
 ```
 
-Columns to discuss:
+What the columns mean:
 
 | column | what it tells you |
 | --- | --- |

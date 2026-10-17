@@ -38,7 +38,7 @@ chmod +x model-host/pki/*.sh
 
 The first run starts `step-ca`, lets its provisioner issue one-year certificates, exports the root
 certificate, and issues the gateway's server certificate for `slm.taco.internal`. It prints the root
-fingerprint and the two `scp` commands for the desktop. Show the server certificate:
+fingerprint and the two `scp` commands for the desktop. Inspect the server certificate:
 
 ```bash
 podman run --rm --user 0 -v "$PKI_DIR/gateway:/c:ro" "$STEP_CLI_IMAGE" step certificate inspect /c/gateway.crt --short
@@ -60,7 +60,7 @@ podman exec gateway-secure curl -s -o /dev/null -w 'node %{http_code}\n' "http:/
 podman exec gateway-secure curl -s -o /dev/null -w 'gpu %{http_code}\n' "http://${GPU_EXPORTER_UPSTREAM}/metrics"
 ```
 
-Walk through [nginx.secure.conf](../model-host/gateway/nginx.secure.conf): `ssl_verify_client
+Read through [nginx.secure.conf](../model-host/gateway/nginx.secure.conf): `ssl_verify_client
 optional`, the CN map to an identity, the inference and metrics allowlists, `limit_req` and `limit_conn`
 keyed on the identity, 256 KB bodies, everything else 404, and an access log with identity and serial but
 no bodies or credentials. `diff model-host/gateway/nginx.conf model-host/gateway/nginx.secure.conf` shows
@@ -101,7 +101,7 @@ and the certificate serial on each line.
 podman-compose run --rm smoke --skip-structured     # module 1 smoke test, now over TLS as `tools`
 ```
 
-Talking points: the gateway authenticates **services**, not people; rate limits count requests per
+Key points: the gateway authenticates **services**, not people; rate limits count requests per
 identity, not tokens (a token quota needs the response, which NGINX does not read); body limits and the
 allowlist reduce what reaches vLLM, but neither stops prompt injection.
 
@@ -130,7 +130,7 @@ podman-compose up -d --force-recreate prometheus
 In Prometheus (`http://127.0.0.1:9090/targets`), `vllm`, `node`, and `gpu` are UP with
 `https://slm.taco.internal:8443/metrics...`; the job and instance labels are unchanged, so the Model
 serving and Model host dashboards continue the same series with a gap of one or two scrape intervals at
-the switch. Show the rejected paths from the desktop:
+the switch. Check the rejected paths from the desktop:
 
 ```bash
 curl -s -o /dev/null -w '%{http_code}\n' http://<MODEL_HOST>:8080/metrics      # connection refused (000)
@@ -152,8 +152,8 @@ cd app && podman-compose run --rm cli reset CASE-10849 && podman-compose run --r
 
 The complaint API picks up the new key and certificate on its next connection (no restart); the old pair
 is kept in `secrets/rotated/` and step-ca no longer renews it. The old certificate is still valid for a
-year, so the rotation window ends when the gateway denies its serial. Wait a minute connections recycle
-after 30 s idle or 100 requests.
+year, so the rotation window ends when the gateway denies its serial. Wait a minute first: connections
+recycle after 30 s idle or 100 requests.
 
 On the **GPU host** run the command the script printed:
 
@@ -212,6 +212,6 @@ other order is not found and the proposal can only cover TA-10431. The browser p
 `secrets/users/password`, and approve CASE-10431; the banner shows the Authelia user and the `?actor=`
 picker is gone.
 
-Talking points: separating the hosts and the gateways is not high availability (each is one instance);
+Key points: separating the hosts and the gateways is not high availability (each is one instance);
 network membership is not authorization (the shared gateway secret is what the API checks); the
 provisioner password on the desktop and readable key files are demo shortcuts.

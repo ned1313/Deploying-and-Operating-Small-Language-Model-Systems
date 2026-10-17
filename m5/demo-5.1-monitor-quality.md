@@ -12,7 +12,7 @@ way in every run so far; S12 fails in some runs and passes in others.
 
 ---
 
-## Clip 1: continuous quality checks (slides)
+## Clip 1: continuous quality checks
 
 - **Three questions, three tools.** Is it up and fast (metrics, module 4)? Is the answer right (checks and
   labels)? Is it a good answer for the customer (the rubric, a person)?
@@ -96,7 +96,7 @@ CASE-10050:4731fbb4  CASE-10050  S09       recorded  qwen3-14b  amount_grounded:
 podman-compose run --rm quality show CASE-10050
 ```
 
-Walk through it:
+What to look for:
 
 - The order was 12 minutes late. R3 gives `apology_only` under 15 minutes; the model proposed
   `store_credit 5.00` and cited R3. Valid JSON, valid schema, every validator rule satisfied, approved,
@@ -114,7 +114,7 @@ podman-compose run --rm quality show CASE-10274
 
 Every deterministic check passes: the model treated a food quality complaint as a wrong item and applied
 R2 consistently. Only the label (synthetic data) flags it. In production nothing automatic would; that is
-the evaluator-limitations point, and the reason for a labeled reference set before every release
+a limit of automated evaluators, and the reason for a labeled reference set before every release
 (Demo 5.2) and a person on the queue.
 
 ### 7. Review in the browser
@@ -140,8 +140,8 @@ numbers it stays inactive.
 podman-compose run --rm quality report --label m5-quality     # compare with the baseline in quality-gates.yaml
 ```
 
-### If a take does not reproduce
+### If your results differ
 
 S09 and S15 have failed the same way in every run so far, but generation can vary. Rerun only that
-scenario (`e2e-eval --only S09 --label m5-quality-retake`, then `quality score`), or show the recorded
-sample from an earlier run with `quality show`.
+scenario (`e2e-eval --only S09 --label m5-quality-retake`, then `quality score`), or inspect a sample
+from an earlier run with `quality show`.

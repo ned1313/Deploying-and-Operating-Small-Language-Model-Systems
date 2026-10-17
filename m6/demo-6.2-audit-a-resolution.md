@@ -1,9 +1,9 @@
 # Demo 6.2: Audit a resolution without unrestricted logging
 
 Goal: follow an authenticated request from intake through tool access, approval, and the recorded
-action; reconstruct it from the audit trail; show that operational logs carry no content, that captured
+action; reconstruct it from the audit trail; confirm that operational logs carry no content, that captured
 content is encrypted and readable only by the auditor, that the trail is tamper-evident, and that a
-deletion request removes content while keeping the record of what happened. Then show what LangSmith
+deletion request removes content while keeping the record of what happened. Then see what LangSmith
 receives and the difference between stopping and resetting.
 
 Prerequisites: Demo 6.1 finished (Authelia mode, `secrets/audit/audit_content_key` created by
@@ -93,7 +93,7 @@ under each event's details then reads `{"deleted": true}` and the chain on `/ui/
 
 Deletion removes the case's audit content, its quality sample, and its workflow checkpoint; it keeps the
 case record, the recorded action in the case API, and every audit event (with a `case_content_deleted`
-event). Retention periods and legal holds are policy decisions covered on the slides; they decide when
+event). Retention periods and legal holds are policy decisions covered in the course video; they decide when
 this command runs, not what it does.
 
 ### 7. Trace export follows the same content policy
@@ -118,6 +118,6 @@ podman-compose run --rm cli audit-verify             # the audit trail is untouc
 `reset` refuses to run while the APIs are up and does not mount the audit volume, so a demo reset cannot
 erase the audit trail. Never use `podman-compose down --volumes` as a shutdown command.
 
-Talking points: audit records support a compliance programme (who did what, with what data, under which
+Key points: audit records support a compliance programme (who did what, with what data, under which
 versions) but do not establish compliance by themselves; content capture needs minimization, encryption,
 restricted readers, retention, and deletion decided before it is switched on.

@@ -97,7 +97,7 @@ podman-compose build
 Prometheus is at `http://127.0.0.1:9090` and Grafana at `http://127.0.0.1:3000` (see
 [observability/README.md](../observability/README.md)).
 
-## Local tracing alternative (discussion only)
+## Local tracing alternative (for reference)
 
 LangSmith is a hosted service: traces, including complaint text and model outputs, leave the
 deployment. That is acceptable here because every record is synthetic, and the redaction switches
