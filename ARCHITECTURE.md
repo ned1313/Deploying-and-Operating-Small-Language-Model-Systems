@@ -1,18 +1,17 @@
 # Architecture of the Course Demonstration
 
 This document describes the Taco Alley complaint-resolution system as it grows module by module. Each
-section shows what exists at the end of that module. Update it when a module is completed: change the
-module's status, replace planned diagrams with what was built, and keep earlier sections accurate if
-shared components change.
+section shows what exists at the end of that module, so you can compare it with what you have running.
+The runbooks in `m1/` ... `m6/` have the commands; this document has the picture.
 
-| Module | Status | Adds |
-| --- | --- | --- |
-| [1](#module-1-hosting-a-small-language-model) | Implemented | vLLM model server, nginx gateway, screening and load tools |
-| [2](#module-2-building-an-slm-agent-with-tools) | Implemented | Shared dataset and package, mock case API, LangChain agent with typed tools, structured proposal and validator, agent evaluation |
-| [3](#module-3-orchestrating-and-hardening-the-agent-workflow) | Implemented | LangGraph workflow in a complaint API, durable checkpoints, human approval, idempotent actions, failure handling |
-| [4](#module-4-monitoring-and-tracing) | Implemented | Prometheus, Grafana, GPU/host exporters, structured logs, LangSmith tracing, Locust, performance baseline |
-| [5](#module-5-quality-releases-and-cost) | Implemented (GPU host steps pending) | Quality sampling and scoring, model release and rollback, cost per successful resolution |
-| [6](#module-6-security-and-auditing-planned) | Planned | TLS and service keys at the gateway, rate limits, authenticated metrics, user roles, audit store |
+| Module | Adds |
+| --- | --- |
+| [1](#module-1-hosting-a-small-language-model) | vLLM model server, nginx gateway, screening and load tools |
+| [2](#module-2-building-an-slm-agent-with-tools) | Shared dataset and package, mock case API, LangChain agent with typed tools, structured proposal and validator, agent evaluation |
+| [3](#module-3-orchestrating-and-hardening-the-agent-workflow) | LangGraph workflow in a complaint API, durable checkpoints, human approval, idempotent actions, failure handling |
+| [4](#module-4-monitoring-and-tracing) | Prometheus, Grafana, GPU/host exporters, structured logs, LangSmith tracing, Locust, performance baseline |
+| [5](#module-5-quality-releases-and-cost) | Quality sampling and scoring, model release and rollback, cost per successful resolution |
+| [6](#module-6-security-and-auditing) | Course CA and client certificates at a TLS gateway, rate limits, authenticated metrics, Authelia sign-in, encrypted audit trail |
 
 ## System context
 
@@ -36,14 +35,15 @@ flowchart LR
     Obs -. "scrape metrics" .-> GW
 ```
 
-The inference connection contract shared by every client:
+The inference connection contract shared by every client (modules 1-5; module 6 switches the URL to
+`https://slm.taco.internal:8443/v1` and adds the client certificate settings):
 
 | Setting | Example | Source |
 | --- | --- | --- |
 | `INFERENCE_BASE_URL` | `http://<MODEL_HOST>:8080/v1` | `.env` |
-| `INFERENCE_MODEL` | `qwen3-14b` | `.env` |
+| `INFERENCE_MODEL` | `qwen3-14b` (`taco-slm` from module 5) | `.env` |
 | `INFERENCE_EXTRA_BODY` | `{"chat_template_kwargs": {"enable_thinking": false}}` | `.env` |
-| service credential | file mounted at `/run/secrets/inference_api_key` | `secrets/` (enforced from module 6) |
+| service credential | placeholder key at `/run/secrets/inference_api_key` (not checked); a client certificate from module 6 | `secrets/` |
 
 ## Deployment units
 
@@ -52,13 +52,14 @@ folders (`m1/` ... `m6/`) hold only runbooks.
 
 | Folder | Compose project | Host | Contents | From module |
 | --- | --- | --- | --- | --- |
-| `model-host/` | `taco-model` | GPU host | `vllm`, `gateway`; exporters | 1; exporters 4 |
-| `app/` | `taco-app` | desktop | `case-api`, `complaint-api`; `seed`, `basic-agent`, `cli` one-shots | 2; `complaint-api` 3 |
+| `model-host/` | `taco-model` | GPU host | `vllm`, `gateway`; exporters; `gateway-secure`, `step-ca` | 1; exporters 4; secure gateway and CA 6 |
+| `app/` | `taco-app` | desktop | `case-api`, `complaint-api`, `authelia`, `app-gateway`; `seed`, `basic-agent`, `cli`, `reset` one-shots | 2; `complaint-api` 3; sign-in and `reset` 6 |
 | `observability/` | `taco-observe` | desktop | `prometheus`, `grafana` | 4 |
-| `tools/` | `taco-tools` | either | one-shot evaluation, load, report, and test commands | 1 |
+| `tools/` | `taco-tools` | either | one-shot evaluation, load, quality, release, cost, report, and test commands | 1 |
 | `shared/` | - | - | `taco_shared` package and data used by `app/` and `tools/` | 1 |
 
-Credentials are in `secrets/` and results in `results/<kind>/`, both git-ignored and per host.
+Credentials are in `secrets/` and results in `results/<kind>/`, both git-ignored and per host. The
+module 6 helper scripts (`issue-certs.sh`, `setup-app-auth.sh`) are in `scripts/` and run on the desktop.
 
 ---
 
@@ -111,7 +112,7 @@ flowchart LR
 
 ### Shared foundation
 
-Code, data, and services used by more than one module moved into `shared/`. The complaint CSV is the
+Code, data, and services used by more than one module live in `shared/`. The complaint CSV is the
 single source for customers, stores, and complaint text; a deterministic build synthesizes orders,
 delivery times, prior resolutions, and cases, labels every row with a reference policy engine, and
 renders the same curated scenarios two ways: facts inlined (module 1) and facts behind tools
@@ -270,10 +271,10 @@ flowchart LR
     CLI -. "admin token" .-> Case
 ```
 
-Two identities: the service key authenticates the application to the inference gateway (module 6
-enforces it); `X-Actor-Id` names the person using the complaint API, from which the API derives role
-(service_rep, reviewer, area_manager) and store scope. The header is an unauthenticated claim, so the
-API is published on loopback only.
+Two identities: the service key names the application to the inference gateway (nothing checks it;
+module 6 replaces it with a client certificate); `X-Actor-Id` names the person using the complaint API,
+from which the API derives role (service_rep, reviewer, area_manager) and store scope. The header is an
+unauthenticated claim, so the API is published on loopback only (module 6 replaces it with Authelia).
 
 ### Workflow
 
