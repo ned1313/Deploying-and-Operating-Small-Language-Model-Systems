@@ -6,23 +6,32 @@ consumes the inference endpoint on the GPU host and never starts or stops the mo
 
 ```
 app/
-  compose.yaml              project taco-app: case-api, complaint-api (long-running); seed, basic-agent, cli (one-shot)
-  .env.example              inference contract, agent and workflow budgets, admin token, ports, LangSmith
-  Containerfile             one image (localhost/taco-app) for every service in this project
+  compose.yaml              project taco-app: case-api, complaint-api, authelia, app-gateway (long-running);
+                            seed, basic-agent, cli, reset (one-shot)
+  .env.example              inference contract, agent and workflow budgets, admin token, ports, LangSmith,
+                            quality sampling, and a commented module 6 block
+  Containerfile             one image (localhost/taco-app) for every Python service in this project
   complaint_api/
-    main.py                 FastAPI complaint API: complaints, cases, reviews, admin, /ui, /graph, /metrics
+    main.py                 FastAPI complaint API: complaints, cases, reviews, admin, audit, /ui, /graph, /metrics
     service.py              authorization, case records, bounded graph runs, restart resume, trace metadata
     store.py                app.db: cases, proposal versions, review decisions
-    security.py             X-Actor-Id -> actor, role, store scope (an unauthenticated identity claim)
+    security.py             who is calling: X-Actor-Id (modules 3-5) or the Authelia user from app-gateway
+                            (module 6) -> actor, role, store scope
     observability.py        request ids, JSON logs, Prometheus metrics, deployment versions, the served-model
                             lookup behind the taco-slm alias, taco_quality_* metrics
+    audit.py                module 6: AuditRecorder, which writes hash-chained events with encrypted content
     ui.py                   the review page: cases by status, case detail with workflow steps, the quality
                             review queue (/ui/quality); every value escaped
   case_api/main.py          mock case-management API: scoped reads, idempotent approved actions, admin fault
                             injection and fixture reset (admin routes only when TACO_ADMIN_TOKEN is set)
-  clients/taco_cli.py       submit, show, reviews, approve, revise, reject, clarify, retry, graph, reset, case-fault
+  clients/taco_cli.py       submit, show, list, reviews, approve, revise, reject, clarify, retry, graph, reset,
+                            case-fault, audit, audit-verify, audit-delete
+  clients/reset_demo.py     module 6: the `reset` one-shot (destructive demo reset; never touches the audit store)
   examples/basic_agent.py   the module 2 teaching script (driver loop in shared/taco_shared/teaching_agent)
-  tests/                    API, restart, idempotency, case API, and teaching-script tests
+  authelia/                 module 6: Authelia configuration (users and secrets come from ../secrets/)
+  gateway/                  module 6: app-gateway nginx config (TLS, forward auth to Authelia)
+  tests/                    API, restart, idempotency, case API, teaching-script, observability, quality,
+                            and security tests
 ```
 
 The workflow, tools, prompts, validator, and teaching loop are in [`../shared`](../shared/README.md)
@@ -105,6 +114,10 @@ metadata). `QUALITY_SAMPLE_RATE` above 0 writes sampled outcomes to `quality.db`
 `taco-app-quality` volume; the `quality` tool in `tools/` scores them, and quality reviewers work the
 queue at `http://127.0.0.1:8090/ui/quality?actor=qa-01`.
 
+Module 6 setup (certificates, Authelia users, the audit key, and the `.env` changes) is in
+[m6/README.md](../m6/README.md) and [demo 6.1](../m6/demo-6.1-secure-the-request-path.md). From then on,
+the CLI and browser go through `https://app.taco.internal:8443` instead of `127.0.0.1:8090`.
+
 ### Browser on Windows, Podman in WSL
 
 The ports are published on `127.0.0.1` inside WSL. Windows reaches them only if WSL forwards
@@ -124,10 +137,14 @@ with `--keep-state`) makes the module 2 agent see that order as already compensa
 
 ```bash
 podman-compose stop case-api complaint-api      # state is kept in the named volumes
+podman-compose stop authelia app-gateway        # module 6
 podman volume rm taco-app-state                 # only to forget all cases and checkpoints (destructive)
 podman volume rm taco-app-quality               # only to forget all quality samples, scores, and reviews (destructive)
 podman-compose run --rm seed --reset            # only to restore the seeded fixture database (destructive)
 ```
+
+From module 6, `podman-compose run --rm reset` (with the APIs stopped) lists, and with `--yes` deletes,
+the workflow state, quality store, and case records in one step; it never touches `taco-app-audit`.
 
 Avoid `podman-compose down`; never use `down --volumes` for routine shutdown. Stopping this project
 never affects the model server on the GPU host or the observability project.
